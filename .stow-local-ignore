@@ -3,3 +3,5 @@ misc
 LICENSE
 ^/.*\.org
 .*~
+install.sh
+.gitignore
