@@ -10,7 +10,7 @@
 ;; Set up the visible bell
 ;; (setq visible-bell t)
 
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
+;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
 
 (load-theme 'wombat)
 
@@ -36,7 +36,17 @@
 (require 'use-package)
 (setq use-package-always-ensure t) 	; Ensure that the package is loaded
 
-(use-package command-log-mode)
+(column-number-mode)
+(global-display-line-numbers-mode t)
+
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; (use-package command-log-mode)
 
 (use-package ivy
   :diminish
@@ -56,18 +66,22 @@
   :config
   (ivy-mode 1))
 
+;; Bottom bar
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(doom-modeline ivy command-log-mode use-package)))
+ '(package-selected-packages
+   '(rainbow-delimiters doom-modeline ivy command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
