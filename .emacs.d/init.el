@@ -12,7 +12,7 @@
 
 ;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
 
-(load-theme 'wombat)
+(load-theme 'doom-nord t)
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -57,15 +57,16 @@
 ;; Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
 ;; Swiper, an Ivy-enhanced alternative to Isearch.
 
+;; No need to install manually because installed with counsel
+;(use-package counsel
+;:ensure t
+;)
+
+;(use-package swiper
+;:ensure t
+;)
+
 (use-package counsel
-:ensure t
-)
-
-(use-package swiper
-:ensure t
-)
-
-(use-package ivy
   :diminish
   :bind (("C-s" . swiper)
 	 ("C-x C-f" . counsel-find-file)
@@ -114,7 +115,10 @@
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+  :custom ((doom-modeline-height 20)))
+
+;; Download doom themes
+(use-package doom-themes)
 
 ;; Show parentheese
 (use-package rainbow-delimiters
@@ -130,3 +134,18 @@
 (use-package ivy-rich
   :init
   (ivy-rich-mode))
+
+;; Beautify help text, ex C-h 
+(use-package helpful
+  :commands (helpful-callable helpful-variable helpful-command helpful-key)
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+
+
