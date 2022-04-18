@@ -29,7 +29,8 @@
 (unless package-archive-contents
  (package-refresh-contents))
 
-;; Intall use-package if not exists, fuction ends with p return bolean like package-installed-p
+;; Intall use-package if not exists, fuction ends with p return bolean
+;; like package-installed-p
 (unless (package-installed-p 'use-package)
    (package-install 'use-package))
 
@@ -46,11 +47,28 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
+;; Display key press
 ;; (use-package command-log-mode)
+
+
+
+;; flexible, simple tools for minibuffer completion in Emacs
+;; Ivy, a generic completion mechanism for Emacs.
+;; Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
+;; Swiper, an Ivy-enhanced alternative to Isearch.
+
+(use-package counsel
+:ensure t
+)
+
+(use-package swiper
+:ensure t
+)
 
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
+	 ("C-x C-f" . counsel-find-file)
          :map ivy-minibuffer-map
          ("TAB" . ivy-next-line)	
          ("C-l" . ivy-alt-done)
@@ -66,14 +84,53 @@
   :config
   (ivy-mode 1))
 
+
+;; Key mapping directly inside swiper config
+;; (use-package swiper
+;;   :ensure try
+;;   :config
+;;   (progn
+;;     (ivy-mode 1)
+;;     (setq ivy-use-virtual-buffers t)
+;;     (global-set-key "\C-s" 'swiper)
+;;     (global-set-key (kbd "C-c C-r") 'ivy-resume)
+;;     (global-set-key (kbd "<f6>") 'ivy-resume)
+;;     (global-set-key (kbd "M-x") 'counsel-M-x)
+;;     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;;     (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;;     (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;;     (global-set-key (kbd "<f1> l") 'counsel-load-library)
+;;     (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;;     (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;;     (global-set-key (kbd "C-c g") 'counsel-git)
+;;     (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;;     (global-set-key (kbd "C-c k") 'counsel-ag)
+;;     (global-set-key (kbd "C-x l") 'counsel-locate)
+;;     (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;;     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+;;     ))
+
 ;; Bottom bar
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 15)))
 
+;; Show parentheese
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+;; Display keys that follows the prefix key
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.5))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode))
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -81,7 +138,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(rainbow-delimiters doom-modeline ivy command-log-mode use-package)))
+   '(ivy-rich which-key rainbow-delimiters doom-modeline ivy command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
