@@ -12,7 +12,7 @@
 
 ;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
 
-(load-theme 'doom-nord t)
+
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -119,6 +119,7 @@
 
 ;; Download doom themes
 (use-package doom-themes)
+(load-theme 'doom-dark+ t)
 
 ;; Show parentheese
 (use-package rainbow-delimiters
