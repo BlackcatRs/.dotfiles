@@ -71,10 +71,10 @@
   :bind (("C-s" . swiper)
 	 ("C-x C-f" . counsel-find-file)
          :map ivy-minibuffer-map
-         ("TAB" . ivy-next-line)	
+         ("TAB" . ivy-alt-done)	
          ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
+         ("C-n" . ivy-next-line)
+         ("C-p" . ivy-previous-line)
          :map ivy-switch-buffer-map
          ("C-k" . ivy-previous-line)
          ("C-l" . ivy-done)
@@ -148,5 +148,33 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
+;; Run a command as sudo
+(defun sudo-shell-command (command)
+  (interactive "MShell command (root): ")
+  (with-temp-buffer
+    (cd "/sudo::/")
+    (async-shell-command command)))
+
+;; Open a file as sudo
+(defun sudo-find-file (file-name)
+  "Like find file, but opens the file as root."
+  (interactive "FSudo Find File: ")
+  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+    (find-file tramp-file-name)))
 
 
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
