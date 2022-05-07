@@ -162,7 +162,16 @@
   (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
     (find-file tramp-file-name)))
 
+;; masm-mode is a major mode for editing MASM x86 and x64 assembly
+;; code. It includes syntax highlighting, automatic comment
+;; indentation and various build commands.
+;; (use-package masm-mode)
 
+;; A major mode for editing NASM x86 assembly programs. It includes
+;; syntax highlighting, automatic indentation, and imenu integration.
+;; Unlike Emacs' generic `asm-mode`, it understands NASM-specific
+;; syntax.
+(use-package nasm-mode)
 
 
 (custom-set-variables
@@ -171,10 +180,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+   '(nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
