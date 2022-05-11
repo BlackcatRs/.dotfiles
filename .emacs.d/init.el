@@ -11,8 +11,8 @@
 ;; (setq visible-bell t)
 
 ;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
+(set-face-attribute 'default nil :height 130)
 
-(load-theme 'doom-nord t)
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -71,10 +71,10 @@
   :bind (("C-s" . swiper)
 	 ("C-x C-f" . counsel-find-file)
          :map ivy-minibuffer-map
-         ("TAB" . ivy-next-line)	
+         ("TAB" . ivy-alt-done)	
          ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
+         ("C-n" . ivy-next-line)
+         ("C-p" . ivy-previous-line)
          :map ivy-switch-buffer-map
          ("C-k" . ivy-previous-line)
          ("C-l" . ivy-done)
@@ -119,6 +119,7 @@
 
 ;; Download doom themes
 (use-package doom-themes)
+(load-theme 'doom-dark+ t)
 
 ;; Show parentheese
 (use-package rainbow-delimiters
@@ -147,5 +148,43 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
+;; Run a command as sudo
+(defun sudo-shell-command (command)
+  (interactive "MShell command (root): ")
+  (with-temp-buffer
+    (cd "/sudo::/")
+    (async-shell-command command)))
 
+;; Open a file as sudo
+(defun sudo-find-file (file-name)
+  "Like find file, but opens the file as root."
+  (interactive "FSudo Find File: ")
+  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+    (find-file tramp-file-name)))
+
+;; masm-mode is a major mode for editing MASM x86 and x64 assembly
+;; code. It includes syntax highlighting, automatic comment
+;; indentation and various build commands.
+;; (use-package masm-mode)
+
+;; A major mode for editing NASM x86 assembly programs. It includes
+;; syntax highlighting, automatic indentation, and imenu integration.
+;; Unlike Emacs' generic `asm-mode`, it understands NASM-specific
+;; syntax.
+(use-package nasm-mode)
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 

@@ -1,0 +1,30 @@
+# Reference
+# https://wiki.archlinux.org/title/Xbindkeys
+
+# For the benefit of emacs users: -*- shell-script -*-
+###########################
+# xbindkeys configuration #
+###########################
+
+# Increase volume
+"pactl set-sink-volume @DEFAULT_SINK@ +1000"
+   XF86AudioRaiseVolume
+
+# Decrease volume
+"pactl set-sink-volume @DEFAULT_SINK@ -1000"
+   XF86AudioLowerVolume
+
+# Mute volume
+"pactl set-sink-mute @DEFAULT_SINK@ toggle"
+   XF86AudioMute
+
+# Mute microphone
+"pactl set-source-mute @DEFAULT_SOURCE@ toggle"
+   XF86AudioMicMute
+
+# Deactivate sound
+# "synclient TouchpadOff=1"
+#    XF86TouchpadOn # or  m:0x0 + c:200
+
+"if [ $(synclient -l | grep TouchpadOff | awk -F' ' '{ printf("%s", $3) }') -eq 0 ]; then synclient TouchpadOff=1; else synclient TouchpadOff=0; fi"
+   XF86TouchpadOn # or  m:0x0 + c:200
