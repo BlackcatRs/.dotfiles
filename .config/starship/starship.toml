@@ -3,7 +3,7 @@ add_newline = false
 
 # makes prompt a single line
 [line_break]
-disabled = true
+disabled = false
 
 # Disable the package module, hiding it from the prompt completely
 [package]
@@ -22,7 +22,7 @@ charging_symbol = "⚡️ "
 discharging_symbol = "💀 "
 
 [[battery.display]]  # "bold red" style when capacity is between 0% and 20%
-threshold = 20 
+threshold = 20
 style = "bold red"
 
 # Clear visibility for exit codes
