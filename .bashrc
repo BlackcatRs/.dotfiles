@@ -1,5 +1,5 @@
 #
-# ~/.bashrc
+# ~/.bashrc is sourced when running interactive shell
 #
 
 # If not running interactively, don't do anything
@@ -109,6 +109,6 @@ export TERMINAL="alacritty"
 export BROWSER="firefox"
 
 # run automatically "startx" after login
-# if [[ "$(tty)" = "/dev/tty1" ]]; then
-#     pgrep startx || startx
-# done
+if [[ "$(tty)" = "/dev/tty1" ]]; then
+    pgrep startx || startx
+fi
