@@ -182,6 +182,18 @@
   kept-old-versions 5    ; and how many of the old
  )
 
+
+;; This command run rofi with specified config file
+(defun rofi ()
+  (interactive)
+  (shell-command
+   "rofi -show drun -config /home/vts/git/dotfiles/.config/rofi/config.rasi"
+   t))
+
+;; Shorcut to run rofi fuction define just before
+(global-set-key (kbd "C-c r") 'rofi)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
