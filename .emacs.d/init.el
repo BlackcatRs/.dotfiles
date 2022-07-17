@@ -150,6 +150,29 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
+
+;; general.el provides a more convenient method for binding keys in
+;; emacs (for both evil and non-evil users). Like use-package, which
+;; provides a convenient, unified interface for managing packages,
+;; general.el is intended to provide a convenient, unified interface
+;; for key definitions.
+;; https://github.com/noctuid/general.el
+(use-package general
+  :config
+  ;; general-create-definer create a function leader-keys in rune
+  ;; namespace (like a folder for config specific stuffs) which store
+  ;; key definition
+  (general-create-definer rune/leader-keys
+    ;; :keymaps '(normal insert visual emacs)
+    :prefix "C-c"
+    :global-prefix "C-c")
+  
+  ;; This will provide a list of item to choose when C-c is pressed
+  (rune/leader-keys
+    "t"  '(:ignore t :which-key "toggles")
+    "tt" '(counsel-load-theme :which-key "choose theme")))
+
+
 ;; Run a command as sudo
 (defun sudo-shell-command (command)
   (interactive "MShell command (root): ")
@@ -195,6 +218,7 @@
 ;; Shorcut to run rofi fuction define just before
 (global-set-key (kbd "C-c r") 'rofi)
 
+;; Powershell mode
 (use-package powershell)
 
 (custom-set-variables
@@ -205,7 +229,7 @@
  '(custom-safe-themes
    '("1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
  '(package-selected-packages
-   '(powershell nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+   '(general powershell nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
