@@ -47,9 +47,8 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-;; Display key press
+;; Display key pressed
 ;; (use-package command-log-mode)
-
 
 
 ;; flexible, simple tools for minibuffer completion in Emacs
@@ -70,6 +69,7 @@
   :diminish
   :bind (("C-s" . swiper)
 	 ("C-x C-f" . counsel-find-file)
+	 ("M-x" . counsel-M-x)
          :map ivy-minibuffer-map
          ("TAB" . ivy-alt-done)	
          ("C-l" . ivy-alt-done)
@@ -132,6 +132,8 @@
   :config
   (setq which-key-idle-delay 0.5))
 
+;; Show a description of each function that displayed by running
+;; counsel-M-x
 (use-package ivy-rich
   :init
   (ivy-rich-mode))
