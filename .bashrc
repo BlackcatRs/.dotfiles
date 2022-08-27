@@ -5,6 +5,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# If .env file exist then load it
+[[ -f ~/.env ]] && . ~/.env
+
 ### Required by status bar script ###
 export DWM_PATH='/home/vts/git'
 
@@ -42,6 +45,15 @@ up () {
   if ! cd "$d"; then
     echo "Couldn't go up $limit dirs.";
   fi
+}
+
+# Create Bootable USB Drive Linux
+refus () {
+    sudo dd bs=4M \
+	 if=$1 \
+	 of=$2 \
+	 status=progress \
+	 oflag=sync
 }
 
 # emacs
@@ -101,7 +113,8 @@ eval "$(starship init bash)"
 colorscript random
 
 ### Specifie ssh key to git ###
-export GIT_SSH_COMMAND='ssh -i ~/.ssh/BlackcatRs'
+### This is ingnored because ssh keys are specified in ~/.ssh/config
+# export GIT_SSH_COMMAND='ssh -i ~/.ssh/BlackcatRs'
 
 ### Default application to use
 export EDITOR="emacs"
@@ -112,3 +125,11 @@ export BROWSER="firefox"
 if [[ "$(tty)" = "/dev/tty1" ]]; then
     pgrep startx || startx
 fi
+
+# Allow SSH client to access use gpg-agent instead ssh-agent. This is
+# done by changing the value of the SSH_AUTH_SOCK environment variable.
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
+
+# Initiate vpn connexion
+alias vpn='netExtender -u $USERNAME -d $DOMAIN $HOST:$PORT'

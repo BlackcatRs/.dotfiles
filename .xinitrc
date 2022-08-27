@@ -19,6 +19,28 @@ feh --no-fehbg --bg-fill "$HOME/.dotfiles/.config/wallpaper/2545282.jpg" &
 # here - https://github.com/BlackcatRs/blackdwm/blob/main/scripts/bar
 bar &
 
+# GPG depends on pinentry to provide user interaction for typing the
+# passwords such as the passphrase of GPG key. In order to function
+# properly, pinentry (which, on terminal, is either pinentry-tty or
+# pinentry-curses) needs to know which tty it should listen for user
+# interaction.
+
+# When GPG is acting as your ssh-agent to provide git+ssh
+# authentication, it will keep a reference of the first tty available
+# when it started, which is not the same you will have when you connect
+# to your VM. Unfortunately, gpg-agent has no way to know at runtime
+# which tty you are connected to, so it will fail every time it tries to
+# communicate with its startup tty. That's why you need to update the
+# startup tty using that command. This behavior is shortly described on
+# their docs.
+# https://www.gnupg.org/documentation/manuals/gnupg/Agent-UPDATESTARTUPTTY.html
+
+# The gpg-agent man page explains under the option --enable-ssh-support
+# that the ssh agent protocol is not able to provide the name of the tty
+# to the gpg-agent, so it defaults to using the original terminal it was
+# started in. So we need to update gpg-agent's startuptty.
+gpg-connect-agent updatestartuptty /bye
+
 # Run window manager dwm
 exec dwm
 
