@@ -29,9 +29,6 @@
 (when (not package-archive-contents)
     (package-refresh-contents))
 
-;; Update package list 
-(package-refresh-contents)
-
 ;; Intall use-package if not exists, fuction ends with p return bolean
 ;; like package-installed-p
 (unless (package-installed-p 'use-package)
