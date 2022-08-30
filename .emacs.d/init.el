@@ -23,11 +23,14 @@
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
-
 (package-initialize)
-;; Update package list if package-archive-contents not exists
-(unless package-archive-contents
- (package-refresh-contents))
+
+;; Automatically update the list of packages, only if there is no package list already
+(when (not package-archive-contents)
+    (package-refresh-contents))
+
+;; Update package list 
+(package-refresh-contents)
 
 ;; Intall use-package if not exists, fuction ends with p return bolean
 ;; like package-installed-p
@@ -221,6 +224,12 @@
 ;; Powershell mode
 (use-package powershell)
 
+;; markdown-mode is a major mode for editing Markdown-formatted text.
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -229,7 +238,7 @@
  '(custom-safe-themes
    '("1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
  '(package-selected-packages
-   '(general powershell nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+   '(markdown-mode general powershell nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
