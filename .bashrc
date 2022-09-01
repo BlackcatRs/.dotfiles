@@ -133,3 +133,6 @@ gpgconf --launch gpg-agent
 
 # Initiate vpn connexion
 alias vpn='netExtender -u $USERNAME -d $DOMAIN $HOST:$PORT'
+
+# This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case i ever need to use it.
+xmodmap ~/.Xmodmap
