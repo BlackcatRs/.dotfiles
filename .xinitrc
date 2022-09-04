@@ -39,7 +39,7 @@ bar &
 # that the ssh agent protocol is not able to provide the name of the tty
 # to the gpg-agent, so it defaults to using the original terminal it was
 # started in. So we need to update gpg-agent's startuptty.
-gpg-connect-agent updatestartuptty /bye
+gpg-connect-agent updatestartuptty /bye &
 
 # Run window manager dwm
 exec dwm
