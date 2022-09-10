@@ -207,13 +207,13 @@
   kept-old-versions 5    ; and how many of the old
  )
 
-
+;; I don't need this
 ;; This command run rofi with specified config file
-(defun rofi ()
-  (interactive)
-  (shell-command
-   "rofi -show drun -config /home/vts/git/dotfiles/.config/rofi/config.rasi"
-   t))
+;; (defun rofi ()
+;;   (interactive)
+;;   (shell-command
+;;    "rofi -show drun -config /home/vts/git/dotfiles/.config/rofi/config.rasi"
+;;    t))
 
 ;; Shorcut to run rofi fuction define just before
 (global-set-key (kbd "C-c r") 'rofi)
@@ -222,10 +222,14 @@
 (use-package powershell)
 
 ;; markdown-mode is a major mode for editing Markdown-formatted text.
+;; This mode provide syntaxe highlight and some shortcuts
 (use-package markdown-mode
   :ensure t
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "multimarkdown"))
+
+;; Highligh cursor pointing line
+(hl-line-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -233,7 +237,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
+   '("cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "76ed126dd3c3b653601ec8447f28d8e71a59be07d010cd96c55794c3008df4d7" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "da186cce19b5aed3f6a2316845583dbee76aea9255ea0da857d1c058ff003546" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
  '(package-selected-packages
    '(markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
