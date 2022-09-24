@@ -49,11 +49,24 @@ up () {
 
 # Create Bootable USB Drive Linux
 refus () {
+    # Return error if no args is provide 
+    if [ -z "$1" ] || [ -z "$2" ]; then
+	echo Usage :
+	echo refus your_image.img /dev/sdXX
+	return 1
+    fi
+
     sudo dd bs=4M \
 	 if=$1 \
 	 of=$2 \
 	 status=progress \
 	 oflag=sync
+}
+
+# Start already installed virtualbox vm
+vm () {
+    vm_name="$1"
+    vboxmanage startvm $vm_name --type headless
 }
 
 # emacs
