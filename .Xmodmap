@@ -1,5 +1,10 @@
+!Remove default keysym from key "lock" and "control"
 clear lock
 clear control
+
+!Assign key 66 to keysym "control_l"
 keycode 66 = Control_L
+
+!Assign keysym control and lock 
 add control = Control_L
 add Lock = Control_R
