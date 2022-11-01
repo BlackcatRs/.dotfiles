@@ -73,9 +73,9 @@ vm () {
 alias e='emacs -nw'
 
 # Changing "ls" to "exa"
-alias ll='exa -al --color=always --group-directories-first' # my preferred listing
+alias ll='exa -agl --color=always --group-directories-first' # my preferred listing
 alias la='exa -a --color=always --group-directories-first'  # all files and dirs
-alias ls='exa -l --color=always --group-directories-first'  # long format
+alias ls='exa -lg --color=always --group-directories-first'  # long format
 alias lt='exa -aT --color=always --group-directories-first' # tree listing
 alias l.='exa -a | egrep "^\."'
 
@@ -148,4 +148,15 @@ gpgconf --launch gpg-agent
 alias vpn='netExtender -u $USERNAME -d $DOMAIN $HOST:$PORT'
 
 # This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case i ever need to use it.
-xmodmap ~/.Xmodmap
+# xmodmap ~/.Xmodmap
+# The X keyboard extension, or XKB, defines the way keyboards codes are handled in X, and provides access to internal translation tables. It is the basic mechanism that allows using multiple keyboard layouts in X.
+# Keyboard key mapping is done by setting XKB layout using rules in file /etc/X11/xorg.conf.d/90-custom-kbd.conf
+
+# The bash_history file is used by recursive search when you press ctrl+r to search for commands entered in the past.
+# ignore duplicate commands, ignore commands starting with a space in bash_history file
+# ignoreboth is doing ignorespace:ignoredups and that along with erasedups.
+export HISTCONTROL=ignoreboth:erasedups
+
+# shopt is a builtin command of the Bash shell that enables or disables options for the current shell session.
+# append to the history instead of overwriting (good for multiple connections)
+shopt -s histappend
