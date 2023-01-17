@@ -10,8 +10,18 @@
 ;; Set up the visible bell
 ;; (setq visible-bell t)
 
+;; Font Configuration ----------------------------------------------------------
+
 ;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
-(set-face-attribute 'default nil :height 130)
+;; (set-face-attribute 'default nil :height 130)
+
+;; (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 260)
+
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
 
 
 ;; Make ESC quit prompts
@@ -230,6 +240,58 @@
 
 ;; Highligh cursor pointing line
 (hl-line-mode)
+
+;; Org mode
+(use-package org
+  :config
+  (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
+	;; Output the result string instead of showing synctaxe. Ex : *Bold*
+	;; transforme into bold text.
+	org-hide-emphasis-markers t))
+
+;; Activate some option in Org mode
+(defun efs/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+;; Change headings bullet points using org-bullets package
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+;; Set faces for heading levels
+(dolist (face '((org-level-1 . 1.2)
+		(org-level-2 . 1.1)
+		(org-level-3 . 1.05)
+		(org-level-4 . 1.0)
+		(org-level-5 . 1.1)
+		(org-level-6 . 1.1)
+		(org-level-7 . 1.1)
+		(org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+;; Ensure that anything that should be fixed-pitch in Org files appears that way
+;; (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+;; (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+;; (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+;; (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+;; (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+;; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+;; (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+;; Replace list hyphen with dot
+(font-lock-add-keywords 'org-mode
+			'(("^ *\\([-]\\) "
+		          (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+
+
+
+
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
