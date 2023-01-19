@@ -48,7 +48,7 @@ up () {
 }
 
 # Create Bootable USB Drive Linux
-refus () {
+rufus () {
     # Return error if no args is provide 
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo Usage :
@@ -115,6 +115,13 @@ alias pscpu='ps auxf | sort -nr -k 3'
 # Merge Xresources
 alias merge='xrdb -merge ~/.Xresources'
 
+# Backup a file
+bak () {
+    file_name="$1"
+    cp "$file_name" "$1.bak"
+}
+
+
 ### Required by lxapprence ###
 export QT_QPA_PLATFORMTHEME="qt5ct"  
 
@@ -160,3 +167,4 @@ export HISTCONTROL=ignoreboth:erasedups
 # shopt is a builtin command of the Bash shell that enables or disables options for the current shell session.
 # append to the history instead of overwriting (good for multiple connections)
 shopt -s histappend
+
