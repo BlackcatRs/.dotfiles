@@ -1,28 +1,15 @@
-(setq inhibit-startup-message t)
+;; Basic UI Configuration ------------------------------------------------------
 
+;; Hide welcome message
+(setq inhibit-startup-message t)
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
-
 (menu-bar-mode -1)            ; Disable the menu bar
 
 ;; Set up the visible bell
 ;; (setq visible-bell t)
-
-;; Font Configuration ----------------------------------------------------------
-
-;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
-;; (set-face-attribute 'default nil :height 130)
-
-;; (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-
-;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 260)
-
-;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :weight 'regular)
-
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -226,7 +213,7 @@
 ;;    t))
 
 ;; Shorcut to run rofi fuction define just before
-(global-set-key (kbd "C-c r") 'rofi)
+;; (global-set-key (kbd "C-c r") 'rofi)
 
 ;; Powershell mode
 (use-package powershell)
@@ -241,13 +228,44 @@
 ;; Highligh cursor pointing line
 (hl-line-mode)
 
-;; Org mode
-(use-package org
-  :config
-  (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
-	;; Output the result string instead of showing synctaxe. Ex : *Bold*
-	;; transforme into bold text.
-	org-hide-emphasis-markers t))
+
+;; Font Configuration ----------------------------------------------------------
+;; Adjust this font size for your system!
+(defvar runemacs/default-font-size 100)
+
+(set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 100)
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
+
+
+;; Org Mode Configuration ------------------------------------------------------
+(defun efs/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Set faces (display options like font, size, etc) for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
 ;; Activate some option in Org mode
 (defun efs/org-mode-setup ()
@@ -255,41 +273,30 @@
   (variable-pitch-mode 1)
   (visual-line-mode 1))
 
+(use-package org
+  :hook (org-mode . efs/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾") ;; Replace ... at the end of each headings with ▾
+  ;; Output the result string instead of showing synctaxe.
+  ;; e.g : *Bold* transforme into bold text.
+  (efs/org-font-setup))
+
 ;; Change headings bullet points using org-bullets package
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-;; Set faces for heading levels
-(dolist (face '((org-level-1 . 1.2)
-		(org-level-2 . 1.1)
-		(org-level-3 . 1.05)
-		(org-level-4 . 1.0)
-		(org-level-5 . 1.1)
-		(org-level-6 . 1.1)
-		(org-level-7 . 1.1)
-		(org-level-8 . 1.1)))
-      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
 
-;; Ensure that anything that should be fixed-pitch in Org files appears that way
-;; (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-;; (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-;; (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-;; (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-;; (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-;; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-;; (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-
-;; Replace list hyphen with dot
-(font-lock-add-keywords 'org-mode
-			'(("^ *\\([-]\\) "
-		          (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-
-
-
+;; Wrap lines visually instead of placing \n at the end of text to
+;; wrap lines to fix into window width.
+(use-package visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
 
 
 
@@ -301,7 +308,7 @@
  '(custom-safe-themes
    '("cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "76ed126dd3c3b653601ec8447f28d8e71a59be07d010cd96c55794c3008df4d7" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "da186cce19b5aed3f6a2316845583dbee76aea9255ea0da857d1c058ff003546" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
  '(package-selected-packages
-   '(flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+   '(visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
