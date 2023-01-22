@@ -276,9 +276,8 @@
 (use-package org
   :hook (org-mode . efs/org-mode-setup)
   :config
-  (setq org-ellipsis " ▾") ;; Replace ... at the end of each headings with ▾
-  ;; Output the result string instead of showing synctaxe.
-  ;; e.g : *Bold* transforme into bold text.
+  (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
+	org-hide-emphasis-markers t)
   (efs/org-font-setup))
 
 ;; Change headings bullet points using org-bullets package
@@ -290,7 +289,11 @@
 
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
+	;; Output the result string instead of showing synctaxe.
+	;; e.g : *Bold* transforme into bold text.  
         visual-fill-column-center-text t)
+  ;; Wrap a line when it exceeds the window width instead of
+  ;; truncating it by placing \n at the end of the line.
   (visual-fill-column-mode 1))
 
 ;; Wrap lines visually instead of placing \n at the end of text to
