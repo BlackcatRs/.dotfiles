@@ -234,9 +234,9 @@
 (defvar runemacs/default-font-size 100)
 
 (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-;; Set the fixed pitch face
+;; ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 100)
-;; Set the variable pitch face
+;; ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
 
 
@@ -277,6 +277,8 @@
   :hook (org-mode . efs/org-mode-setup)
   :config
   (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
+	;; Output the result string instead of showing synctaxe.
+	;; e.g : *Bold* transforme into bold text.  
 	org-hide-emphasis-markers t)
   (efs/org-font-setup))
 
@@ -289,16 +291,14 @@
 
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
-	;; Output the result string instead of showing synctaxe.
-	;; e.g : *Bold* transforme into bold text.  
         visual-fill-column-center-text t)
-  ;; Wrap a line when it exceeds the window width instead of
-  ;; truncating it by placing \n at the end of the line.
+  ;; Wrap a line when it exceeds the width defined by
+  ;; visual-fill-column-width instead of truncating it by placing \n
+  ;; at the end of the line.
   (visual-fill-column-mode 1))
 
-;; Wrap lines visually instead of placing \n at the end of text to
-;; wrap lines to fix into window width.
 (use-package visual-fill-column
+  ;; Call the org-mode-visual-fill to set parms of visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
 
@@ -336,7 +336,7 @@
 
 ;; Activate flyspell-mode for markdown-mode or other modes (e.g
 ;; text-modes)
-(dolist (hook '(markdown-mode-hook))
+(dolist (hook '(markdown-mode-hook org-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
 
 ;; Stop flyspell-mode for change-log-mode and log-edit-mode.
