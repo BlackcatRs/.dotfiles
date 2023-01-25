@@ -302,6 +302,56 @@
   :hook (org-mode . efs/org-mode-visual-fill))
 
 
+;; Checking and Correcting Spelling --------------------------------------------
+
+;; This section describes the commands to check the spelling of a single
+;; word or of a portion of a buffer. These commands only work if a
+;; spelling checker program, one of Hunspell, Aspell, Ispell or Enchant,
+;; is installed. These programs are not part of Emacs, but can be
+;; installed. So install aspell, aspell-fr aspell-en.
+
+;; Tell Emacs to use Aspell instead of the default spell checker. Use
+;; command 'which aspell' from the shell to get the path to Aspell's
+;; executable.
+(setq ispell-program-name "/usr/bin/aspell")
+
+;; Set default language to spell 
+(setq ispell-local-dictionary "english")
+
+;; Quickly switch language by pressing F10 key.
+;; Adapted from DiogoRamos' snippet on https://www.emacswiki.org/emacs/FlySpell#h5o-5
+(let ((langs '("francais" "english")))
+  (defvar lang-ring (make-ring (length langs))
+    "List of Ispell dictionaries you can switch to using ‘cycle-ispell-languages’.")
+  (dolist (elem langs) (ring-insert lang-ring elem)))
+
+(defun cycle-ispell-languages ()
+  "Switch to the next Ispell dictionary in ‘lang-ring’."
+  (interactive)
+  (let ((lang (ring-ref lang-ring -1)))
+    (ring-insert lang-ring lang)
+    (ispell-change-dictionary lang)))
+
+(global-set-key [f10] #'cycle-ispell-languages) ; replaces ‘menu-bar-open’.
+
+;; Activate flyspell-mode for markdown-mode or other modes (e.g
+;; text-modes)
+(dolist (hook '(markdown-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+
+;; Stop flyspell-mode for change-log-mode and log-edit-mode.
+(dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode -1))))
+
+
+;; Check the buffer and light up errors with "langtool" we use the
+;; langtool-check function each time we save the buffer using
+;; after-save-hook.
+(use-package langtool)
+(add-hook 'markdown-mode-hook	  
+          (lambda () 
+             (add-hook 'after-save-hook 'langtool-check nil 'make-it-local)))
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -311,7 +361,7 @@
  '(custom-safe-themes
    '("cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "76ed126dd3c3b653601ec8447f28d8e71a59be07d010cd96c55794c3008df4d7" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "da186cce19b5aed3f6a2316845583dbee76aea9255ea0da857d1c058ff003546" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
  '(package-selected-packages
-   '(visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+   '(langtool visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
