@@ -115,6 +115,10 @@ alias pscpu='ps auxf | sort -nr -k 3'
 # Merge Xresources
 alias merge='xrdb -merge ~/.Xresources'
 
+# Replace cal with calcurse and sync calcurse before and afer changes
+# with remote caldav server
+alias cal="calcurse-caldav; calcurse; calcurse-caldav"
+
 # Backup a file
 bak () {
     file_name="$1"
@@ -167,4 +171,6 @@ export HISTCONTROL=ignoreboth:erasedups
 # shopt is a builtin command of the Bash shell that enables or disables options for the current shell session.
 # append to the history instead of overwriting (good for multiple connections)
 shopt -s histappend
+
+
 
