@@ -1,4 +1,3 @@
-# TEST
 #!/usr/bin/env bash
 
 ### Show which comman has been executed
