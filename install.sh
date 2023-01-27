@@ -72,3 +72,7 @@ fc-cache
 echo "Noto Emoji Font installed! You may need to restart applications like chrome. If chrome displays no symbols or no letters, your default font contains emojis."
 
 echo "consider inconsolata regular"
+
+
+# Install starship binary
+curl -sS https://starship.rs/install.sh | sh
