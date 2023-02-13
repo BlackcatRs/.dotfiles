@@ -355,6 +355,20 @@
           (lambda () 
              (add-hook 'after-save-hook 'langtool-check nil 'make-it-local)))
 
+;; Function to clear the Emacs shell buffer, we can also use
+;; comint-clear-buffer which is bound to C-c M-o in Emacs v25+
+(defun voc/clear-term ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+;; Map voc/clear-term to C-c l key
+(defun voc/shell-hook ()
+  (local-set-key "\C-cl" 'voc/clear-term))
+
+;; Use this shortcut only in shell mode
+(add-hook 'shell-mode-hook 'voc/shell-hook)
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
