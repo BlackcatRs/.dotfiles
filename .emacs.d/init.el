@@ -148,26 +148,83 @@
   ([remap describe-key] . helpful-key))
 
 
-;; general.el provides a more convenient method for binding keys in
-;; emacs (for both evil and non-evil users). Like use-package, which
-;; provides a convenient, unified interface for managing packages,
-;; general.el is intended to provide a convenient, unified interface
-;; for key definitions.
-;; https://github.com/noctuid/general.el
-(use-package general
-  :config
-  ;; general-create-definer create a function leader-keys in rune
-  ;; namespace (like a folder for config specific stuffs) which store
-  ;; key definition
-  (general-create-definer rune/leader-keys
-    ;; :keymaps '(normal insert visual emacs)
-    :prefix "C-c"
-    :global-prefix "C-c")
+;; ;; Custom keybings  ------------------------------------------------------------
+
+;; ;; general.el provides a more convenient method for binding keys in
+;; ;; emacs (for both evil and non-evil users). Like use-package, which
+;; ;; provides a convenient, unified interface for managing packages,
+;; ;; general.el is intended to provide a convenient, unified interface
+;; ;; for key definitions.
+;; ;; https://github.com/noctuid/general.el
+;; (use-package general
+;;   :config
+;;   ;; general-create-definer create a function leader-keys in rune
+;;   ;; namespace (like a folder for config specific stuffs) which store
+;;   ;; key definition
+;;   (general-create-definer rune/leader-keys
+;;     ;; :keymaps '(normal insert visual emacs)
+;;     :prefix "C-c"
+;;     :global-prefix "C-c")
   
-  ;; This will provide a list of item to choose when C-c is pressed
-  (rune/leader-keys
-    "t"  '(:ignore t :which-key "toggles")
-    "tt" '(counsel-load-theme :which-key "choose theme")))
+;;   ;; This will provide a list of item to choose when C-c is pressed
+;;   (rune/leader-keys
+;;     "t"  '(:ignore t :which-key "toggles")
+;;     "tt" '(counsel-load-theme :which-key "choose theme")))
+
+
+;; ;; evil package vim keybinding for emacs
+;; (use-package evil
+;;   :init
+;;   ;; load to load evil-integration.el.
+;;   (setq evil-want-integration t)
+;;   ;; turn-off evil from loading default keybindings and use
+;;   ;; evil-collection insted for keybindings
+;;   (setq evil-want-keybinding nil)
+;;   ;; C-u is by default bind to universal-argument but in evil mode bind
+;;   ;; to scroll up. universal-argument is a way to change a fucntion's
+;;   ;; behavior by providing a prefiex arguement. For more info
+;;   ;; https://www.emacswiki.org/emacs/PrefixArgument
+;;   (setq evil-want-C-u-scroll t)
+;;   ;; disable default C-i binding in evil mode which is used to jump
+;;   ;; forward
+;;   (setq evil-want-C-i-jump nil)
+
+;;   :config
+;;   ;; Turn on evil mode globally
+;;   (evil-mode 1)		
+;;   ;; C-g or ESC will exit from insert mode to normal mode
+;;   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+;;   ;; C-h bind to back
+;;   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+;;   ;; Treat the visual line as a new line, otherwise evil treats the
+;;   ;; visually wrapped line as a single line, so the j and k keys will
+;;   ;; traverse that line to the next line
+;;   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+;;   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+;;   ;; start a buffer in normal mode instead of insert mode
+;;   (evil-set-initial-state 'messages-buffer-mode 'normal)
+;;   (evil-set-initial-state 'dashboard-mode 'normal))
+
+
+;; (use-package evil-collection
+;;   :after evil
+;;   :config
+;;   (evil-collection-init))
+
+;; ;; Hydra gives a panel with an action bound to certain keys without the need to press multiple key combinations
+;; (use-package hydra)
+
+;; (defhydra hydra-text-scale (:timeout 4)
+;;   "scale text"
+;;   ("j" text-scale-increase "in")
+;;   ("k" text-scale-decrease "out")
+;;   ("f" nil "finished" :exit t))
+
+;; (rune/leader-keys
+;;   "ts" '(hydra-text-scale/body :which-key "scale text"))
+;; ;;  ----------------------------------------------------------------------------
 
 
 ;; Run a command as sudo
@@ -357,6 +414,7 @@
 
 ;; Function to clear the Emacs shell buffer, we can also use
 ;; comint-clear-buffer which is bound to C-c M-o in Emacs v25+
+;; voc = vts own config
 (defun voc/clear-term ()
   (interactive)
   (let ((comint-buffer-maximum-size 0))
@@ -378,7 +436,7 @@
  '(custom-safe-themes
    '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "76ed126dd3c3b653601ec8447f28d8e71a59be07d010cd96c55794c3008df4d7" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "da186cce19b5aed3f6a2316845583dbee76aea9255ea0da857d1c058ff003546" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
  '(package-selected-packages
-   '(langtool visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+   '(evil-collection langtool visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
