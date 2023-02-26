@@ -52,7 +52,7 @@ rufus () {
     # Return error if no args is provide 
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo Usage :
-	echo refus your_image.img /dev/sdXX
+	echo rufus your_image.img /dev/sdXX
 	return 1
     fi
 
