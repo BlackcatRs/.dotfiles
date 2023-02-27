@@ -165,8 +165,22 @@ gpgconf --launch gpg-agent
 # ignoreboth is doing ignorespace:ignoredups and that along with erasedups.
 export HISTCONTROL=ignoreboth:erasedups
 
-# shopt is a builtin command of the Bash shell that enables or disables options for the current shell session.
-# append to the history instead of overwriting (good for multiple connections)
+# HISTSIZE is the number of lines or commands that are stored in
+# memory in a history list while your bash session is running.
+
+# HISTFILESIZE is the number of lines or commands (stored in memory
+# when runngin a bash session) that will be stored in the history file
+# (~/.bash_history) at the end of the bash session.
+
+# Notice the distinction between file on disk and list in memory.
+HISTSIZE=2000
+HISTFILESIZE=2000
+
+# shopt is a builtin command of the Bash shell that enables or
+# disables options for the current shell session.  append commands
+# that typed in the session that just finished to the history file
+# instead of overwriting (good for multiple connections) if
+# HISTFILESIZE value permits.
 shopt -s histappend
 
 
