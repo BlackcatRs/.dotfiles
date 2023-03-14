@@ -125,6 +125,18 @@ bak () {
     cp "$file_name" "$1.bak"
 }
 
+# Replace spaces in filename when downloading with wget
+get () {
+    # Return error if no args is provide 
+    if [ -z "$1" ] || [ -z "$2" ]; then
+	echo "Usage :"
+	echo -e "\r get <URL> <Filename>"
+	return 1
+    fi
+
+    filename=$(echo $2 | sed "s/ /_/g")
+    wget $1 -O $filename
+}
 
 ### Required by lxapprence ###
 export QT_QPA_PLATFORMTHEME="qt5ct"  
