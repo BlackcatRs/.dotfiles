@@ -331,7 +331,9 @@
 (defun efs/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
-  (visual-line-mode 1))
+  (visual-line-mode 1)
+  (org-overview) ;; Show only headings
+  (forward-page)) ;; Goto the bottom of the page
 
 (use-package org
   :hook (org-mode . efs/org-mode-setup)
