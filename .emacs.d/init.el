@@ -20,6 +20,7 @@
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
+
 (package-initialize)
 
 ;; Automatically update the list of packages, only if there is no package list already
@@ -300,7 +301,7 @@
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
 
 
-;; Org Mode Configuration ------------------------------------------------------
+;; Start - Org Mode Configuration ------------------------------------
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -362,9 +363,9 @@
 (use-package visual-fill-column
   ;; Call the org-mode-visual-fill to set parms of visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
+;; End - Org Mode Configuration --------------------------------------
 
-
-;; Checking and Correcting Spelling --------------------------------------------
+;; Start - Checking and Correcting Spelling --------------------------
 
 ;; This section describes the commands to check the spelling of a single
 ;; word or of a portion of a buffer. These commands only work if a
@@ -413,6 +414,8 @@
 (add-hook 'markdown-mode-hook	  
           (lambda () 
              (add-hook 'after-save-hook 'langtool-check nil 'make-it-local)))
+;; End - Checking and Correcting Spelling ----------------------------
+
 
 ;; Function to clear the Emacs shell buffer, we can also use
 ;; comint-clear-buffer which is bound to C-c M-o in Emacs v25+
@@ -429,3 +432,28 @@
 ;; Use this shortcut only in shell mode
 (add-hook 'shell-mode-hook 'voc/shell-hook)
 
+
+;; Start - Build a Second Brain in Emacs -----------------------------
+
+;; ;; This section is inspired by this video
+;; https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD
+
+;; Getting Started with Org Roam - Build a Second Brain in Emacs
+;; https://www.youtube.com/watch?v=AyhPmypHDEw&list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD
+
+;; Org Roam is an extension to Org Mode which help to create
+;; topic-focused Org files and link them together.  It's is inspied by
+;; a program called Roam and a note-taking strategy called
+;; Zettlekasten.
+
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/RoamNotes")
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :config
+  ;; Reload the custom keybindings that defined above
+  (org-roam-setup))
+;; End - Build a Second Brain in Emacs -------------------------------
