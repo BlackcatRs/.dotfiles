@@ -119,6 +119,9 @@ alias merge='xrdb -merge ~/.Xresources'
 # with remote caldav server
 alias cal="calcurse-caldav; calcurse; calcurse-caldav"
 
+# Copy the password to clipboard
+alias pass="pass -c"
+
 # Backup a file
 bak () {
     file_name="$1"
