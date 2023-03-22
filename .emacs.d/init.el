@@ -12,7 +12,7 @@
 ;; (setq visible-bell t)
 
 ;; Make ESC quit prompts
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "C-g") 'keyboard-escape-quit)
 
 ;; Load a package call "package" to handle package fuctions 
 (require 'package)
@@ -478,6 +478,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("a9a67b318b7417adbedaab02f05fa679973e9718d9d26075c6235b1f0db703c8" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" default))
  '(package-selected-packages
    '(org-roam yaml-mode which-key visual-fill-column use-package rainbow-delimiters powershell org-bullets nasm-mode masm-mode markdown-mode langtool ivy-rich helpful general flycheck-yamllint evil-collection doom-themes doom-modeline counsel)))
 (custom-set-faces
