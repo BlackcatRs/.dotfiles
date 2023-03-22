@@ -457,6 +457,22 @@
   ;; Reload the custom keybindings that defined above
   (org-roam-setup))
 ;; End - Build a Second Brain in Emacs -------------------------------
+
+
+;; Capturing Notes Efficiently in Emacs with Org Roam ----------------
+
+;; End - Capturing Notes Efficiently in Emacs with Org Roam ----------
+
+
+
+
+
+
+
+
+
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
