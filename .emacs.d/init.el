@@ -432,6 +432,14 @@
 ;; Use this shortcut only in shell mode
 (add-hook 'shell-mode-hook 'voc/shell-hook)
 
+;; Major mode to edit YAML file
+(use-package yaml-mode)
+;; (require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+(add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
 
 ;; Start - Build a Second Brain in Emacs -----------------------------
 
@@ -460,7 +468,6 @@
 
 
 ;; Capturing Notes Efficiently in Emacs with Org Roam ----------------
-
 ;; End - Capturing Notes Efficiently in Emacs with Org Roam ----------
 
 
