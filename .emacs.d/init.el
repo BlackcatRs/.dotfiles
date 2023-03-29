@@ -12,7 +12,7 @@
 ;; (setq visible-bell t)
 
 ;; Make ESC quit prompts
-(global-set-key (kbd "C-g") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 ;; Load a package call "package" to handle package fuctions 
 (require 'package)
@@ -50,19 +50,12 @@
 
 
 ;; flexible, simple tools for minibuffer completion in Emacs
+;; Ivy vs counsel vs Swiper:
 ;; Ivy, a generic completion mechanism for Emacs.
 ;; Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
 ;; Swiper, an Ivy-enhanced alternative to Isearch.
 
-;; No need to install manually because installed with counsel
-;(use-package counsel
-;:ensure t
-;)
-
-;(use-package swiper
-;:ensure t
-;)
-
+;; No need to manually install swiper or ivy, it will install as dependencies with counsel
 (use-package counsel
   :diminish
   :bind (("C-s" . swiper)
@@ -226,6 +219,51 @@
 ;; (rune/leader-keys
 ;;   "ts" '(hydra-text-scale/body :which-key "scale text"))
 ;; ;;  ----------------------------------------------------------------------------
+
+
+
+;; Start -  Emacs From Scratch #4 - Projectile and Magit  ------------
+;; https://www.youtube.com/watch?v=INTu30BHZGk
+
+;; Projectile provide features operating on project level.
+(use-package projectile
+  :diminish projectile-mode
+  ;; Load projectile mode globally
+  :config (projectile-mode)
+  ;; ivy is the completion system to be used by Projectile
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "~/git")
+    (setq projectile-project-search-path '("~/git")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+;; cousel-projectile provide more action when pressing Alt-o in
+;; mini-buffer when using projectile-switch-project
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package magit
+  :custom
+  ;; Stop creating a new window when doing diff
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; (use-package evil-magit
+;;   :after magit)
+
+;; ;; NOTE: Make sure to configure a GitHub token before using this package!
+;; ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+;; ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+;; (use-package forge)
+
+;; End -  Emacs From Scratch #4 - Projectile and Magit  --------------
+
+
+
+
+
 
 
 ;; Run a command as sudo
@@ -486,9 +524,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("a9a67b318b7417adbedaab02f05fa679973e9718d9d26075c6235b1f0db703c8" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" default))
+   '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "76ed126dd3c3b653601ec8447f28d8e71a59be07d010cd96c55794c3008df4d7" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "da186cce19b5aed3f6a2316845583dbee76aea9255ea0da857d1c058ff003546" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" default))
  '(package-selected-packages
-   '(org-roam yaml-mode which-key visual-fill-column use-package rainbow-delimiters powershell org-bullets nasm-mode masm-mode markdown-mode langtool ivy-rich helpful general flycheck-yamllint evil-collection doom-themes doom-modeline counsel)))
+   '(evil-magit magit counsel-projectile org-roam yaml-mode org-bullets projectile evil-collection langtool visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
