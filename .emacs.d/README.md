@@ -54,3 +54,17 @@ Pf = force push can be done if local git history does not match with remote
 
 r= rebase related actions 
 ri= rebase interactively
+
+# Org mode #
+shift alt up = move heading heading 
+C-c C-x C-b check the check box
+C-c C-d org deadline (This show in agenda view to remember the upcoming task)
+C-c . = set a timestamp (this can be extended with repeated-task, this can be achieve with a special syntax. +1y repeat every year on the specified date and month )
+C-c C-q to select interactivly tags
+OR counsel-org-tag and press alt+enter to select multiple tags
+C-c C-t select state
+
+org-agenda = show agenda with scheduled items
+org-agenda t = show TODO items or 2r =  to show DONE items
+
+

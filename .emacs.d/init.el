@@ -336,8 +336,7 @@
 ;; ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
 
-
-;; Start - Org Mode Configuration ------------------------------------
+;; Start -  Emacs From Scratch #5 - Org Mode Basics ------------------
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -379,6 +378,148 @@
 	;; Output the result string instead of showing synctaxe.
 	;; e.g : *Bold* transforme into bold text.  
 	org-hide-emphasis-markers t)
+
+  ;; Start - Emacs From Scratch #6 - Organize Your Life with Org Mode --
+  ;; Path to search for agenda agenda files
+  (setq org-agenda-files
+	'("~/.dotfiles/.emacs.d/task.org"
+	  "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
+	  "~/.dotfiles/.emacs.d/Birthday.org"))
+
+  ;; Track the evolution of something, this presents evolution in a form of process bar
+  (require 'org-habit)
+  (add-to-list 'org-modules 'org-habit)
+  (setq org-habit-graph-column 60)
+
+  ;; Adding custom states 
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+	  (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+
+
+  (setq org-refile-targets
+	'(("Archive.org" :maxlevel . 1)
+	  ("task.org" :maxlevel . 1)))
+
+  ;; Save Org buffers after refiling
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+  ;; C-c C-q to select interactivly tags
+  ;; OR
+  ;; counsel-org-tag and press alt+enter to select multiple tags
+  (setq org-tag-alist
+	'((:startgroup)
+					; Put mutually exclusive tags here
+	  (:endgroup)
+	  ("@errand" . ?E)
+	  ("@home" . ?H)
+	  ("@work" . ?W)
+	  ("agenda" . ?a)
+	  ("planning" . ?p)
+	  ("publish" . ?P)
+	  ("batch" . ?b)
+	  ("note" . ?n)
+	  ("idea" . ?i)))
+
+  ;; Configure custom agenda views
+  (setq org-agenda-custom-commands
+	;; Add a shortcut (letter d) in the org-agenda command collection
+	'(("d" "Dashboard"
+	   ((agenda "" ((org-deadline-warning-days 7)))
+
+	    ;; Display only tasks with NEXT state in dashboard
+	    (todo "NEXT"
+		  ((org-agenda-overriding-header "Next Tasks")))
+	    ;; Display only tasks with tag :agenda: and state ACTIVE
+	    (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+
+	  ;; Add a shortcut (letter n) in the org-agenda command collection to view only tasks with NEXT state.
+	  ("n" "Next Tasks"
+	   ((todo "NEXT"
+		  ((org-agenda-overriding-header "Next Tasks")))))
+
+	  ;; Shortcut (letter W) to view only tasks with tag work and without tag email
+	  ("W" "Work Tasks" tags-todo "+work-email")
+
+	  ;; Add shortcut (letter e) in org-agenda to show tasks with property Effort less than 15 and greater than 0.
+	  ;; C-c C-x p to set property Effort from default sets of properties
+	  ;; OR
+	  ;; C-c C-x e to set Effort
+	  ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	   ((org-agenda-overriding-header "Low Effort Tasks")
+	    (org-agenda-max-todos 20)
+	    (org-agenda-files org-agenda-files)))
+
+	  ;; Shortcut (letter w) give an overview of following states in a buffer
+	  ("w" "Workflow Status"
+	   ((todo "WAIT"
+		  ((org-agenda-overriding-header "Waiting on External")
+		   (org-agenda-files org-agenda-files)))
+	    (todo "REVIEW"
+		  ((org-agenda-overriding-header "In Review")
+		   (org-agenda-files org-agenda-files)))
+	    (todo "PLAN"
+		  ((org-agenda-overriding-header "In Planning")
+		   (org-agenda-todo-list-sublevels nil)
+		   (org-agenda-files org-agenda-files)))
+	    (todo "BACKLOG"
+		  ((org-agenda-overriding-header "Project Backlog")
+		   (org-agenda-todo-list-sublevels nil)
+		   (org-agenda-files org-agenda-files)))
+	    (todo "READY"
+		  ((org-agenda-overriding-header "Ready for Work")
+		   (org-agenda-files org-agenda-files)))
+	    (todo "ACTIVE"
+		  ((org-agenda-overriding-header "Active Projects")
+		   (org-agenda-files org-agenda-files)))
+	    (todo "COMPLETED"
+		  ((org-agenda-overriding-header "Completed Projects")
+		   (org-agenda-files org-agenda-files)))
+	    (todo "CANC"
+		  ((org-agenda-overriding-header "Cancelled Projects")
+		   (org-agenda-files org-agenda-files)))))))
+
+
+  (setq org-capture-templates
+	`(("t" "Tasks / Projects")
+	  ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
+           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+
+	  ("j" "Journal Entries")
+	  ("jj" "Journal" entry
+           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+           :clock-in :clock-resume
+           :empty-lines 1)
+	  ("jm" "Meeting" entry
+           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+           :clock-in :clock-resume
+           :empty-lines 1)
+
+	  ("w" "Workflows")
+	  ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+
+	  ("m" "Metrics Capture")
+	  ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
+	   "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
+
+  (define-key global-map (kbd "C-c j")
+    (lambda () (interactive) (org-capture nil "jj")))
+
+  ;; Agenda view to show only today's tasks
+  ;; (setq org-agenda-span 'day)
+
+  ;; Add verbose to agenda view
+  (setq org-agenda-start-with-log-mode t)
+  ;; Show the closed time in agenda view
+  (setq org-log-done 'time)
+  ;; Show details in a foldable section
+  (setq org-log-into-drawer t)
+  ;; End - Emacs From Scratch #6 - Organize Your Life with Org Mode ----
+
   (efs/org-font-setup))
 
 ;; Change headings bullet points using org-bullets package
@@ -399,7 +540,10 @@
 (use-package visual-fill-column
   ;; Call the org-mode-visual-fill to set parms of visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
-;; End - Org Mode Configuration --------------------------------------
+;; End -  Emacs From Scratch #5 - Org Mode Basics --------------------
+
+
+
 
 ;; Start - Checking and Correcting Spelling --------------------------
 
