@@ -28,5 +28,29 @@ magit-status
 Head:     main Remove shell-color-scripts from stow
 This above line is indicating that the head of local repository we are in "main" branch and very recent commit on that branch is "Remove shell-color-scripts from stow"
 
-
 Merge:    origin/main Remove shell-color-scripts from stow
+merge section indicates what have been merged.
+
+? = interactive git related actions
+s = stage a file 
+S = stage all file 
+select the text and press s to stage only the selected text 
+
+u= unstage file 
+U= unstage all file 
+
+c = show related commit actions 
+cc= commit the changes and C-c k abort committing process.
+cF = add a changes to already pushed commit.
+
+
+b = show branch related action
+bs = reset the last commit from actual branch and create new branch with that changes.
+
+z = stash related action
+
+P = push related commands 
+Pf = force push can be done if local git history does not match with remote
+
+r= rebase related actions 
+ri= rebase interactively
