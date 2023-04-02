@@ -638,9 +638,28 @@
   :ensure t
   :custom
   (org-roam-directory "~/RoamNotes")
+  (org-roam-completion-everywhere t)
+  (org-roam-capture-templates
+  ;; "d" is the key to press to choose the template
+  ;; "plain" is the type of text being inserted
+  '(("d" "default" plain
+     ;; "%?" is org mode syntax which indicate cursor where to land in a node file
+     "%?"
+     ;; Heading to insert in node files 
+     :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+     ;; Expand the node files or show the entire content of the file without folding
+     :unnarrowed t)
+
+    ("l" "programming language" plain
+     "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+     :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+     :unnarrowed t)))
+
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
+         ("C-c n i" . org-roam-node-insert)
+	 :map org-mode-map
+	 ("C-M-i    .  completion-at-point"))
   :config
   ;; Reload the custom keybindings that defined above
   (org-roam-setup))
@@ -698,7 +717,8 @@
 	  (:name "Messages with images" :query "mime:image/*" :key ?p)))
 
   ;; Run mu4e in the background to sync mail periodically
-  (mu4e t))
+  ;; (mu4e t)
+  )
 ;; End -  Streamline Your E-mail Management with mu4e - Emacs Mail ---
 
 ;; End - Emacs Mail --------------------------------------------------
