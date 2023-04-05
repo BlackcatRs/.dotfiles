@@ -6,6 +6,9 @@ CLOSED: [2023-03-31 ven. 12:27] DEADLINE: <2023-04-04 mar.>
 ** NEXT Read a new book
 ** NEXT Fix an appointment
 
+** TODO Alert 
+SCHEDULED: <2023-04-05 mer 20:40>
+
 * Backlog 
 ** Backlog_task                                                :home:ACTIVE:
 SCHEDULED: <2023-04-01 sam.>

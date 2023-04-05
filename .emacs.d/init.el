@@ -559,6 +559,38 @@
 
 
 
+
+
+
+
+
+
+
+;; Start -  Emacs Tips - How to Show Reminders for Org Mode Tasks  ---
+(use-package org-alert
+  :ensure t
+  :custom (alert-default-style 'notifications)
+  :config
+  (setq org-alert-interval 300
+	org-alert-notification-title "Org Alert Reminder")
+  (org-alert-enable))
+
+
+
+;; End - Emacs Tips - How to Show Reminders for Org Mode Tasks  ------
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;; Start - Checking and Correcting Spelling --------------------------
 
 ;; This section describes the commands to check the spelling of a single
@@ -749,7 +781,7 @@
  '(org-agenda-files
    '("/home/vts/.dotfiles/.emacs.d/task.org" "/home/vts/.dotfiles/.emacs.d/Birthday.org"))
  '(package-selected-packages
-   '(evil-magit magit counsel-projectile yaml-mode org-bullets projectile evil-collection langtool visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
+   '(org-alert evil-magit magit counsel-projectile yaml-mode org-bullets projectile evil-collection langtool visual-fill-column flycheck-yamllint markdown-mode powershell general nasm-mode masm-mode helpful ivy-rich which-key rainbow-delimiters doom-themes doom-modeline counsel use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
