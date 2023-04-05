@@ -200,3 +200,6 @@ shopt -s histappend
 
 
 
+# This happens when gpg-agent doesn't know which TTY to prompt on, which is happening here because you are redirecting stdin.
+
+# You can put export GPG_TTY=$(tty) in your ~/.bashrc to setup the TTY for each login shell.
