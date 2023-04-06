@@ -68,6 +68,10 @@ org-agenda = show agenda with scheduled items
 org-agenda t = show TODO items or 2r =  to show DONE items
 
 
+## Footnote ##
+C-c C-x f create new footnote or if the cursor is in an already created footnote then it will jump to the definition of that footnote.
+org-footnote-normalize reorder footnotes id number (if you delete a footnote and the id number is not updated then it will update)
+
 # Org-roam #
 C-c n f find a node or if not exist then it create a node with specified name
 C-c n i link a another node inside a node and if node exist it will create it and link it
@@ -77,3 +81,5 @@ C-c n l Show backlinks which means show the nodes that have links to the current
 Inside `[[]]` run `completion-at-point` at point will show prompt with nodes to link
 Type a first letters of node and type `C-M-i` to prompt.
 Make a heading inside a node file as a node with `org-id-get-create` function which add PROPERTIES to that heading.
+
+
