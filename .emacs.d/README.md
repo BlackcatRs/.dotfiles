@@ -72,6 +72,26 @@ org-agenda t = show TODO items or 2r =  to show DONE items
 C-c C-x f create new footnote or if the cursor is in an already created footnote then it will jump to the definition of that footnote.
 org-footnote-normalize reorder footnotes id number (if you delete a footnote and the id number is not updated then it will update)
 
+## Internal links ##
+Use the property -  #+NAME: name_of_the_link
+to link -           [[name_of_the_link]]
+
+OR
+
+Use the property -  #+CUSTOM_ID: name_of_the_id
+to link -           [[name_of_the_id]]
+
+OR
+to link -           [[*name_of_the_heading]]
+
+OR
+1. one item
+2. <<target>>another item
+Here we refer to item [[target]].
+
+
+
+
 # Org-roam #
 C-c n f find a node or if not exist then it create a node with specified name
 C-c n i link a another node inside a node and if node exist it will create it and link it
