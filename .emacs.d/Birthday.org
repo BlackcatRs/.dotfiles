@@ -1,7 +1,0 @@
-* Family
-some thing here
-** NEXT something to do later                               :@errand:agenda:
-:PROPERTIES:
-:Effort:   5
-:END:
-** BACKLOG something to one day                                 :@home:idea:
