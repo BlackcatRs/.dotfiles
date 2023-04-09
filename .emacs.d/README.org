@@ -264,7 +264,8 @@
 #+end_src
 
 * Projectile and Magit
-This section is inspired from this [[https://www.youtube.com/watch?v=INTu30BHZGk][video]]:
+This section is inspired from this [[https://www.youtube.com/watch?v=INTu30BHZGk][video]].
+** Projectile
 #+begin_src elisp
 ;; Projectile provide features operating on project level.
 (use-package projectile
@@ -280,19 +281,74 @@ This section is inspired from this [[https://www.youtube.com/watch?v=INTu30BHZGk
   (when (file-directory-p "~/git")
     (setq projectile-project-search-path '("~/git")))
   (setq projectile-switch-project-action #'projectile-dired))
+#+end_src
 
-;; cousel-projectile provide more action when pressing Alt-o in
-;; mini-buffer when using projectile-switch-project
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
+*** Key bindings
 
+| Keys    | Description     |
+|---------+-----------------|
+| C-c p   | Prefix key      |
+| C-c p f | Search files    |
+| C-c p p | Search projects |
+
+*** Directory local variable
+Setting the directory local variable which contain value that is proper to that folder only, for an example we can set a value for =projectile-project-run-cmd= value which execute code in a current folder or when we press =C-c p u= to run project.
+
+To do so run =C-c p e= and select =projectile-project-run-cmd= and give it a value that run the code that is in that directory, e.g =npm start=. and every time we press the =C-c p u= it will execute the command =npm start=.
+
+*** Search string inside all files
+We can search for  a string inside all files within a folder using =counsel-projectile-rg= (=C-c p s r=) function which uses ~ripgrep~ (rg) program as backend which is an implementation of ~grep~ in Rust.
+
+So first install using your package manager:
+#+begin_src shell :tangle no
+  sudo pacman -S ripgrep
+#+end_src
+
+** Counsel-projectile
+
+#+begin_src elisp
+  ;; cousel-projectile provide more action when pressing Alt-o in
+  ;; mini-buffer when using projectile-switch-project
+  (use-package counsel-projectile
+    :config (counsel-projectile-mode))
+#+end_src
+
+** Magit
+#+begin_src elisp
 (use-package magit
   :custom
   ;; Stop creating a new window when doing diff
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
 
-Manage git notif, issues, pull request, etc from Emacs
+*** Key bindings
+- =C-x g= OR =magit-status= Open git menu buffer
+- =?= Git help menu
+
+- =s= Stage a file 
+- =S= Stage all files
+- Select the text and press =s= to stage only the selected text
+
+- =u= Unstage a file 
+- =U= Unstage all files
+
+- =c= Show commit related actions
+- =cc= Open commit capture buffer and =C-c C-c= OR =C-c C-k= abort commit capture buffer
+- =cF= Add a changes to already pushed commit
+
+- =b= Show branch related actions
+- =bs= Reset the last commit from actual branch and create new branch with that changes.
+
+- =z= Stash related actions
+
+- =P= Push related commands 
+- =Pf= Force push can be done if local git history does not match with remote.
+
+- =r= Rebase related actions 
+- =ri= Rebase interactively
+
+** Forge
+Manage git notif, issues, pull request, etc from Emacs.
 *NOTE: Make sure to configure a GitHub token before using this package!*
   - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
   - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
