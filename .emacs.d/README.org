@@ -1,0 +1,814 @@
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
+
+* Table of Contents :toc:
+- [[#basic-ui-configuration][Basic UI Configuration]]
+- [[#waiting-custom-keybindings-i-dont-know-vim-very-well][WAITING Custom keybindings [I don't know Vim very well]]]
+- [[#projectile-and-magit][Projectile and Magit]]
+- [[#execute-a-shell-command-as-sudo][Execute a shell command as sudo]]
+- [[#waiting-open-a-file-as-sudo-slow-up-the-emacs-when-using-this-function][WAITING Open a file as sudo [Slow up the Emacs when using this function]]]
+- [[#programming-language-highlighting-automatic-indentation][Programming language highlighting, automatic indentation...]]
+  - [[#assembly][Assembly]]
+  - [[#powershell][Powershell]]
+  - [[#markdown][Markdown]]
+  - [[#yaml][YAML]]
+- [[#auto-table-of-content-for-markdown-and-org][Auto table of content for Markdown and Org]]
+- [[#emacs-backup-files][Emacs backup files]]
+- [[#keybinding-to-run-rofi][Keybinding to run rofi]]
+- [[#font-configuration][Font Configuration]]
+- [[#org-mode][Org mode]]
+  - [[#general-configuration][General configuration]]
+  - [[#agenda][Agenda]]
+  - [[#hold-push-notification][HOLD Push notification]]
+- [[#spell-check-and-correction][Spell check and correction]]
+- [[#eshell][Eshell]]
+  - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
+- [[#hold-org-roam][HOLD Org-roam]]
+- [[#hold-mail][HOLD Mail]]
+  - [[#mu4e][Mu4e]]
+
+* Basic UI Configuration
+#+begin_src elisp
+(setq inhibit-startup-message t) ; Hide welcome message
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(tooltip-mode -1)           ; Disable tooltips
+(set-fringe-mode 10)        ; Give some breathing room
+(menu-bar-mode -1)          ; Disable the menu bar
+#+end_src
+
+#+begin_src elisp :tangle no
+(setq visible-bell t) ; Set up the visible bell
+#+end_src
+
+#+begin_src elisp
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+;; Load a package call "package" to handle package fuctions 
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("gnu" . "https://elpa.gnu.org/packages/")
+			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+
+;; Automatically update the list of packages, only if there is no package list already
+(when (not package-archive-contents)
+    (package-refresh-contents))
+
+;; Intall use-package if not exists, fuction ends with p return bolean
+;; like package-installed-p
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t) 	; Ensure that the package is loaded
+
+(column-number-mode)
+(global-display-line-numbers-mode t)
+
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+
+;; Highlight cursor pointing line
+(hl-line-mode)
+
+;; Display key pressed
+;; (use-package command-log-mode)
+
+
+;; flexible, simple tools for minibuffer completion in Emacs
+;; Ivy vs counsel vs Swiper:
+;; Ivy, a generic completion mechanism for Emacs.
+;; Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
+;; Swiper, an Ivy-enhanced alternative to Isearch.
+
+;; No need to manually install swiper or ivy, it will install as dependencies with counsel
+(use-package counsel
+  :diminish
+  :bind (("C-s" . swiper)
+	 ("C-x C-f" . counsel-find-file)
+	 ("M-x" . counsel-M-x)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)	
+         ("C-l" . ivy-alt-done)
+         ("C-n" . ivy-next-line)
+         ("C-p" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
+
+
+;; Key mapping directly inside swiper config
+;; (use-package swiper
+;;   :ensure try
+;;   :config
+;;   (progn
+;;     (ivy-mode 1)
+;;     (setq ivy-use-virtual-buffers t)
+;;     (global-set-key "\C-s" 'swiper)
+;;     (global-set-key (kbd "C-c C-r") 'ivy-resume)
+;;     (global-set-key (kbd "<f6>") 'ivy-resume)
+;;     (global-set-key (kbd "M-x") 'counsel-M-x)
+;;     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;;     (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;;     (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;;     (global-set-key (kbd "<f1> l") 'counsel-load-library)
+;;     (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;;     (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;;     (global-set-key (kbd "C-c g") 'counsel-git)
+;;     (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;;     (global-set-key (kbd "C-c k") 'counsel-ag)
+;;     (global-set-key (kbd "C-x l") 'counsel-locate)
+;;     (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;;     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+;;     ))
+
+;; Bottom bar
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 20)))
+
+;; Download doom themes
+(use-package doom-themes)
+(load-theme 'doom-one t)
+
+
+;; Show parentheese
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; Display keys that follows the prefix key
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.5))
+
+;; Show a description of each function that displayed by running
+;; counsel-M-x
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode))
+
+;; Beautify help text, ex C-h 
+(use-package helpful
+  :commands (helpful-callable helpful-variable helpful-command helpful-key)
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+#+end_src
+
+* WAITING Custom keybindings [I don't know Vim very well]
+- State "WAITING"    from "HOLD"       [2023-04-09 dim. 10:41] \\
+  Need to study basic Vim keybinding before using evil-mode
+#+begin_src elisp :tangle no
+  ;; Custom keybings  ------------------------------------------------------------
+
+  ;; general.el provides a more convenient method for binding keys in
+  ;; emacs (for both evil and non-evil users). Like use-package, which
+  ;; provides a convenient, unified interface for managing packages,
+  ;; general.el is intended to provide a convenient, unified interface
+  ;; for key definitions.
+  ;; https://github.com/noctuid/general.el
+  (use-package general
+    :config
+    ;; general-create-definer create a function leader-keys in rune
+    ;; namespace (like a folder for config specific stuffs) which store
+    ;; key definition
+    (general-create-definer rune/leader-keys
+                            ;; :keymaps '(normal insert visual emacs)
+                            :prefix "C-c"
+                            :global-prefix "C-c")
+
+    ;; This will provide a list of item to choose when C-c is pressed
+    (rune/leader-keys
+     "t"  '(:ignore t :which-key "toggles")
+     "tt" '(counsel-load-theme :which-key "choose theme")))
+
+
+  ;; evil package vim keybinding for emacs
+  (use-package evil
+    :init
+    ;; load to load evil-integration.el.
+    (setq evil-want-integration t)
+    ;; turn-off evil from loading default keybindings and use
+    ;; evil-collection insted for keybindings
+    (setq evil-want-keybinding nil)
+    ;; C-u is by default bind to universal-argument but in evil mode bind
+    ;; to scroll up. universal-argument is a way to change a fucntion's
+    ;; behavior by providing a prefiex arguement. For more info
+    ;; https://www.emacswiki.org/emacs/PrefixArgument
+    (setq evil-want-C-u-scroll t)
+    ;; disable default C-i binding in evil mode which is used to jump
+    ;; forward
+    (setq evil-want-C-i-jump nil)
+
+    :config
+    ;; Turn on evil mode globally
+    (evil-mode 1)		
+    ;; C-g or ESC will exit from insert mode to normal mode
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    ;; C-h bind to back
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+    ;; Treat the visual line as a new line, otherwise evil treats the
+    ;; visually wrapped line as a single line, so the j and k keys will
+    ;; traverse that line to the next line
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    ;; start a buffer in normal mode instead of insert mode
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+
+
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+
+  ;; Hydra gives a panel with an action bound to certain keys without the need to press multiple key combinations
+  (use-package hydra)
+
+  (defhydra hydra-text-scale (:timeout 4)
+    "scale text"
+    ("j" text-scale-increase "in")
+    ("k" text-scale-decrease "out")
+    ("f" nil "finished" :exit t))
+
+  (rune/leader-keys
+   "ts" '(hydra-text-scale/body :which-key "scale text"))
+  ;;  ----------------------------------------------------------------------------
+#+end_src
+
+* Projectile and Magit
+This section is inspired from this [[https://www.youtube.com/watch?v=INTu30BHZGk][video]]:
+#+begin_src elisp
+;; Projectile provide features operating on project level.
+(use-package projectile
+  :diminish projectile-mode
+  ;; Load projectile mode globally
+  :config (projectile-mode)
+  ;; ivy is the completion system to be used by Projectile
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "~/git")
+    (setq projectile-project-search-path '("~/git")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+;; cousel-projectile provide more action when pressing Alt-o in
+;; mini-buffer when using projectile-switch-project
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package magit
+  :custom
+  ;; Stop creating a new window when doing diff
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
+
+Manage git notif, issues, pull request, etc from Emacs
+*NOTE: Make sure to configure a GitHub token before using this package!*
+  - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+  - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+#+begin_src elisp :tangle no
+  (use-package forge)
+#+end_src
+
+* Execute a shell command as sudo 
+#+begin_src elisp :tangle no
+;; Run a command as sudo
+(defun sudo-shell-command (command)
+  (interactive "MShell command (root): ")
+  (with-temp-buffer
+    (cd "/sudo::/")
+    (async-shell-command command)))
+#+end_src
+
+* WAITING Open a file as sudo [Slow up the Emacs when using this function]
+- State "WAITING"    from "HOLD"       [2023-04-09 dim. 10:23] \\
+  Need basic knowledge in Emacs lisp
+#+begin_src elisp
+;; Open a file as sudo
+(defun sudo-find-file (file-name)
+  "Like find file, but opens the file as root."
+  (interactive "FSudo Find File: ")
+  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+    (find-file tramp-file-name)))
+
+;; Press Ctrl+c and Ctrl+s to run sudo-find-file function
+(global-set-key (kbd "C-c C-s") 'sudo-find-file)
+#+end_src
+
+* Programming language highlighting, automatic indentation... 
+** Assembly
+*** masm-mode
+~masm-mode~ is a major mode for editing MASM x86 and x64 assembly code. It includes syntax highlighting, automatic comment indentation and various build commands:
+#+begin_src elisp :tangle no
+  (use-package masm-mode)
+#+end_src
+
+*** nasm-mode
+A major mode for editing NASM x86 assembly programs. It includes syntax highlighting, automatic indentation, and imenu integration. Unlike Emacs' generic `asm-mode`, it understands NASM-specific syntax:
+#+begin_src elisp
+  ;; Assembly language highlighting
+  (use-package nasm-mode)
+#+end_src
+
+** Powershell
+#+begin_src elisp
+;; Powershell mode
+(use-package powershell)
+#+end_src
+
+** Markdown
+~markdown-mode~ is a major mode for editing Markdown-formatted text.This mode provide syntax highlight and some shortcuts:
+#+begin_src elisp
+  ;; Mardown language highlighting
+  (use-package markdown-mode
+    :ensure t
+    :mode ("README\\.md\\'" . gfm-mode)
+    :init (setq markdown-command "multimarkdown"))
+#+end_src
+
+** YAML
+Major mode to edit YAML file:
+#+begin_src elisp
+(use-package yaml-mode)
+;; (require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+(add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+#+end_src
+
+* Auto table of content for Markdown and Org
+~toc-org~ helps you to have an up-to-date table of contents in org or markdown files without exporting (useful for readme files on GitHub).
+
+*NOTE: Previous name of the package is org-toc. It was changed because of a name conflict with one of the org contrib modules.*
+#+begin_src elisp
+  (use-package toc-org)
+  (if (require 'toc-org nil t)
+      (progn
+        (add-hook 'org-mode-hook 'toc-org-mode)
+
+        ;; enable in markdown, too
+        (add-hook 'markdown-mode-hook 'toc-org-mode)
+        (define-key markdown-mode-map (kbd "\C-c\C-o") 'toc-org-markdown-follow-thing-at-point))
+    (warn "toc-org not found"))
+#+end_src
+
+=require= takes following arguments:
+#+begin_src elisp :tangle no
+(require FEATURE &optional FILENAME NOERROR)
+#+end_src
+
+The =NOERROR= argument causes the function to return =nil= when file with the feature isn't found. Without that argument set to =t=, you'd get an *error*.
+
+* Emacs backup files
+#+begin_src elisp
+;; Save all emacs backup files (files ending in ~) in ~/.emacs.d/backup
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+  backup-by-copying t    ; Don't delink hardlinks
+  version-control t      ; Use version numbers on backups
+  delete-old-versions t  ; Automatically delete excess backups
+  kept-new-versions 20   ; how many of the newest versions to keep
+  kept-old-versions 5    ; and how many of the old
+ )
+#+end_src
+
+* Keybinding to run rofi 
+#+begin_src elisp :tangle no
+  This command run rofi with specified config file
+  (defun rofi ()
+    (interactive)
+    (shell-command
+     "rofi -show drun -config ~/git/dotfiles/.config/rofi/config.rasi"
+     t))
+
+  Shorcut to run rofi fuction define just before
+  (global-set-key (kbd "C-c r") 'rofi)
+#+end_src
+
+* Font Configuration
+#+begin_src elisp
+;; Adjust this font size for your system!
+(defvar runemacs/default-font-size 100)
+
+(set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+;; ;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 100)
+;; ;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
+#+end_src
+
+* Org mode
+** General configuration
+#+begin_src elisp
+(defun efs/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Set faces (display options like font, size, etc) for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+;; Activate some option in Org mode
+(defun efs/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1)
+  (org-overview) ;; Show only headings
+  (forward-page)) ;; Goto the bottom of the page
+
+
+;; 1st solution for " IMPORTANT: please install Org from GNU ELPA as Org ELPA will close before Org 9.6"
+;; (use-package org
+;;    :pin gnu)
+
+;; 2nd solution for " IMPORTANT: please install Org from GNU ELPA as Org ELPA will close before Org 9.6"
+;; (use-package org
+;;   :ensure org-plus-contrib)
+  
+;; https://github.com/jwiegley/use-package/issues/319#issuecomment-845214233
+;; (assq-delete-all 'org package--builtins)
+;; (assq-delete-all 'org package--builtin-versions)
+
+
+(use-package org
+  :hook (org-mode . efs/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
+	;; Output the result string instead of showing synctaxe.
+	;; e.g : *Bold* transforme into bold text.  
+	org-hide-emphasis-markers t)
+
+  (efs/org-font-setup))
+
+;; Change headings bullet points using org-bullets package
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  ;; Wrap a line when it exceeds the width defined by
+  ;; visual-fill-column-width instead of truncating it by placing \n
+  ;; at the end of the line.
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  ;; Call the org-mode-visual-fill to set parms of visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
+;; End -  Emacs From Scratch #5 - Org Mode Basics --------------------
+#+end_src
+
+** Agenda
+#+begin_src elisp
+;; Press enter key on the task in agenda will open the task file
+(setq org-return-follows-link t
+      org-agenda-tags-column 75
+      ;; Display all tasks with deadline 30 days
+      org-deadline-warning-days 30
+      ;; Use single key to execute an action
+      org-use-speed-commands t)
+
+(setq org-agenda-files (list
+                        "~/lab/emacs/test_files/TODO.org"
+                        "~/lab/emacs/test_files/Events.org"
+                        "~/lab/emacs/test_files/Repeaters.org"))
+#+end_src
+
+Custom state that representing the flow order.
+=TODO=: An event that need to done at scheduled time
+=NEXT=: An event must be scheduled after the end of the previous TODO event.
+=DONE=: A finished event.
+
+=WAITING=: A pending event due to the absence of a dependency.
+=HOLD=: A scheduled event temporarily suspended but to be scheduled in the future.
+=CANCELLED=: An event cancelled for a reason
+#+begin_src elisp
+;; Custom states 
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+	;; This states store a timestamp and note
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+#+end_src
+
+
+#+begin_src elisp
+  ;; Capture tasks
+  (setq org-capture-templates
+        '(("t" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
+           "* TODO %?\n  %i\n  %a")
+          ("w" "Add task" entry (file "~/lab/emacs/test_files/TODO.org")
+           "* TODO %?\n  %i\n  ")))
+
+  ;; Dashboard
+  (setq org-agenda-custom-commands
+        '((" " "Agenda"
+           ((agenda ""
+                    ((org-agenda-span 'day)))
+            (todo "TODO"
+                  ((org-agenda-overriding-header "Unscheduled tasks")
+                   (org-agenda-files '("~/lab/emacs/test_files/TODO.org"))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
+                   ))
+            (todo "TODO"
+                  ((org-agenda-overriding-header "Unscheduled project tasks")                                                   
+                   (org-agenda-files '("~/lab/emacs/test_files/Events.org"))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
+
+  ;; global keyboard shortcuts
+  (global-set-key (kbd "C-c c") #'org-capture)
+  (global-set-key (kbd "C-c a") #'org-agenda)
+#+end_src
+
+** HOLD Push notification
+- State "HOLD"       from              [2023-04-09 dim. 10:11] \\
+  Check the reliability of the notification system before putting into production
+*** Method 1
+#+begin_src elisp :tangle no
+  (defun djcb-popup (title msg &optional icon sound)
+  ;;   "Show a popup if we're on X, or echo it otherwise; TITLE is the
+  ;; title of the message, MSG is the context. Optionally, you can provide
+  ;; an ICON and a sound to be played"
+
+    (interactive)
+    ;; (when sound (shell-command
+    ;;              (concat "mplayer -really-quiet " sound " 2> /dev/null")))
+    (if (eq window-system 'x)
+        (shell-command (concat "notify-send "
+                               (if icon (concat "-i " icon) "")
+                               " '" title "' '" msg "'"))
+      ;; text only version
+      (message (concat title ": " msg))))
+
+
+  (djcb-popup "Warning" "The end is near"
+     "/usr/share/icons/Papirus/8x8/emblems/emblem-mounted.svg" "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
+
+  ;; the appointment notification facility
+  (setq
+   appt-message-warning-time 1 ;; warn 15 min in advance
+
+   appt-display-mode-line t     ;; show in the modeline
+   appt-display-format 'window) ;; use our func
+
+
+  (appt-activate 1)              ;; active appt (appointment notification)
+  (display-time)                 ;; time display is required for this...
+
+  ;; update appt each time agenda opened
+  (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
+
+  ;; our little façade-function for djcb-popup
+  (defun djcb-appt-display (min-to-app new-time msg)
+    (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg 
+                "/usr/share/icons/Papirus/8x8/emblems/emblem-mounted.svg"
+                ;; "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
+                ))
+
+  (setq appt-disp-window-function (function djcb-appt-display))
+#+end_src
+
+*** Method 2 
+#+begin_src elisp :tangle no
+  (require 'notifications)
+
+  (defun my-on-action-function (id key)
+    (message "Message %d, key \"%s\" pressed" id key))
+
+
+  (defun my-on-close-function (id reason)
+    (message "Message %d, closed due to \"%s\"" id reason))
+
+
+  (notifications-notify
+   :title "Hi"
+   :body "This is <b>important</b>."
+   :actions '("Confirm" "I agree" "Refuse" "I disagree")
+   :on-action 'my-on-action-function
+   :on-close 'my-on-close-function)
+#+end_src
+
+* Spell check and correction
+#+begin_src elisp
+;; Start - Checking and Correcting Spelling --------------------------
+
+;; This section describes the commands to check the spelling of a single
+;; word or of a portion of a buffer. These commands only work if a
+;; spelling checker program, one of Hunspell, Aspell, Ispell or Enchant,
+;; is installed. These programs are not part of Emacs, but can be
+;; installed. So install aspell, aspell-fr aspell-en.
+
+;; Tell Emacs to use Aspell instead of the default spell checker. Use
+;; command 'which aspell' from the shell to get the path to Aspell's
+;; executable.
+(setq ispell-program-name "/usr/bin/aspell")
+
+;; Set default language to spell 
+(setq ispell-local-dictionary "english")
+
+;; Quickly switch language by pressing F10 key.
+;; Adapted from DiogoRamos' snippet on https://www.emacswiki.org/emacs/FlySpell#h5o-5
+(let ((langs '("francais" "english")))
+  (defvar lang-ring (make-ring (length langs))
+    "List of Ispell dictionaries you can switch to using ‘cycle-ispell-languages’.")
+  (dolist (elem langs) (ring-insert lang-ring elem)))
+
+(defun cycle-ispell-languages ()
+  "Switch to the next Ispell dictionary in ‘lang-ring’."
+  (interactive)
+  (let ((lang (ring-ref lang-ring -1)))
+    (ring-insert lang-ring lang)
+    (ispell-change-dictionary lang)))
+
+(global-set-key [f10] #'cycle-ispell-languages) ; replaces ‘menu-bar-open’.
+
+;; Activate flyspell-mode for markdown-mode or other modes (e.g
+;; text-modes)
+(dolist (hook '(markdown-mode-hook org-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+
+;; Stop flyspell-mode for change-log-mode and log-edit-mode.
+(dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode -1))))
+
+;; Check the buffer and light up errors with "langtool" we use the
+;; langtool-check function each time we save the buffer using
+;; after-save-hook.
+(use-package langtool)
+(add-hook 'markdown-mode-hook	  
+          (lambda () 
+             (add-hook 'after-save-hook 'langtool-check nil 'make-it-local)))
+;; End - Checking and Correcting Spelling ----------------------------
+#+end_src
+
+* Eshell
+** Keybinding to clear eshell buffer
+#+begin_src elisp
+;; Function to clear the Emacs shell buffer, we can also use
+;; comint-clear-buffer which is bound to C-c M-o in Emacs v25+
+;; voc = vts own config
+(defun voc/clear-term ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+;; Map voc/clear-term to C-c l key
+(defun voc/shell-hook ()
+  (local-set-key "\C-cl" 'voc/clear-term))
+
+;; Use this shortcut only in shell mode
+(add-hook 'shell-mode-hook 'voc/shell-hook)
+#+end_src
+
+* HOLD Org-roam
+- State "HOLD"       from              [2023-04-09 dim. 10:15] \\
+  Not very important for now.
+Org Roam is an extension to Org Mode which help to create topic-focused Org files and link them together. It's is inspired by a program called ~Roam~ and a note-taking strategy called ~Zettlekasten~.
+
+This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]]:
+#+begin_src elisp :tangle no
+  ;; Start - Build a Second Brain in Emacs -----------------------------
+  (use-package org-roam
+    :ensure t
+    :custom
+    (org-roam-directory "~/RoamNotes")
+    (org-roam-completion-everywhere t)
+    (org-roam-capture-templates
+    ;; "d" is the key to press to choose the template
+    ;; "plain" is the type of text being inserted
+    '(("d" "default" plain
+       ;; "%?" is org mode syntax which indicate cursor where to land in a node file
+       "%?"
+       ;; Heading to insert in node files 
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+       ;; Expand the node files or show the entire content of the file without folding
+       :unnarrowed t)
+
+      ("l" "programming language" plain
+       "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+       :unnarrowed t)))
+
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i    .  completion-at-point"))
+    :config
+    ;; Reload the custom keybindings that defined above
+    (org-roam-setup))
+  ;; End - Build a Second Brain in Emacs -------------------------------
+
+
+  ;; Capturing Notes Efficiently in Emacs with Org Roam ----------------
+  ;; End - Capturing Notes Efficiently in Emacs with Org Roam ----------
+#+end_src
+
+* HOLD Mail
+- State "HOLD"       from              [2023-04-09 dim. 10:17] \\
+  Currently using mutt, not a priority for moment
+** Mu4e
+#+begin_src elisp :tangle no
+;; Start - Emacs Mail ------------------------------------------------
+;; This section is inspired by these videos
+;; https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD
+
+;; Start - Streamline Your E-mail Management with mu4e - Emacs Mail --
+;; https://www.youtube.com/watch?v=yZRyEhi4y44&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ
+(use-package mu4e
+  ;; using :ensure nil because we installed mu4e using the distro's
+  ;; package manager to stay compatible with mbsync
+  :ensure nil
+  :defer 20 ; Wait until 20 seconds after startup
+  ;; Path where the package manager is installed mu2e files
+  ;; :load-path "/usr/share/emacs/site-lisp/mu4e/"
+  ;; :defer 20 ; Wait until 20 seconds after startup
+  :config
+
+  ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  (setq mu4e-change-filenames-when-moving t)
+
+  ;; Refresh mail using isync every 10 minutes
+  (setq mu4e-update-interval (* 10 60))
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-maildir "~/Mail")
+
+  ;;  If your Gmail is set up with a different lanugage you also need
+  ;;  to translate the names of these folders. For Norwegian
+  ;;  "[Gmail]/Corbeille" would be "[Gmail]/Papirkurv".
+  (setq mu4e-drafts-folder "/[Gmail]/Brouillons")
+  (setq mu4e-sent-folder   "/[Gmail]/Messages envoyés")
+  (setq mu4e-refile-folder "/[Gmail]/Tous les messages")
+  (setq mu4e-trash-folder  "/[Gmail]/Corbeille")
+
+  (setq mu4e-maildir-shortcuts
+      '(("/Inbox"             . ?i)
+        ("/[Gmail]/Messages envoyés" . ?s)
+        ("/[Gmail]/Corbeille"     . ?t)
+        ("/[Gmail]/Brouillons"    . ?d)
+        ("/[Gmail]/Tous les messages"  . ?a)))
+
+  (setq mu4e-bookmarks
+	'((:name "Unread messages" :query "flag:unread AND NOT flag:trashed" :key ?i)
+	  (:name "Today's messages" :query "date:today..now" :key ?t)
+	  (:name "The Boss" :query "from:stallman" :key ?s)
+	  (:name "Last 7 days" :query "date:7d..now" :hide-unread t :key ?w)
+	  (:name "Messages with images" :query "mime:image/*" :key ?p)))
+
+  ;; Run mu4e in the background to sync mail periodically
+  ;; (mu4e t)
+  )
+;; End -  Streamline Your E-mail Management with mu4e - Emacs Mail ---
+
+;; End - Emacs Mail --------------------------------------------------
+#+end_src
