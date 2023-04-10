@@ -1,3 +1,7 @@
+;; Load custom variables from vars.el file
+(when (file-exists-p "~/.emacs.d/vars.el" )
+  (load "~/.emacs.d/vars.el"))
+
 ;; Basic UI Configuration ------------------------------------------------------
 
 ;; Hide welcome message
@@ -396,9 +400,9 @@
   ;; Start - Emacs From Scratch #6 - Organize Your Life with Org Mode --
   ;; Path to search for agenda agenda files
   (setq org-agenda-files
-	'("~/.dotfiles/.emacs.d/task.org"
-	  "~/.dotfiles/.emacs.d/Habits.org"
-	  "~/.dotfiles/.emacs.d/Birthday.org"))
+	'(voc/todo
+	  voc/events
+	  voc/repeaters))
 
   ;; Track the evolution of something, this presents evolution in a form of process bar
   (require 'org-habit)
@@ -496,24 +500,24 @@
 
   (setq org-capture-templates
 	`(("t" "Tasks / Projects")
-	  ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
+	  ("tt" "Task" entry (file+olp voc/todo "Inbox")
            "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
 	  ("j" "Journal Entries")
 	  ("jj" "Journal" entry
-           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           (file+olp+datetree voc/journal)
            "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
            ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
            :clock-in :clock-resume
            :empty-lines 1)
 	  ("jm" "Meeting" entry
-           (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+           (file+olp+datetree voc/journal)
            "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
            :clock-in :clock-resume
            :empty-lines 1)
 
 	  ("w" "Workflows")
-	  ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+	  ("we" "Checking Email" entry (file+olp+datetree voc/jorunal)
            "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
 
 	  ("m" "Metrics Capture")
@@ -567,13 +571,13 @@
 
 
 ;; Start -  Emacs Tips - How to Show Reminders for Org Mode Tasks  ---
-(use-package org-alert
-  :ensure t
-  :custom (alert-default-style 'notifications)
-  :config
-  (setq org-alert-interval 300
-	org-alert-notification-title "Org Alert Reminder")
-  (org-alert-enable))
+;; (use-package org-alert
+;;   :ensure t
+;;   :custom (alert-default-style 'notifications)
+;;   :config
+;;   (setq org-alert-interval 300
+;; 	org-alert-notification-title "Org Alert Reminder")
+;;   (org-alert-enable))
 
 
 
