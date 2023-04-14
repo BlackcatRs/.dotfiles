@@ -3,9 +3,25 @@
 :END:
 
 * Table of Contents :toc:
-- [[#basic-ui-configuration][Basic UI Configuration]]
+- [[#basic-ui-customization][Basic UI Customization]]
+- [[#package-configuration][Package Configuration]]
+- [[#helpful-ui-improvements][Helpful UI Improvements]]
+  - [[#doom-modeline][Doom-modeline]]
+  - [[#doom-themes][Doom-themes]]
+  - [[#rainbow-delimiters][Rainbow-delimiters]]
+  - [[#ivy][Ivy]]
+  - [[#ivy-rich][Ivy-rich]]
+  - [[#which-key][Which-key]]
+  - [[#helpful][helpful]]
+- [[#key-bindings][Key bindings]]
+  - [[#command-log-mode][Command-log-mode]]
+  - [[#custom-key-bindings][Custom key bindings]]
 - [[#waiting-custom-keybindings-i-dont-know-vim-very-well][WAITING Custom keybindings [I don't know Vim very well]]]
 - [[#projectile-and-magit][Projectile and Magit]]
+  - [[#projectile][Projectile]]
+  - [[#counsel-projectile][Counsel-projectile]]
+  - [[#magit][Magit]]
+  - [[#forge][Forge]]
 - [[#execute-a-shell-command-as-sudo][Execute a shell command as sudo]]
 - [[#waiting-open-a-file-as-sudo-slow-up-the-emacs-when-using-this-function][WAITING Open a file as sudo [Slow up the Emacs when using this function]]]
 - [[#programming-language-highlighting-automatic-indentation][Programming language highlighting, automatic indentation...]]
@@ -28,7 +44,8 @@
 - [[#hold-mail][HOLD Mail]]
   - [[#mu4e][Mu4e]]
 
-* Basic UI Configuration
+* Basic UI Customization
+Deactivating default Emacs interface option:
 #+begin_src elisp
 (setq inhibit-startup-message t) ; Hide welcome message
 (scroll-bar-mode -1)        ; Disable visible scrollbar
@@ -36,38 +53,11 @@
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
 (menu-bar-mode -1)          ; Disable the menu bar
+(hl-line-mode)              ; Highlight cursor pointing line
 #+end_src
 
-#+begin_src elisp :tangle no
-(setq visible-bell t) ; Set up the visible bell
-#+end_src
-
+Display column and line number:
 #+begin_src elisp
-;; Make ESC quit prompts
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;; Load a package call "package" to handle package fuctions 
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("gnu" . "https://elpa.gnu.org/packages/")
-			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-
-;; Automatically update the list of packages, only if there is no package list already
-(when (not package-archive-contents)
-    (package-refresh-contents))
-
-;; Intall use-package if not exists, fuction ends with p return bolean
-;; like package-installed-p
-(unless (package-installed-p 'use-package)
-   (package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-always-ensure t) 	; Ensure that the package is loaded
-
 (column-number-mode)
 (global-display-line-numbers-mode t)
 
@@ -77,107 +67,154 @@
 		shell-mode-hook
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
+#+end_src
+
+Set up the visible bell:
+#+begin_src elisp :tangle no
+(setq visible-bell t) ; Set up the visible bell
+#+end_src
+
+* Package Configuration
+Package configuration:
+#+begin_src elisp
+;; Load a package call "package" to handle package fuctions 
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("gnu" . "https://elpa.gnu.org/packages/")
+			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+;; Load Emacs Lisp packages, and activate them.
+(package-initialize)
+
+;; Automatically update the list of packages, only if there is no package list already
+(when (not package-archive-contents)
+    (package-refresh-contents))
+#+end_src
 
 
-;; Highlight cursor pointing line
-(hl-line-mode)
+Install =use-package= package if not exists which allow to download a packages from =package-archives= and configure the package in an isolated way or in other words inside =use-package= block.
+Functions ends up with =-p= like =package-installed-p= return boolean as result:
+#+begin_src elisp
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
 
-;; Display key pressed
-;; (use-package command-log-mode)
+(require 'use-package)
+(setq use-package-always-ensure t) ; Ensure that the package is loaded
+#+end_src
 
+* Helpful UI Improvements
+** Doom-modeline
+A status bar at bottom:
+#+begin_src elisp
+  ;; Bottom bar
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1)
+    :custom ((doom-modeline-height 20)))
+#+end_src
 
-;; flexible, simple tools for minibuffer completion in Emacs
-;; Ivy vs counsel vs Swiper:
-;; Ivy, a generic completion mechanism for Emacs.
-;; Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
-;; Swiper, an Ivy-enhanced alternative to Isearch.
+** Doom-themes
+#+begin_src elisp
+  ;; Download doom themes
+  (use-package doom-themes)
+  (load-theme 'doom-one t)
+#+end_src
 
-;; No need to manually install swiper or ivy, it will install as dependencies with counsel
-(use-package counsel
-  :diminish
-  :bind (("C-s" . swiper)
-	 ("C-x C-f" . counsel-find-file)
-	 ("M-x" . counsel-M-x)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)	
-         ("C-l" . ivy-alt-done)
-         ("C-n" . ivy-next-line)
-         ("C-p" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1))
+** Rainbow-delimiters
+Display parentheses with a color to easily identify them:
+#+begin_src elisp
+  ;; Parentheses with colors
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
 
+** Ivy
+Flexible and simple tools for minibuffer completion in Emacs: 
+- =Ivy=, a generic completion mechanism for Emacs.
+- =Counsel=, a collection of Ivy-enhanced versions of common Emacs commands.
+- =Swiper=, an Ivy-enhanced alternative to Isearch.
+  
+#+begin_src elisp
+;; No need to manually install Swiper or Ivy, it will install as dependencies with Counsel
+  (use-package counsel
+    :bind (("C-M-j" . 'counsel-switch-buffer)
+	   :map minibuffer-local-map
+	   ("C-r" . 'counsel-minibuffer-history))
+    :custom
+    (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+    :config
+    (counsel-mode 1))
 
-;; Key mapping directly inside swiper config
-;; (use-package swiper
-;;   :ensure try
-;;   :config
-;;   (progn
-;;     (ivy-mode 1)
-;;     (setq ivy-use-virtual-buffers t)
-;;     (global-set-key "\C-s" 'swiper)
-;;     (global-set-key (kbd "C-c C-r") 'ivy-resume)
-;;     (global-set-key (kbd "<f6>") 'ivy-resume)
-;;     (global-set-key (kbd "M-x") 'counsel-M-x)
-;;     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-;;     (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-;;     (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-;;     (global-set-key (kbd "<f1> l") 'counsel-load-library)
-;;     (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-;;     (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-;;     (global-set-key (kbd "C-c g") 'counsel-git)
-;;     (global-set-key (kbd "C-c j") 'counsel-git-grep)
-;;     (global-set-key (kbd "C-c k") 'counsel-ag)
-;;     (global-set-key (kbd "C-x l") 'counsel-locate)
-;;     (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-;;     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-;;     ))
+  (use-package ivy
+    :diminish
+    :bind (("C-s" . swiper)
+	   :map ivy-minibuffer-map
+	   ("TAB" . ivy-alt-done)	
+	   ("C-l" . ivy-alt-done)
+	   ("C-n" . ivy-next-line)
+	   ("C-p" . ivy-previous-line)
+	   :map ivy-switch-buffer-map
+	   ("C-k" . ivy-previous-line)
+	   ("C-l" . ivy-done)
+	   ("C-d" . ivy-switch-buffer-kill)
+	   :map ivy-reverse-i-search-map
+	   ("C-k" . ivy-previous-line)
+	   ("C-d" . ivy-reverse-i-search-kill))
+    :config
+    (ivy-mode 1))
 
-;; Bottom bar
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 20)))
+#+end_src
 
-;; Download doom themes
-(use-package doom-themes)
-(load-theme 'doom-one t)
+** Ivy-rich
+Display a short description near each function when using =counsel-M-x= or pressing =M-x=:
+#+begin_src elisp
+  ;; Show a description near each function whenrunning counsel-M-x
+  (use-package ivy-rich
+    :init
+    (ivy-rich-mode))
+#+end_src
 
+** Which-key
+Display keys that follow a prefix key with function:
+#+begin_src elisp
+  ;; Display keys that follows the prefix key
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 0.5))
+#+end_src
 
-;; Show parentheese
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+** helpful
+A replacement for the built-in help text that improves the readability of help text:
+#+begin_src elisp
+  ;; Beautify help text, ex C-h 
+  (use-package helpful
+    :commands (helpful-callable helpful-variable helpful-command helpful-key)
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
+#+end_src
 
-;; Display keys that follows the prefix key
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.5))
+* Key bindings
+** Command-log-mode
+Package that display key presses:
+#+begin_src elisp :tangle no
+  (use-package command-log-mode)
+#+end_src
 
-;; Show a description of each function that displayed by running
-;; counsel-M-x
-(use-package ivy-rich
-  :init
-  (ivy-rich-mode))
-
-;; Beautify help text, ex C-h 
-(use-package helpful
-  :commands (helpful-callable helpful-variable helpful-command helpful-key)
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+** Custom key bindings
+Use =escape= key to quit or close prompts:
+#+begin_src elisp
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 
 * WAITING Custom keybindings [I don't know Vim very well]
