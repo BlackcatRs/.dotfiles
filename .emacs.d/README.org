@@ -4,6 +4,7 @@
 - [[#requirements][Requirements]]
   - [[#fonts][Fonts]]
 - [[#basic-ui-customization][Basic UI Customization]]
+- [[#font-configuration][Font Configuration]]
 - [[#package-configuration][Package Configuration]]
 - [[#helpful-ui-improvements][Helpful UI Improvements]]
   - [[#doom-modeline][Doom-modeline]]
@@ -16,7 +17,6 @@
 - [[#key-bindings][Key bindings]]
   - [[#command-log-mode][Command-log-mode]]
   - [[#custom-key-bindings][Custom key bindings]]
-- [[#waiting-custom-keybindings-i-dont-know-vim-very-well][WAITING Custom keybindings [I don't know Vim very well]]]
 - [[#projectile-and-magit][Projectile and Magit]]
   - [[#projectile][Projectile]]
   - [[#counsel-projectile][Counsel-projectile]]
@@ -31,11 +31,9 @@
   - [[#yaml][YAML]]
 - [[#auto-table-of-content-for-markdown-and-org][Auto table of content for Markdown and Org]]
 - [[#emacs-backup-files][Emacs backup files]]
-- [[#keybinding-to-run-rofi][Keybinding to run rofi]]
-- [[#font-configuration][Font Configuration]]
-- [[#org-mode][Org mode]]
-  - [[#general-configuration][General configuration]]
-  - [[#agenda][Agenda]]
+- [[#org][Org]]
+  - [[#org-mode-basics-configuration][Org-mode Basics Configuration]]
+  - [[#org-agenda][Org-agenda]]
   - [[#hold-push-notification][HOLD Push notification]]
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
@@ -434,74 +432,85 @@ The =NOERROR= argument causes the function to return =nil= when file with the fe
  )
 #+end_src
 
-* Org mode
-** General configuration
+* Org
+** Org-mode Basics Configuration
+*** Org-mode
 #+begin_src emacs-lisp :results none
-(defun efs/org-font-setup ()
-  ;; Replace list hyphen with dot
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  (defun efs/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-  ;; Set faces (display options like font, size, etc) for heading levels
-  (dolist (face '((org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.1)
-                  (org-level-6 . 1.1)
-                  (org-level-7 . 1.1)
-                  (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+    ;; Set faces (display options like font, size, etc) for heading levels
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
-  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
-;; Activate some option in Org mode
-(defun efs/org-mode-setup ()
-  (org-indent-mode)
-  (variable-pitch-mode 1)
-  (visual-line-mode 1)
-  (org-overview) ;; Show only headings
-  (forward-page)) ;; Goto the bottom of the page
+  ;; Activate some option in Org mode
+  (defun efs/org-mode-setup ()
+    (org-indent-mode)
+    (variable-pitch-mode 1)
+    (visual-line-mode 1)
+    (org-overview) ;; Show only headings
+    ;; This prevent org-capture buffer from opening
+    ;; (forward-page) ;; Goto the bottom of the page
+    ) 
 
-(use-package org
-  :hook (org-mode . efs/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
-	;; Output the result string instead of showing synctaxe.
-	;; e.g : *Bold* transforme into bold text.  
-	org-hide-emphasis-markers t)
+  (use-package org
+    :hook (org-mode . efs/org-mode-setup)
+    :config
+    (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
+          ;; Output the result string instead of showing synctaxe.
+          ;; e.g : *Bold* transforme into bold text.  
+          org-hide-emphasis-markers t)
 
-  (efs/org-font-setup))
-
-;; Change headings bullet points using org-bullets package
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-(defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 100
-        visual-fill-column-center-text t)
-  ;; Wrap a line when it exceeds the width defined by
-  ;; visual-fill-column-width instead of truncating it by placing \n
-  ;; at the end of the line.
-  (visual-fill-column-mode 1))
-
-(use-package visual-fill-column
-  ;; Call the org-mode-visual-fill to set parms of visual-fill-column
-  :hook (org-mode . efs/org-mode-visual-fill))
+    (efs/org-font-setup))
 #+end_src
 
-** Agenda
+*** Org-bullets
+Change default Org heading style: 
+#+begin_src emacs-lisp :results none
+  ;; Change headings bullet points using org-bullets package
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+#+end_src
+
+*** Visual-fill-column
+Text alignment in the buffer:
+#+begin_src emacs-lisp
+  (defun efs/org-mode-visual-fill ()
+    (setq visual-fill-column-width 100
+          visual-fill-column-center-text t)
+    ;; Wrap a line when it exceeds the width defined by
+    ;; visual-fill-column-width instead of truncating it by placing \n
+    ;; at the end of the line.
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column
+    ;; Call the org-mode-visual-fill to set parms of visual-fill-column
+    :hook (org-mode . efs/org-mode-visual-fill))
+#+end_src
+
+** Org-agenda
 #+begin_src emacs-lisp :results none
 ;; Press enter key on the task in agenda will open the task file
 (setq org-return-follows-link t
@@ -537,29 +546,31 @@ Custom state that representing the flow order.
 #+begin_src emacs-lisp :results none
   ;; Capture tasks
   (setq org-capture-templates
-        '(("t" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
-           "* TODO %?\n  %i\n  %a")
-          ("w" "Add task" entry (file "~/lab/emacs/test_files/TODO.org")
-           "* TODO %?\n  %i\n  ")))
+       '(("c" "Add task" entry (file "~/lab/emacs/test_files/TODO.org")
+          "* TODO %?\n  %i\n  ")
 
-  ;; Dashboard
-  (setq org-agenda-custom-commands
-        '((" " "Agenda"
-           ((agenda ""
-                    ((org-agenda-span 'day)))
-            (todo "TODO"
-                  ((org-agenda-overriding-header "Unscheduled tasks")
-                   (org-agenda-files '("~/lab/emacs/test_files/TODO.org"))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
-                   ))
-            (todo "TODO"
-                  ((org-agenda-overriding-header "Unscheduled project tasks")                                                   
-                   (org-agenda-files '("~/lab/emacs/test_files/Events.org"))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
+         ("w" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
+          "* TODO %?\n  %i\n  %a")
+         ))
 
-  ;; global keyboard shortcuts
-  (global-set-key (kbd "C-c c") #'org-capture)
-  (global-set-key (kbd "C-c a") #'org-agenda)
+   ;; Dashboard
+   (setq org-agenda-custom-commands
+         '((" " "Agenda"
+            ((agenda ""
+                     ((org-agenda-span 'day)))
+             (todo "TODO"
+                   ((org-agenda-overriding-header "Unscheduled tasks")
+                    (org-agenda-files '("~/lab/emacs/test_files/TODO.org"))
+                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
+                    ))
+             (todo "TODO"
+                   ((org-agenda-overriding-header "Unscheduled project tasks")                                                   
+                    (org-agenda-files '("~/lab/emacs/test_files/Events.org"))
+                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
+
+   ;; Global keyboard shortcuts
+   (global-set-key (kbd "C-c c") #'org-capture)
+   (global-set-key (kbd "C-c a") #'org-agenda)
 #+end_src
 
 ** HOLD Push notification
