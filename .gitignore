@@ -45,3 +45,9 @@ flycheck_*.el
 
 # Credentials
 .env
+
+# Fonts
+.local/share/fonts/*/.uuid
+
+# Org-babel genereted file
+.emacs.d/README.el
