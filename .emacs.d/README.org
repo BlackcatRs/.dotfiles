@@ -1,6 +1,8 @@
 #+PROPERTY: header-args :tangle README.el
 
 * Table of Contents :toc:
+- [[#requirements][Requirements]]
+  - [[#fonts][Fonts]]
 - [[#basic-ui-customization][Basic UI Customization]]
 - [[#package-configuration][Package Configuration]]
 - [[#helpful-ui-improvements][Helpful UI Improvements]]
@@ -42,9 +44,17 @@
 - [[#hold-mail][HOLD Mail]]
   - [[#mu4e][Mu4e]]
 
+* Requirements
+** Fonts
+*** [[https://github.com/tonsky/FiraCode][FiraCode]]
+First make sure that the =contrib= (for Debian) repository is enabled (see Debian [[https://wiki.debian.org/SourcesList#Component][docs]]) and then install ~fonts-firacode~ package  by executing:
+#+begin_src shell :tangle no
+sudo apt install fonts-firacode 
+#+end_src
+
 * Basic UI Customization
 Deactivating default Emacs interface option:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 (setq inhibit-startup-message t) ; Hide welcome message
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
@@ -55,7 +65,7 @@ Deactivating default Emacs interface option:
 #+end_src
 
 Display column and line number:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 (column-number-mode)
 (global-display-line-numbers-mode t)
 
@@ -70,13 +80,13 @@ Display column and line number:
 #+RESULTS:
 
 Set up the visible bell:
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
 (setq visible-bell t) ; Set up the visible bell
 #+end_src
 
 * Package Configuration
 Package configuration:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Load a package call "package" to handle package fuctions 
 (require 'package)
 
@@ -96,7 +106,7 @@ Package configuration:
 
 Install =use-package= package if not exists which allow to download a packages from =package-archives= and configure the package in an isolated way or in other words inside =use-package= block.
 Functions ends up with =-p= like =package-installed-p= return boolean as result:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 (unless (package-installed-p 'use-package)
    (package-install 'use-package))
 
@@ -107,7 +117,7 @@ Functions ends up with =-p= like =package-installed-p= return boolean as result:
 * Helpful UI Improvements
 ** Doom-modeline
 A status bar at bottom:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Bottom bar
   (use-package doom-modeline
     :ensure t
@@ -116,7 +126,7 @@ A status bar at bottom:
 #+end_src
 
 ** Doom-themes
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none :results none
   ;; Download doom themes
   (use-package doom-themes)
   (load-theme 'doom-one t)
@@ -124,7 +134,7 @@ A status bar at bottom:
 
 ** Rainbow-delimiters
 Display parentheses with a color to easily identify them:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Parentheses with colors
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
@@ -136,7 +146,7 @@ Flexible and simple tools for minibuffer completion in Emacs:
 - =Counsel=, a collection of Ivy-enhanced versions of common Emacs commands.
 - =Swiper=, an Ivy-enhanced alternative to Isearch.
   
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; No need to manually install Swiper or Ivy, it will install as dependencies with Counsel
   (use-package counsel
     :bind (("C-M-j" . 'counsel-switch-buffer)
@@ -169,7 +179,7 @@ Flexible and simple tools for minibuffer completion in Emacs:
 
 ** Ivy-rich
 Display a short description near each function when using =counsel-M-x= or pressing =M-x=:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Show a description near each function whenrunning counsel-M-x
   (use-package ivy-rich
     :init
@@ -178,7 +188,7 @@ Display a short description near each function when using =counsel-M-x= or press
 
 ** Which-key
 Display keys that follow a prefix key with function:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Display keys that follows the prefix key
   (use-package which-key
     :init (which-key-mode)
@@ -189,7 +199,7 @@ Display keys that follow a prefix key with function:
 
 ** helpful
 A replacement for the built-in help text that improves the readability of help text:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Beautify help text, ex C-h 
   (use-package helpful
     :commands (helpful-callable helpful-variable helpful-command helpful-key)
@@ -206,13 +216,13 @@ A replacement for the built-in help text that improves the readability of help t
 * Key bindings
 ** Command-log-mode
 Package that display key presses:
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   (use-package command-log-mode)
 #+end_src
 
 ** Custom key bindings
 Use =escape= key to quit or close prompts:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
@@ -220,7 +230,7 @@ Use =escape= key to quit or close prompts:
 * WAITING Custom keybindings [I don't know Vim very well]
 - State "WAITING"    from "HOLD"       [2023-04-09 dim. 10:41] \\
   Need to study basic Vim keybinding before using evil-mode
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   ;; Custom keybings  ------------------------------------------------------------
 
   ;; general.el provides a more convenient method for binding keys in
@@ -303,7 +313,7 @@ Use =escape= key to quit or close prompts:
 * Projectile and Magit
 This section is inspired from this [[https://www.youtube.com/watch?v=INTu30BHZGk][video]].
 ** Projectile
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Projectile provide features operating on project level.
 (use-package projectile
   :diminish projectile-mode
@@ -343,7 +353,7 @@ So first install using your package manager:
 
 ** Counsel-projectile
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; cousel-projectile provide more action when pressing Alt-o in
   ;; mini-buffer when using projectile-switch-project
   (use-package counsel-projectile
@@ -351,7 +361,7 @@ So first install using your package manager:
 #+end_src
 
 ** Magit
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 (use-package magit
   :custom
   ;; Stop creating a new window when doing diff
@@ -389,12 +399,12 @@ Manage git notif, issues, pull request, etc from Emacs.
 *NOTE: Make sure to configure a GitHub token before using this package!*
   - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
   - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   (use-package forge)
 #+end_src
 
 * Execute a shell command as sudo 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
 ;; Run a command as sudo
 (defun sudo-shell-command (command)
   (interactive "MShell command (root): ")
@@ -406,7 +416,7 @@ Manage git notif, issues, pull request, etc from Emacs.
 * WAITING Open a file as sudo [Slow up the Emacs when using this function]
 - State "WAITING"    from "HOLD"       [2023-04-09 dim. 10:23] \\
   Need basic knowledge in Emacs lisp
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Open a file as sudo
 (defun sudo-find-file (file-name)
   "Like find file, but opens the file as root."
@@ -422,26 +432,26 @@ Manage git notif, issues, pull request, etc from Emacs.
 ** Assembly
 *** masm-mode
 ~masm-mode~ is a major mode for editing MASM x86 and x64 assembly code. It includes syntax highlighting, automatic comment indentation and various build commands:
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   (use-package masm-mode)
 #+end_src
 
 *** nasm-mode
 A major mode for editing NASM x86 assembly programs. It includes syntax highlighting, automatic indentation, and imenu integration. Unlike Emacs' generic `asm-mode`, it understands NASM-specific syntax:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Assembly language highlighting
   (use-package nasm-mode)
 #+end_src
 
 ** Powershell
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Powershell mode
 (use-package powershell)
 #+end_src
 
 ** Markdown
 ~markdown-mode~ is a major mode for editing Markdown-formatted text.This mode provide syntax highlight and some shortcuts:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Mardown language highlighting
   (use-package markdown-mode
     :ensure t
@@ -451,7 +461,7 @@ A major mode for editing NASM x86 assembly programs. It includes syntax highligh
 
 ** YAML
 Major mode to edit YAML file:
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 (use-package yaml-mode)
 ;; (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
@@ -464,27 +474,29 @@ Major mode to edit YAML file:
 ~toc-org~ helps you to have an up-to-date table of contents in org or markdown files without exporting (useful for readme files on GitHub).
 
 *NOTE: Previous name of the package is org-toc. It was changed because of a name conflict with one of the org contrib modules.*
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   (use-package toc-org)
   (if (require 'toc-org nil t)
       (progn
-        (add-hook 'org-mode-hook 'toc-org-mode)
+	(add-hook 'org-mode-hook 'toc-org-mode)
 
-        ;; enable in markdown, too
-        (add-hook 'markdown-mode-hook 'toc-org-mode)
-        (define-key markdown-mode-map (kbd "\C-c\C-o") 'toc-org-markdown-follow-thing-at-point))
+	;; enable in markdown, too
+	(add-hook 'markdown-mode-hook 'toc-org-mode)
+	;; markdown-mode package does not define markdown-mode-map
+	;; (define-key markdown-mode-map (kbd "\C-c\C-o") 'toc-org-markdown-follow-thing-at-point)
+	)
     (warn "toc-org not found"))
 #+end_src
 
 =require= takes following arguments:
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
 (require FEATURE &optional FILENAME NOERROR)
 #+end_src
 
 The =NOERROR= argument causes the function to return =nil= when file with the feature isn't found. Without that argument set to =t=, you'd get an *error*.
 
 * Emacs backup files
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Save all emacs backup files (files ending in ~) in ~/.emacs.d/backup
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
   backup-by-copying t    ; Don't delink hardlinks
@@ -496,7 +508,7 @@ The =NOERROR= argument causes the function to return =nil= when file with the fe
 #+end_src
 
 * Keybinding to run rofi 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   This command run rofi with specified config file
   (defun rofi ()
     (interactive)
@@ -509,7 +521,7 @@ The =NOERROR= argument causes the function to return =nil= when file with the fe
 #+end_src
 
 * Font Configuration
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Adjust this font size for your system!
 (defvar runemacs/default-font-size 100)
 
@@ -522,7 +534,7 @@ The =NOERROR= argument causes the function to return =nil= when file with the fe
 
 * Org mode
 ** General configuration
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -603,7 +615,7 @@ The =NOERROR= argument causes the function to return =nil= when file with the fe
 #+end_src
 
 ** Agenda
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Press enter key on the task in agenda will open the task file
 (setq org-return-follows-link t
       org-agenda-tags-column 75
@@ -626,7 +638,7 @@ Custom state that representing the flow order.
 =WAITING=: A pending event due to the absence of a dependency.
 =HOLD=: A scheduled event temporarily suspended but to be scheduled in the future.
 =CANCELLED=: An event cancelled for a reason
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Custom states 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
@@ -635,7 +647,7 @@ Custom state that representing the flow order.
 #+end_src
 
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
   ;; Capture tasks
   (setq org-capture-templates
         '(("t" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
@@ -667,7 +679,7 @@ Custom state that representing the flow order.
 - State "HOLD"       from              [2023-04-09 dim. 10:11] \\
   Check the reliability of the notification system before putting into production
 *** Method 1
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   (defun djcb-popup (title msg &optional icon sound)
   ;;   "Show a popup if we're on X, or echo it otherwise; TITLE is the
   ;; title of the message, MSG is the context. Optionally, you can provide
@@ -712,7 +724,7 @@ Custom state that representing the flow order.
 #+end_src
 
 *** Method 2 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   (require 'notifications)
 
   (defun my-on-action-function (id key)
@@ -732,7 +744,7 @@ Custom state that representing the flow order.
 #+end_src
 
 * Spell check and correction
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Start - Checking and Correcting Spelling --------------------------
 
 ;; This section describes the commands to check the spelling of a single
@@ -786,7 +798,7 @@ Custom state that representing the flow order.
 
 * Eshell
 ** Keybinding to clear eshell buffer
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results none
 ;; Function to clear the Emacs shell buffer, we can also use
 ;; comint-clear-buffer which is bound to C-c M-o in Emacs v25+
 ;; voc = vts own config
@@ -809,7 +821,7 @@ Custom state that representing the flow order.
 Org Roam is an extension to Org Mode which help to create topic-focused Org files and link them together. It's is inspired by a program called ~Roam~ and a note-taking strategy called ~Zettlekasten~.
 
 This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]]:
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
   ;; Start - Build a Second Brain in Emacs -----------------------------
   (use-package org-roam
     :ensure t
@@ -851,7 +863,7 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
 - State "HOLD"       from              [2023-04-09 dim. 10:17] \\
   Currently using mutt, not a priority for moment
 ** Mu4e
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :results none :tangle no
 ;; Start - Emacs Mail ------------------------------------------------
 ;; This section is inspired by these videos
 ;; https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD
