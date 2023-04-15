@@ -45,3 +45,6 @@ flycheck_*.el
 
 # Credentials
 .env
+
+# Org-babel genereted file
+.emacs.d/README.el
