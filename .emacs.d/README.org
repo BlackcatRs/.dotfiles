@@ -547,31 +547,31 @@ Custom state that representing the flow order.
 #+begin_src emacs-lisp :results none
   ;; Capture tasks
   (setq org-capture-templates
-       '(("c" "Add task" entry (file "~/lab/emacs/test_files/TODO.org")
-          "* TODO %?\n  %i\n  ")
+        '(("c" "Add task" entry (file "~/lab/emacs/test_files/TODO.org")
+           "* TODO %?\n  %i\n  ")
 
-         ("w" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
-          "* TODO %?\n  %i\n  %a")
-         ))
+          ("w" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
+           "* TODO %?\n  %i\n  %a")
+          ))
 
-   ;; Dashboard
-   (setq org-agenda-custom-commands
-         '((" " "Agenda"
-            ((agenda ""
-                     ((org-agenda-span 'day)))
-             (todo "TODO"
-                   ((org-agenda-overriding-header "Unscheduled tasks")
-                    (org-agenda-files '("~/lab/emacs/test_files/TODO.org"))
-                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
-                    ))
-             (todo "TODO"
-                   ((org-agenda-overriding-header "Unscheduled project tasks")                                                   
-                    (org-agenda-files '("~/lab/emacs/test_files/Events.org"))
-                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
+  ;; Dashboard
+  (setq org-agenda-custom-commands
+        '((" " "Agenda"
+           ((agenda ""
+                    ((org-agenda-span 'day)))
+            (todo "TODO"
+                  ((org-agenda-overriding-header "Unscheduled tasks")
+                   (org-agenda-files '("~/lab/emacs/test_files/TODO.org"))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
+                   ))
+            (todo "TODO"
+                  ((org-agenda-overriding-header "Unscheduled project tasks")                                                   
+                   (org-agenda-files '("~/lab/emacs/test_files/Events.org"))
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
 
-   ;; Global keyboard shortcuts
-   (global-set-key (kbd "C-c c") #'org-capture)
-   (global-set-key (kbd "C-c a") #'org-agenda)
+  ;; Global keyboard shortcuts
+  (global-set-key (kbd "C-c c") #'org-capture)
+  (global-set-key (kbd "C-c a") #'org-agenda)
 #+end_src
 
 ** HOLD Push notification
