@@ -53,13 +53,14 @@ sudo apt install fonts-firacode
 * Basic UI Customization
 Deactivating default Emacs interface option:
 #+begin_src emacs-lisp :results none
-(setq inhibit-startup-message t) ; Hide welcome message
-(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
-(tooltip-mode -1)           ; Disable tooltips
-(set-fringe-mode 10)        ; Give some breathing room
-(menu-bar-mode -1)          ; Disable the menu bar
-(hl-line-mode)              ; Highlight cursor pointing line
+  (setq inhibit-startup-message t) ; Hide welcome message
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
+  (menu-bar-mode -1)          ; Disable the menu bar
+  (hl-line-mode)              ; Highlight cursor pointing line
+  (show-paren-mode)	       ; Highlight opening and closing paren
 #+end_src
 
 Display column and line number:
