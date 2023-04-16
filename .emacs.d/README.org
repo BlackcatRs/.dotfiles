@@ -512,19 +512,21 @@ Text alignment in the buffer:
 #+end_src
 
 ** Org-agenda
+=org-return-follows-link= will open the task file when you press Enter key on any task in Org agenda.
+=org-agenda-tags-column 75= indicates space between task heading and tags
+=org-use-speed-commands= using single key to execute an action.
+=org-use-speed-commands t= allow us to use single key to execute an action
 #+begin_src emacs-lisp :results none
-;; Press enter key on the task in agenda will open the task file
-(setq org-return-follows-link t
-      org-agenda-tags-column 75
-      ;; Display all tasks with deadline 30 days
-      org-deadline-warning-days 30
-      ;; Use single key to execute an action
-      org-use-speed-commands t)
+  (setq org-return-follows-link t ;; Press enter key on the task will open the task file
+        org-agenda-tags-column 75   ;; Space between task heading and tags
+        org-deadline-warning-days 5 ;; Dispaly tasks with deadline 5 days
+        org-use-speed-commands t)   ;; Use single key to execute an action
+        
 
-(setq org-agenda-files (list
-                        "~/lab/emacs/test_files/TODO.org"
-                        "~/lab/emacs/test_files/Events.org"
-                        "~/lab/emacs/test_files/Repeaters.org"))
+  (setq org-agenda-files (list
+                          "~/lab/emacs/test_files/TODO.org"
+                          "~/lab/emacs/test_files/Events.org"
+                          "~/lab/emacs/test_files/Repeaters.org"))
 #+end_src
 
 Custom state that representing the flow order.
@@ -543,16 +545,18 @@ Custom state that representing the flow order.
         (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 #+end_src
 
-;; Refiling or moving uwanted item usually finised tasks to diffrent place for archive purpose
-(setq org-refile-targets
-      '(("Archive.org" :maxlevel . 1)
-	("Tasks.org" :maxlevel . 1)))
+Refiling or moving unwanted item usually finished tasks to different place for archiving purpose:
+#+begin_src emacs-lisp :results none
+  (setq org-refile-targets
+        '(("Archive.org" :maxlevel . 1)
+          ("Tasks.org" :maxlevel . 1)))
 
-;; Save Org buffers after refiling!
-(advice-add 'org-refile :after 'org-save-all-org-buffers)
+  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+#+end_src
 
-
-;; Predified tags that can accesible from any org file
+Predefined tags that can be accessible from any org file:
+#+begin_src emacs-lisp :results none
 (setq org-tag-alist
       '((:startgroup)
 	(:endgroup)
@@ -565,21 +569,27 @@ Custom state that representing the flow order.
 	("batch" . ?b)
 	("note" . ?n)
 	("idea" . ?i)))
+#+end_src
 
-;; Dispaly final state of captured item in agenda view in order to track what happen, for example DONE or CANCELLED
+
+Show the final state of the captured item in the agenda view to track what happened, such as =COMPLETED= or =CANCELED= tasks:
+#+begin_src emacs-lisp :results none
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
+#+end_src
 
-;; Habit tracking module
+Habit tracking with ~org-habit~ package:
+#+begin_src emacs-lisp :results none
+;; Habit tracking package
 (require 'org-habit)
 ;; Load org-habit by adding org-habit to org-modules
 (add-to-list 'org-modules 'org-habit)
 ;; This is the lenth of org habit tracker in agenda view
 (setq org-habit-graph-column 60)
+#+end_src
 
-
-
+Capture template for capturing tasks:
 #+begin_src emacs-lisp :results none
   ;; Capture tasks
   (setq org-capture-templates
@@ -589,7 +599,10 @@ Custom state that representing the flow order.
           ("w" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
            "* TODO %?\n  %i\n  %a")
           ))
+#+end_src
 
+Custom agenda view:
+#+begin_src emacs-lisp :results none
   ;; Dashboard
   (setq org-agenda-custom-commands
         '((" " "Agenda"
