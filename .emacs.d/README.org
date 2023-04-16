@@ -543,6 +543,42 @@ Custom state that representing the flow order.
         (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 #+end_src
 
+;; Refiling or moving uwanted item usually finised tasks to diffrent place for archive purpose
+(setq org-refile-targets
+      '(("Archive.org" :maxlevel . 1)
+	("Tasks.org" :maxlevel . 1)))
+
+;; Save Org buffers after refiling!
+(advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+
+;; Predified tags that can accesible from any org file
+(setq org-tag-alist
+      '((:startgroup)
+	(:endgroup)
+	("@errand" . ?E)
+	("@home" . ?H)
+	("@work" . ?W)
+	("agenda" . ?a)
+	("planning" . ?p)
+	("publish" . ?P)
+	("batch" . ?b)
+	("note" . ?n)
+	("idea" . ?i)))
+
+;; Dispaly final state of captured item in agenda view in order to track what happen, for example DONE or CANCELLED
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+
+;; Habit tracking module
+(require 'org-habit)
+;; Load org-habit by adding org-habit to org-modules
+(add-to-list 'org-modules 'org-habit)
+;; This is the lenth of org habit tracker in agenda view
+(setq org-habit-graph-column 60)
+
+
 
 #+begin_src emacs-lisp :results none
   ;; Capture tasks
