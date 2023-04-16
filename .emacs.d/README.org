@@ -601,6 +601,37 @@ Capture template for capturing tasks:
           ))
 #+end_src
 
+STOP HERE
+#+begin_src emacs-lisp :results none :tangle no
+;; Capture tasks
+(setq org-capture-templates
+      '(("t" "TODO" entry (file+headline "tasks.org" "Collect")
+         "* TODO %? %^G \n  %U" :empty-lines 1)
+
+        ("s" "Scheduled TODO" entry (file+headline "tasks.org" "Collect")
+         "* TODO %? %^G \nSCHEDULED: %^t\n  %U" :empty-lines 1)
+
+        ("d" "Deadline" entry (file+headline "tasks.org" "Collect")
+         "* TODO %? %^G \n  DEADLINE: %^t" :empty-lines 1)
+
+        ("p" "Priority" entry (file+headline "tasks.org" "Collect")
+         "* TODO [#A] %? %^G \n  SCHEDULED: %^t")
+
+        ("a" "Appointment" entry (file+headline "tasks.org" "Collect")
+         "* %? %^G \n  %^t")
+
+        ("n" "Note" entry (file+headline "tasks.org" "Notes")
+         "* %? %^G\n%U" :empty-lines 1)
+
+        ("j" "Journal" entry (file+datetree "journal.org")
+         "* %U\n %?" :empty-lines 1)))
+
+
+(setq org-capture-templates
+      '(("c" "Unscheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Unscheduled Tasks")
+         "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)))
+#+end_src
+
 Custom agenda view:
 #+begin_src emacs-lisp :results none
   ;; Dashboard
