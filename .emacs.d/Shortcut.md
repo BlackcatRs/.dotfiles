@@ -103,3 +103,30 @@ Type a first letters of node and type `C-M-i` to prompt.
 Make a heading inside a node file as a node with `org-id-get-create` function which add PROPERTIES to that heading.
 
 
+
+# Org agenda #
+C-c a t = we can filter using states
+
+Make a task or an event to pop up every year using +1y
+<2023-04-16 dim +1y>
+More info https://orgmode.org/manual/Repeated-tasks.html
+
+
+
+Making query based on tags and display them in org agenda view
+query based on properties that have been set that file or task
+Or can also use https://github.com/alphapapa/org-ql
+
+
+counsel-org-tag allow to choose tags that have been already used in that file from where u evoke this command
+
+C-c C-q open commonly known task which we defined in emacs config file
+
+We can use traditional capture template or Declarative Org Capture Templates (DOCT) to capture tasks
+https://github.com/progfolio/doct
+
+C-c C-q or org-set-tags-command to choose assign a tag
+
+org-refile to move finished items or task
+
+add a tesk with `STYLE: habit` inside `PROPERTY` to get track of your habits
