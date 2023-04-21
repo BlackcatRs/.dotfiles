@@ -8,3 +8,5 @@ install.sh
 .Xmodmap
 README.md
 shell-color-scripts
+\.emacs.d/README.*
+\.emacs.d/Shortcut.md
