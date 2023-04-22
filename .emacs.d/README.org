@@ -557,18 +557,15 @@ Refiling or moving unwanted item usually finished tasks to different place for a
 
 Predefined tags that can be accessible from any org file:
 #+begin_src emacs-lisp :results none
-(setq org-tag-alist
-      '((:startgroup)
-	(:endgroup)
-	("@errand" . ?E)
-	("@home" . ?H)
-	("@work" . ?W)
-	("agenda" . ?a)
-	("planning" . ?p)
-	("publish" . ?P)
-	("batch" . ?b)
-	("note" . ?n)
-	("idea" . ?i)))
+  (setq org-tag-alist
+        '((:startgroup)
+          (:endgroup)
+          ("@HOME" . ?h)
+          ("@WORK" . ?w)
+          ("Appointment" . ?a)
+          ("Planning" . ?p)
+          ("Note" . ?n)
+          ("Idea" . ?i)))
 #+end_src
 
 
@@ -593,56 +590,21 @@ Capture template for capturing tasks:
 #+begin_src emacs-lisp :results none
   ;; Capture tasks
   (setq org-capture-templates
-        '(("c" "Add task" entry (file "~/lab/emacs/test_files/TODO.org")
-           "* TODO %?\n  %i\n  ")
-
-          ("w" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
-           "* TODO %?\n  %i\n  %a")
-          ))
-#+end_src
-
-STOP HERE
-#+begin_src emacs-lisp :results none :tangle no
-;; Capture tasks
-(setq org-capture-templates
-      '(("t" "TODO" entry (file+headline "tasks.org" "Collect")
-         "* TODO %? %^G \n  %U" :empty-lines 1)
-
-        ("s" "Scheduled TODO" entry (file+headline "tasks.org" "Collect")
-         "* TODO %? %^G \nSCHEDULED: %^t\n  %U" :empty-lines 1)
-
-        ("d" "Deadline" entry (file+headline "tasks.org" "Collect")
-         "* TODO %? %^G \n  DEADLINE: %^t" :empty-lines 1)
-
-        ("p" "Priority" entry (file+headline "tasks.org" "Collect")
-         "* TODO [#A] %? %^G \n  SCHEDULED: %^t")
-
-        ("a" "Appointment" entry (file+headline "tasks.org" "Collect")
-         "* %? %^G \n  %^t")
-
-        ("n" "Note" entry (file+headline "tasks.org" "Notes")
-         "* %? %^G\n%U" :empty-lines 1)
-
-        ("j" "Journal" entry (file+datetree "journal.org")
-         "* %U\n %?" :empty-lines 1)))
-
-(setq org-capture-templates
-      '(("c" "Unscheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Unscheduled Tasks")
-         "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
+        '(("c" "Unscheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Unscheduled Tasks")
+           "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
 	
-	("s" "Scheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Scheduled Tasks")
-         "* TODO %? %(org-set-tags-command)\n SCHEDULED: %^t\n %U" :empty-lines 1)
+          ("s" "Scheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Scheduled Tasks")
+           "* TODO %? %^G\n SCHEDULED: %^t\n %U" :empty-lines 1)
 
-	("d" "Deadline" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Recursive Tasks")
-         "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
+          ("d" "Deadline" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Recursive Tasks")
+           "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
 
-	("n" "Note" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Notes")
-         "* %? %^G\n %U" :empty-lines 1)
+          ("n" "Note" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Notes")
+           "* %? %^G\n %U" :empty-lines 1)
 
-
-	("j" "Journal" entry (file+datetree "~/lab/emacs/test_files/journal.org")
-         "* [%<%H:%M>]\n %?" :empty-lines 1)
-	))
+          ("j" "Journal" entry (file+datetree "~/lab/emacs/test_files/journal.org")
+           "* [%<%H:%M>]\n %?" :empty-lines 1)
+          ))
 
 #+end_src
 
