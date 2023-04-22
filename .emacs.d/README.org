@@ -592,7 +592,7 @@ Capture template for capturing tasks:
   (setq org-capture-templates
         '(("c" "Unscheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Unscheduled Tasks")
            "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
-	
+
           ("s" "Scheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Scheduled Tasks")
            "* TODO %? %^G\n SCHEDULED: %^t\n %U" :empty-lines 1)
 
@@ -602,10 +602,9 @@ Capture template for capturing tasks:
           ("n" "Note" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Notes")
            "* %? %^G\n %U" :empty-lines 1)
 
-          ("j" "Journal" entry (file+datetree "~/lab/emacs/test_files/journal.org")
+          ("j" "Journal" entry (file+olp+datetree "~/lab/emacs/test_files/journal.org")
            "* [%<%H:%M>]\n %?" :empty-lines 1)
           ))
-
 #+end_src
 
 Custom agenda view:
