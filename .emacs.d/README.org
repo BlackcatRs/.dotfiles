@@ -607,7 +607,7 @@ Capture template for capturing tasks:
           ))
 #+end_src
 
-Custom agenda view:
+This block of code will collect information from our various Org files where we have captured tasks and/or notes and display them as we want. This is done by customizing the variable =org-agenda-custom-commands=, so for more details on customization we can use =describe-variable= and =org-agenda-custom-commands=. We can also  Emacs' documentation by pressing =C-h i > d > m > Org mode > m > Block agenda=:
 #+begin_src emacs-lisp :results none
   ;; Dashboard
   (setq org-agenda-custom-commands
