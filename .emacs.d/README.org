@@ -39,8 +39,12 @@
 - [[#eshell][Eshell]]
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
 - [[#hold-org-roam][HOLD Org-roam]]
+  - [[#prerequisites][Prerequisites]]
+  - [[#key-bindings-1][Key bindings]]
+  - [[#references][References]]
 - [[#hold-mail][HOLD Mail]]
   - [[#mu4e][Mu4e]]
+- [[#footnotes][Footnotes]]
 
 * Requirements
 ** Fonts
@@ -96,19 +100,19 @@ Set up the visible bell:
 * Package Configuration
 Package configuration:
 #+begin_src emacs-lisp :results none
-;; Load a package call "package" to handle package fuctions 
-(require 'package)
+  ;; Load a package call "package" to handle package fuctions 
+  (require 'package)
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("gnu" . "https://elpa.gnu.org/packages/")
-			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")
+                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
 
-;; Load Emacs Lisp packages, and activate them.
-(package-initialize)
+  ;; Load Emacs Lisp packages, and activate them.
+  (package-initialize)
 
-;; Automatically update the list of packages, only if there is no package list already
-(when (not package-archive-contents)
+  ;; Automatically update the list of packages, only if there is no package list already
+  (when (not package-archive-contents)
     (package-refresh-contents))
 #+end_src
 
@@ -773,15 +777,19 @@ This block of code will collect information from our various Org files where we 
 * HOLD Org-roam
 - State "HOLD"       from              [2023-04-09 dim. 10:15] \\
   Not very important for now.
+
 Org Roam is an extension to Org Mode which help to create topic-focused Org files and link them together. It's is inspired by a program called ~Roam~ and a note-taking strategy called ~Zettlekasten~.
 
-This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]]:
+** Prerequisites
+Org Roam uses a database to keep track of "nodes" (a file with a specific content) and links between nodes in a efficient way.
+
+Org Roam v2 package uses a customized build of SQLite database, so Org Roam need C/C++ compiler like =gcc= or =clang= installed on the system.
+
 #+begin_src emacs-lisp :results none :tangle no
-  ;; Start - Build a Second Brain in Emacs -----------------------------
   (use-package org-roam
     :ensure t
     :custom
-    (org-roam-directory "~/RoamNotes")
+    (org-roam-directory "~/lab/emacs/RoamNotes")
     (org-roam-completion-everywhere t)
     (org-roam-capture-templates
     ;; "d" is the key to press to choose the template
@@ -802,6 +810,7 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
+           ("C-c n c" . org-roam-capture)
            :map org-mode-map
            ("C-M-i    .  completion-at-point"))
     :config
@@ -809,10 +818,18 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
     (org-roam-setup))
   ;; End - Build a Second Brain in Emacs -------------------------------
 
-
-  ;; Capturing Notes Efficiently in Emacs with Org Roam ----------------
-  ;; End - Capturing Notes Efficiently in Emacs with Org Roam ----------
 #+end_src
+
+** Key bindings
+- =C-c n f= Open a node [fn:1] and if not exists prompt you with a Org-roam capture template
+- =C-c n l= Indicates backlinks (where the actual node is used or linked).
+- =C-c n i= Insert a link to a node and if not exists prompt you with a Org-roam capture template.
+- =C-c n c= Create a node and back to original location after save.
+
+** References
+This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]].
+
+
 
 * HOLD Mail
 - State "HOLD"       from              [2023-04-09 dim. 10:17] \\
@@ -872,3 +889,7 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
 
 ;; End - Emacs Mail --------------------------------------------------
 #+end_src
+
+* Footnotes
+
+[fn:1] Node is a Org file that contains data. 
