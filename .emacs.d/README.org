@@ -530,9 +530,10 @@ Text alignment in the buffer:
 #+end_src
 
 Custom state that representing the flow order.
-=TODO=: An event that need to done at scheduled time
-=NEXT=: An event must be scheduled after the end of the previous TODO event.
-=DONE=: A finished event.
+=TODO=:    An event that need to done at scheduled time
+=ONGOING=: Currently working on that section/subject
+=NEXT=:    An event must be scheduled after the end of the previous TODO event.
+=DONE=:    A finished event.
 
 =WAITING=: A pending event due to the absence of a dependency.
 =HOLD=: A scheduled event temporarily suspended but to be scheduled in the future.
@@ -540,7 +541,7 @@ Custom state that representing the flow order.
 #+begin_src emacs-lisp :results none
 ;; Custom states 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+      '((sequence "TODO(t)" "ONGOING(o)" "NEXT(n)" "|" "DONE(d)")
 	;; This states store a timestamp and note
         (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 #+end_src
