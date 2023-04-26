@@ -788,7 +788,7 @@ Org Roam uses a database to keep track of "nodes" (a file with a specific conten
 
 Org Roam v2 package uses a customized build of SQLite database, so Org Roam need C/C++ compiler like =gcc= or =clang= installed on the system.
 
-#+begin_src emacs-lisp :results none :tangle no
+#+begin_src emacs-lisp :results none :tangle yes
   (use-package org-roam
     :ensure t
     :custom
