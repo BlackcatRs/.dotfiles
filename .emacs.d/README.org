@@ -4,6 +4,7 @@
 - [[#requirements][Requirements]]
   - [[#fonts][Fonts]]
 - [[#basic-ui-customization][Basic UI Customization]]
+- [[#font-configuration][Font Configuration]]
 - [[#package-configuration][Package Configuration]]
 - [[#helpful-ui-improvements][Helpful UI Improvements]]
   - [[#doom-modeline][Doom-modeline]]
@@ -32,10 +33,9 @@
 - [[#auto-table-of-content-for-markdown-and-org][Auto table of content for Markdown and Org]]
 - [[#emacs-backup-files][Emacs backup files]]
 - [[#keybinding-to-run-rofi][Keybinding to run rofi]]
-- [[#font-configuration][Font Configuration]]
-- [[#org-mode][Org mode]]
-  - [[#general-configuration][General configuration]]
-  - [[#agenda][Agenda]]
+- [[#org][Org]]
+  - [[#org-mode-basics-configuration][Org-mode Basics Configuration]]
+  - [[#org-agenda][Org-agenda]]
   - [[#hold-push-notification][HOLD Push notification]]
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
@@ -60,13 +60,14 @@ sudo apt install fonts-firacode
 * Basic UI Customization
 Deactivating default Emacs interface option:
 #+begin_src emacs-lisp :results none
-(setq inhibit-startup-message t) ; Hide welcome message
-(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
-(tooltip-mode -1)           ; Disable tooltips
-(set-fringe-mode 10)        ; Give some breathing room
-(menu-bar-mode -1)          ; Disable the menu bar
-(hl-line-mode)              ; Highlight cursor pointing line
+  (setq inhibit-startup-message t) ; Hide welcome message
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
+  (menu-bar-mode -1)          ; Disable the menu bar
+  (hl-line-mode)              ; Highlight cursor pointing line
+  (show-paren-mode)	       ; Highlight opening and closing paren
 #+end_src
 
 Display column and line number:
@@ -82,11 +83,21 @@ Display column and line number:
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 
-#+RESULTS:
-
 Set up the visible bell:
 #+begin_src emacs-lisp :results none :tangle no
 (setq visible-bell t) ; Set up the visible bell
+#+end_src
+
+* Font Configuration
+#+begin_src emacs-lisp :results none
+;; Adjust this font size for your system!
+(defvar runemacs/default-font-size 100)
+
+(set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 100)
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
 #+end_src
 
 * Package Configuration
@@ -525,120 +536,107 @@ The =NOERROR= argument causes the function to return =nil= when file with the fe
   (global-set-key (kbd "C-c r") 'rofi)
 #+end_src
 
-* Font Configuration
+* Org
+** Org-mode Basics Configuration
+*** Org-mode
 #+begin_src emacs-lisp :results none
-;; Adjust this font size for your system!
-(defvar runemacs/default-font-size 100)
+  (defun efs/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-(set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-;; ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 100)
-;; ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
+    ;; Set faces (display options like font, size, etc) for heading levels
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+  ;; Activate some option in Org mode
+  (defun efs/org-mode-setup ()
+    (org-indent-mode)
+    (variable-pitch-mode 1)
+    (visual-line-mode 1)
+    (org-overview) ;; Show only headings
+    ;; This prevent org-capture buffer from opening
+    ;; (forward-page) ;; Goto the bottom of the page
+    ) 
+
+  (use-package org
+    :hook (org-mode . efs/org-mode-setup)
+    :config
+    (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
+          ;; Output the result string instead of showing synctaxe.
+          ;; e.g : *Bold* transforme into bold text.  
+          org-hide-emphasis-markers t)
+
+    (efs/org-font-setup))
 #+end_src
 
-* Org mode
-** General configuration
+*** Org-bullets
+Change default Org heading style: 
 #+begin_src emacs-lisp :results none
-(defun efs/org-font-setup ()
-  ;; Replace list hyphen with dot
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-  ;; Set faces (display options like font, size, etc) for heading levels
-  (dolist (face '((org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.1)
-                  (org-level-6 . 1.1)
-                  (org-level-7 . 1.1)
-                  (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
-  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
-
-;; Activate some option in Org mode
-(defun efs/org-mode-setup ()
-  (org-indent-mode)
-  (variable-pitch-mode 1)
-  (visual-line-mode 1)
-  (org-overview) ;; Show only headings
-  (forward-page)) ;; Goto the bottom of the page
-
-
-;; 1st solution for " IMPORTANT: please install Org from GNU ELPA as Org ELPA will close before Org 9.6"
-;; (use-package org
-;;    :pin gnu)
-
-;; 2nd solution for " IMPORTANT: please install Org from GNU ELPA as Org ELPA will close before Org 9.6"
-;; (use-package org
-;;   :ensure org-plus-contrib)
-  
-;; https://github.com/jwiegley/use-package/issues/319#issuecomment-845214233
-;; (assq-delete-all 'org package--builtins)
-;; (assq-delete-all 'org package--builtin-versions)
-
-
-(use-package org
-  :hook (org-mode . efs/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
-	;; Output the result string instead of showing synctaxe.
-	;; e.g : *Bold* transforme into bold text.  
-	org-hide-emphasis-markers t)
-
-  (efs/org-font-setup))
-
-;; Change headings bullet points using org-bullets package
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-(defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 100
-        visual-fill-column-center-text t)
-  ;; Wrap a line when it exceeds the width defined by
-  ;; visual-fill-column-width instead of truncating it by placing \n
-  ;; at the end of the line.
-  (visual-fill-column-mode 1))
-
-(use-package visual-fill-column
-  ;; Call the org-mode-visual-fill to set parms of visual-fill-column
-  :hook (org-mode . efs/org-mode-visual-fill))
-;; End -  Emacs From Scratch #5 - Org Mode Basics --------------------
+  ;; Change headings bullet points using org-bullets package
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+end_src
 
-** Agenda
-#+begin_src emacs-lisp :results none
-;; Press enter key on the task in agenda will open the task file
-(setq org-return-follows-link t
-      org-agenda-tags-column 75
-      ;; Display all tasks with deadline 30 days
-      org-deadline-warning-days 30
-      ;; Use single key to execute an action
-      org-use-speed-commands t)
+*** Visual-fill-column
+Text alignment in the buffer:
+#+begin_src emacs-lisp
+  (defun efs/org-mode-visual-fill ()
+    (setq visual-fill-column-width 100
+          visual-fill-column-center-text t)
+    ;; Wrap a line when it exceeds the width defined by
+    ;; visual-fill-column-width instead of truncating it by placing \n
+    ;; at the end of the line.
+    (visual-fill-column-mode 1))
 
-(setq org-agenda-files (list
-                        "~/lab/emacs/test_files/TODO.org"
-                        "~/lab/emacs/test_files/Events.org"
-                        "~/lab/emacs/test_files/Repeaters.org"))
+  (use-package visual-fill-column
+    ;; Call the org-mode-visual-fill to set parms of visual-fill-column
+    :hook (org-mode . efs/org-mode-visual-fill))
+#+end_src
+
+** Org-agenda
+=org-return-follows-link= will open the task file when you press Enter key on any task in Org agenda.
+=org-agenda-tags-column 75= indicates space between task heading and tags
+=org-use-speed-commands= using single key to execute an action.
+=org-use-speed-commands t= allow us to use single key to execute an action
+#+begin_src emacs-lisp :results none
+  (setq org-return-follows-link t ;; Press enter key on the task will open the task file
+        org-agenda-tags-column 75   ;; Space between task heading and tags
+        org-deadline-warning-days 5 ;; Dispaly tasks with deadline 5 days
+        org-use-speed-commands t)   ;; Use single key to execute an action
+        
+
+  (setq org-agenda-files (list
+                          "~/lab/emacs/test_files/TODO.org"
+                          "~/lab/emacs/test_files/Events.org"
+                          "~/lab/emacs/test_files/Repeaters.org"))
 #+end_src
 
 Custom state that representing the flow order.
-=TODO=: An event that need to done at scheduled time
-=NEXT=: An event must be scheduled after the end of the previous TODO event.
-=DONE=: A finished event.
+=TODO=:    An event that need to done at scheduled time
+=ONGOING=: Currently working on that section/subject
+=NEXT=:    An event must be scheduled after the end of the previous TODO event.
+=DONE=:    A finished event.
 
 =WAITING=: A pending event due to the absence of a dependency.
 =HOLD=: A scheduled event temporarily suspended but to be scheduled in the future.
@@ -646,20 +644,75 @@ Custom state that representing the flow order.
 #+begin_src emacs-lisp :results none
 ;; Custom states 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+      '((sequence "TODO(t)" "ONGOING(o@/!)" "NEXT(n)" "|" "DONE(d)")
 	;; This states store a timestamp and note
         (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 #+end_src
 
+Refiling or moving unwanted item usually finished tasks to different place for archiving purpose:
+#+begin_src emacs-lisp :results none
+  (setq org-refile-targets
+        '(("Archive.org" :maxlevel . 1)
+          ("Tasks.org" :maxlevel . 1)))
 
+  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+#+end_src
+
+Predefined tags that can be accessible from any org file:
+#+begin_src emacs-lisp :results none
+  (setq org-tag-alist
+        '((:startgroup)
+          (:endgroup)
+          ("@HOME" . ?h)
+          ("@WORK" . ?w)
+          ("Appointment" . ?a)
+          ("Planning" . ?p)
+          ("Note" . ?n)
+          ("Idea" . ?i)))
+#+end_src
+
+
+Show the final state of the captured item in the agenda view to track what happened, such as =COMPLETED= or =CANCELED= tasks:
+#+begin_src emacs-lisp :results none
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+#+end_src
+
+Habit tracking with ~org-habit~ package:
+#+begin_src emacs-lisp :results none
+;; Habit tracking package
+(require 'org-habit)
+;; Load org-habit by adding org-habit to org-modules
+(add-to-list 'org-modules 'org-habit)
+;; This is the lenth of org habit tracker in agenda view
+(setq org-habit-graph-column 60)
+#+end_src
+
+Capture template for capturing tasks:
 #+begin_src emacs-lisp :results none
   ;; Capture tasks
   (setq org-capture-templates
-        '(("t" "Add task (Reference a file)" entry (file "~/lab/emacs/test_files/TODO.org")
-           "* TODO %?\n  %i\n  %a")
-          ("w" "Add task" entry (file "~/lab/emacs/test_files/TODO.org")
-           "* TODO %?\n  %i\n  ")))
+        '(("c" "Unscheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Unscheduled Tasks")
+           "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
 
+          ("s" "Scheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Scheduled Tasks")
+           "* TODO %? %^G\n SCHEDULED: %^t\n %U" :empty-lines 1)
+
+          ("d" "Deadline" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Recursive Tasks")
+           "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
+
+          ("n" "Note" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Notes")
+           "* %? %^G\n %U" :empty-lines 1)
+
+          ("j" "Journal" entry (file+olp+datetree "~/lab/emacs/test_files/journal.org")
+           "* [%<%H:%M>]\n %?" :empty-lines 1)
+          ))
+#+end_src
+
+This block of code will collect information from our various Org files where we have captured tasks and/or notes and display them as we want. This is done by customizing the variable =org-agenda-custom-commands=, so for more details on customization we can use =describe-variable= and =org-agenda-custom-commands=. We can also  Emacs' documentation by pressing =C-h i > d > m > Org mode > m > Block agenda=:
+#+begin_src emacs-lisp :results none
   ;; Dashboard
   (setq org-agenda-custom-commands
         '((" " "Agenda"
@@ -675,7 +728,7 @@ Custom state that representing the flow order.
                    (org-agenda-files '("~/lab/emacs/test_files/Events.org"))
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
 
-  ;; global keyboard shortcuts
+  ;; Global keyboard shortcuts
   (global-set-key (kbd "C-c c") #'org-capture)
   (global-set-key (kbd "C-c a") #'org-agenda)
 #+end_src
@@ -978,18 +1031,13 @@ mu init --maildir=DIR --my-address=ADDRESS
   ;; Run mu4e in the background to sync mail periodically
   ;; (mu4e t)
   )
-
 ;; End - Mail --------------------------------------------------------
 #+end_src
 
 ** Keybinding
-
 Run =mu4e=, see the landing page.
 
 When reading mail, you start out in the ~Headers~ buffer.  When you select an email with =RET=, the ~View~ buffer is displayed in a window below the ~Headers~ buffer window.
 
-
 ** References
 Emacs Mail by [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ][System Crafters]]
-
-
