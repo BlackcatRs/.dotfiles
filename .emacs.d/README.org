@@ -41,7 +41,7 @@
 - [[#eshell][Eshell]]
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
 - [[#hold-org-roam][HOLD Org-roam]]
-- [[#hold-mail][HOLD Mail]]
+- [[#ongoing-mail][ONGOING Mail]]
   - [[#prerequisite][Prerequisite]]
   - [[#syncing-mails][Syncing Mails]]
   - [[#index-mailbox][Index mailbox]]
@@ -917,9 +917,11 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
   ;; End - Capturing Notes Efficiently in Emacs with Org Roam ----------
 #+end_src
 
-* HOLD Mail
-- State "HOLD"       from              [2023-04-09 dim. 10:17] \\
-  Currently using mutt, not a priority for moment
+* ONGOING Mail
+:LOGBOOK:
+- State "ONGOING"    from "HOLD"       [2023-04-30 dim. 15:01] \\
+  Following https://www.youtube.com/watch?v=yZRyEhi4y44&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ video. Stop at 30:55
+:END:
 
 We can use Emacs to consult mails with the help of various programs. Among them, =Mu4e= is a mail client for Emacs and it is considered as an Emacs interface for =mu= the mail indexer. A typical example might be a mail sync program like ~isync~ which downloads mail from the remote Maildir folder to the local Maildir folder and then the =mu= indexer will be used to index the mail. Finally an Emacs mail client can read the mails.
 
