@@ -1,0 +1,53 @@
+#+PROPERTY: header-args :tangle muttrc.py
+
+* Neomutt configuration
+
+This setup is for the Neomutt email client, but it could also work with Mutt. Sometimes the colors defined in the =color.muttrc= file do not work as expected because some Mutts do not allow changing colors.
+
+Setting sender's mail address with the name that will be display in mail's header:
+#+begin_src
+# Sender info
+set from = name@laposte.net
+set realname = "Firstname Lastname"  
+#+end_src
+
+SMTP server with password that will be retrieve from =pass= password manager:
+#+begin_src
+# SMTP config
+set smtp_url = "smtps://name@laposte.net@smtp.laposte.net:465"
+set smtp_pass="`/usr/bin/pass  mail/laposte | head -n 1`"
+#+end_src
+
+Location where emails can be found, here i use IMAP to specify the remote location, but it can be a local folder containing mails:
+#+begin_src
+# IMAP config
+set imap_user="name@laposte.net"
+set imap_pass="`/usr/bin/pass  mail/laposte | head -n 1`"
+set folder="imaps://imap.laposte.net:993/"
+#+end_src
+
+Mail location on the remote server:
+#+begin_src
+# Mails location on the server
+set spoolfile = +INBOX
+#+end_src
+
+Pull mails from all available mail folders:
+#+begin_src
+# If have multiple folder, can be fetched
+set imap_check_subscribed=yes
+#+end_src
+
+Include color scheme to customize UI:
+#+begin_src
+# Enable sidebar
+set sidebar_visible = yes
+
+# Source color file
+source colors.muttrc
+#+end_src
+
+** TODO Inquire the purpose =mailboxes=
+#+begin_src
+# mailboxes =INBOX =Sent
+#+end_src
