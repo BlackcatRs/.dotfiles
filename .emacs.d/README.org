@@ -40,6 +40,7 @@
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
 - [[#ongoing-org-roam][ONGOING Org-roam]]
   - [[#prerequisites][Prerequisites]]
+  - [[#org-roam-config][Org-roam config]]
   - [[#key-bindings-1][Key bindings]]
   - [[#references][References]]
 - [[#hold-mail][HOLD Mail]]
@@ -788,6 +789,7 @@ Org Roam uses a database to keep track of "nodes" (a file with a specific conten
 
 Org Roam v2 package uses a customized build of SQLite database, so Org Roam need C/C++ compiler like =gcc= or =clang= installed on the system.
 
+** Org-roam config
 #+begin_src emacs-lisp :results none :tangle yes
   (use-package org-roam
     :ensure t
@@ -795,39 +797,92 @@ Org Roam v2 package uses a customized build of SQLite database, so Org Roam need
     (org-roam-directory "~/lab/emacs/RoamNotes")
     (org-roam-completion-everywhere t)
     (org-roam-capture-templates
-    ;; "d" is the key to press to choose the template
-    ;; "plain" is the type of text being inserted
-    '(("d" "default" plain
-       ;; "%?" is org mode syntax which indicate cursor where to land in a node file
-       "%?"
-       ;; Heading to insert in node files 
-       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-       ;; Expand the node files or show the entire content of the file without folding
-       :unnarrowed t)
+     '(
+       ("d" "Default" plain
+        "%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
 
-      ("l" "programming language" plain
-       "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
-       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-       :unnarrowed t)))
+       ("l" "Programming language" plain
+        "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
+
+       ("b" "Book notes" plain
+        "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
+
+       ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates - Deadlines|Events|Release|Dailies\n\n"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+        :unnarrowed t)
+       ))
 
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
            ("C-c n c" . org-roam-capture)
            :map org-mode-map
-           ("C-M-i    .  completion-at-point"))
+           ("C-M-i    .  completion-at-point")
+           :map org-roam-dailies-map
+           ("Y" . org-roam-dailies-capture-yesterday)
+           ("T" . org-roam-dailies-capture-tomorrow))
     :config
     ;; Reload the custom keybindings that defined above
-    (org-roam-setup))
-  ;; End - Build a Second Brain in Emacs -------------------------------
+    (org-roam-setup)
 
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
+
+    :config
+    (require 'org-roam-dailies) ;; Ensure the keymap is available
+    (org-roam-db-autosync-mode)
+    (setq org-roam-dailies-directory "Journal/"))
+#+end_src
+
+*** Org Roam Capture Template
+In the Org-roam capture template, the =d= represents the shortcut key to select a node template and =default= is used as a name to node template. =%?= is the org mode syntax that indicates where the cursor lands in a node file. The code =%<%Y%m%d%H%M%S>-${slug}.org= creates a unique string for node file name and =#+title: ${title}\n= sets the title in the node file. =:unnarrowed t= expands the node file or show the entire content of the file without folding the content.
+
+We can also create Org-roam capture template using Org Mode's capture template syntax. For example =%^{Author}= is Org mode syntax which prompt user for a string. Note the difference between Org mode capture syntax which start with =%^= and Org-roam capture syntax starts with =$=.
+
+Another useful template that we can create is for capturing details about a new, particularly the tasks, goals, and any important dates you might need to remember. The new thing we've added this time is the =#+filetags: Project= configuration inside of the =file+head= section. We can use this =Project= string as a tag to get a customized view in Org Agenda using Org Roam DB API. The tag may also show up in your completion list if you're using ~Vertico~ and ~Marginalia~, check out this [[https://www.youtube.com/watch?v=J0OaRy85MOo][video on Vertico]].
+
+*** Optional - Org Roam capture template in a Org file
+We can also define capture template in a Org file under =~/lab/emacs/RoamNotes/Template= folder in a =BookNoteTemplate.org= Org file:
+#+begin_src org :results none :tangle no
+ * Source
+   Author: %^{Author}
+   Title: ${title}
+   Year: %^{Year}
+
+ * Summary
+   %?
+#+end_src
+
+And then specify the location of Org-roam template location:
+#+begin_src emacs-lisp :results none :tangle no
+  ("b" "Book notes" plain
+   (file "~/lab/emacs/RoamNotes/Template/BookNoteTemplate.org")
+   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+   :unnarrowed t)
+#+end_src
+
+*** Org Roam dailies
+#+begin_src emacs-lisp :results none :tangle no
+(setq org-roam-dailies-directory "Journal/")
 #+end_src
 
 ** Key bindings
+:PROPERTIES:
+:ID:       c5bfae02-13c8-4344-8853-616496fd97a5
+:END:
 - =C-c n f= Open a node [fn:1] and if not exists prompt you with a Org-roam capture template
 - =C-c n l= Indicates backlinks (where the actual node is used or linked).
 - =C-c n i= Insert a link to a node and if not exists prompt you with a Org-roam capture template.
 - =C-c n c= Create a node and back to original location after save.
+- =C-M i= Auto completion of node links.
+- =org-id-get-create= Make a heading as a node file.
+- =org-roam-alias-add= Assign a name in addition to node name.
 
 ** References
 This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]].
