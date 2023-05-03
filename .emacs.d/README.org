@@ -38,7 +38,7 @@
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
-- [[#ongoing-org-roam][ONGOING Org-roam]]
+- [[#org-roam][Org-roam]]
   - [[#prerequisites][Prerequisites]]
   - [[#org-roam-config][Org-roam config]]
   - [[#key-bindings-1][Key bindings]]
@@ -775,13 +775,7 @@ This block of code will collect information from our various Org files where we 
 (add-hook 'shell-mode-hook 'voc/shell-hook)
 #+end_src
 
-* ONGOING Org-roam
-:LOGBOOK:
-- State "ONGOING"    from "HOLD"       [2023-04-25 mar. 21:18] \\
-  Continue watching the video https://www.youtube.com/watch?v=AyhPmypHDEw&list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD.
-  Stop at 15:42
-:END:
-
+* Org-roam
 Org Roam is an extension to Org Mode which help to create topic-focused Org files and link them together. It's is inspired by a program called ~Roam~ and a note-taking strategy called ~Zettlekasten~.
 
 ** Prerequisites
@@ -796,6 +790,9 @@ Org Roam v2 package uses a customized build of SQLite database, so Org Roam need
     :custom
     (org-roam-directory "~/lab/emacs/RoamNotes")
     (org-roam-completion-everywhere t)
+    (org-roam-dailies-capture-templates
+      '(("d" "default" entry "* Résumé \n%? \n* A améliorer \n\n* Terminé \n"
+         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
     (org-roam-capture-templates
      '(
        ("d" "Default" plain
@@ -867,15 +864,24 @@ And then specify the location of Org-roam template location:
    :unnarrowed t)
 #+end_src
 
-*** Org Roam dailies
+*** ONGOING Org Roam Dailies (Or Journal)
+:LOGBOOK:
+- State "ONGOING"    from              [2023-05-03 mer. 21:35] \\
+  Finish the documentation. The default journal capture template is modified. We can also add mode capture template
+:END:
 #+begin_src emacs-lisp :results none :tangle no
 (setq org-roam-dailies-directory "Journal/")
 #+end_src
+
+Benefit of using dailies is the ability to links notes.
+Journals are considered as standard node.
+
 
 ** Key bindings
 :PROPERTIES:
 :ID:       c5bfae02-13c8-4344-8853-616496fd97a5
 :END:
+*** Org Roam
 - =C-c n f= Open a node [fn:1] and if not exists prompt you with a Org-roam capture template
 - =C-c n l= Indicates backlinks (where the actual node is used or linked).
 - =C-c n i= Insert a link to a node and if not exists prompt you with a Org-roam capture template.
@@ -883,6 +889,17 @@ And then specify the location of Org-roam template location:
 - =C-M i= Auto completion of node links.
 - =org-id-get-create= Make a heading as a node file.
 - =org-roam-alias-add= Assign a name in addition to node name.
+
+*** Org Roam Dailies 
+- =C-c n d n= Capture a note/journal for today.
+- =C-c n d d= OR =org-roam-dailies-goto-today= View today's journal.
+- =C-c n d Y= OR =org-roam-dailies-capture-yesterday= Capture a note for yesterday.
+- =C-c n d T= OR =org-roam-dailies-capture-tomorrow= Capture a note for tomorrow.
+- =C-c n d v= OR =org-roam-dailies-capture-date= Capture a note for a specific note.
+- =C-c n d c= OR =org-roam-dailies-goto-date= View a note of a specific data.
+- =C-c n d b= OR =org-roam-dailies-goto-back-note= Go back to one existing note from the actual note.
+- =C-c n d f= OR =org-roam-dailies-goto-next-note= Go forward to one existing note from the actual note.
+
 
 ** References
 This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]].
