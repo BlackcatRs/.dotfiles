@@ -13,7 +13,8 @@
   - [[#ivy][Ivy]]
   - [[#ivy-rich][Ivy-rich]]
   - [[#which-key][Which-key]]
-  - [[#helpful][helpful]]
+  - [[#helpful][Helpful]]
+  - [[#visual-fill-column][Visual-fill-column]]
 - [[#key-bindings][Key bindings]]
   - [[#command-log-mode][Command-log-mode]]
   - [[#custom-key-bindings][Custom key bindings]]
@@ -30,6 +31,7 @@
   - [[#markdown][Markdown]]
   - [[#yaml][YAML]]
 - [[#auto-table-of-content-for-markdown-and-org][Auto table of content for Markdown and Org]]
+- [[#mode-configuration][Mode configuration]]
 - [[#emacs-backup-files][Emacs backup files]]
 - [[#org][Org]]
   - [[#org-mode-basics-configuration][Org-mode Basics Configuration]]
@@ -70,15 +72,16 @@ Deactivating default Emacs interface option:
 
 Display column and line number:
 #+begin_src emacs-lisp :results none
-(column-number-mode)
-(global-display-line-numbers-mode t)
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
 
-;; Disable line numbers for some modes
-(dolist (mode '(org-mode-hook
-		term-mode-hook
-		shell-mode-hook
-		eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+		  markdown-mode-hook
+		  term-mode-hook
+		  shell-mode-hook
+		  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 
 Set up the visible bell:
@@ -211,7 +214,7 @@ Display keys that follow a prefix key with function:
     (setq which-key-idle-delay 0.5))
 #+end_src
 
-** helpful
+** Helpful
 A replacement for the built-in help text that improves the readability of help text:
 #+begin_src emacs-lisp :results none
   ;; Beautify help text, ex C-h 
@@ -225,6 +228,24 @@ A replacement for the built-in help text that improves the readability of help t
     ([remap describe-command] . helpful-command)
     ([remap describe-variable] . counsel-describe-variable)
     ([remap describe-key] . helpful-key))
+#+end_src
+
+** Visual-fill-column
+Text alignment in the buffer:
+#+begin_src emacs-lisp
+  (defun efs/org-mode-visual-fill ()
+    (setq visual-fill-column-width 100
+          visual-fill-column-center-text t)
+    ;; Wrap a line when it exceeds the width defined by
+    ;; visual-fill-column-width instead of truncating it by placing \n
+    ;; at the end of the line.
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column
+    ;; Call the org-mode-visual-fill to set parms of visual-fill-column
+    :hook (org-mode . efs/org-mode-visual-fill)
+    (markdown-mode . efs/org-mode-visual-fill))
+
 #+end_src
 
 * Key bindings
@@ -386,6 +407,8 @@ A major mode for editing NASM x86 assembly programs. It includes syntax highligh
   ;; Mardown language highlighting
   (use-package markdown-mode
     :ensure t
+    ;; Apply general mode configuration
+    :hook (markdown-mode . efs/all-mode-setup)
     :mode ("README\\.md\\'" . gfm-mode)
     :init (setq markdown-command "multimarkdown"))
 #+end_src
@@ -425,6 +448,16 @@ Major mode to edit YAML file:
 #+end_src
 
 The =NOERROR= argument causes the function to return =nil= when file with the feature isn't found. Without that argument set to =t=, you'd get an *error*.
+
+* Mode configuration
+The =efs/all-mode-setup= function is inspired by the DRY principle which aims to reduce repetitions. This function contains general parameters which will be used in more than one mode. By the way =efs= is namespace that contains all my custom functions to avoid mixing with other functions.
+
+#+begin_src emacs-lisp :results none
+  (defun efs/all-mode-setup ()
+    (visual-line-mode 1))
+#+end_src
+
+- =visual-line-mode= This variable allows to visually wrap a line which exceeds the width of the buffer or in other words, instead of wrapping a line which exceeds the width of the buffer by placing a character =\n=, it will simply display the exceeded line on the next line
 
 * Emacs backup files
 #+begin_src emacs-lisp :results none
@@ -472,14 +505,14 @@ The =NOERROR= argument causes the function to return =nil= when file with the fe
   (defun efs/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
-    (visual-line-mode 1)
     (org-overview) ;; Show only headings
     ;; This prevent org-capture buffer from opening
     ;; (forward-page) ;; Goto the bottom of the page
     ) 
 
   (use-package org
-    :hook (org-mode . efs/org-mode-setup)
+    :hook ((org-mode . efs/org-mode-setup)
+           (org-mode . efs/all-mode-setup))
     :config
     (setq org-ellipsis " ▾" ;; Replace ... at the end of each headings with ▾
           ;; Output the result string instead of showing synctaxe.
@@ -498,22 +531,6 @@ Change default Org heading style:
     :hook (org-mode . org-bullets-mode)
     :custom
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-#+end_src
-
-*** Visual-fill-column
-Text alignment in the buffer:
-#+begin_src emacs-lisp
-  (defun efs/org-mode-visual-fill ()
-    (setq visual-fill-column-width 100
-          visual-fill-column-center-text t)
-    ;; Wrap a line when it exceeds the width defined by
-    ;; visual-fill-column-width instead of truncating it by placing \n
-    ;; at the end of the line.
-    (visual-fill-column-mode 1))
-
-  (use-package visual-fill-column
-    ;; Call the org-mode-visual-fill to set parms of visual-fill-column
-    :hook (org-mode . efs/org-mode-visual-fill))
 #+end_src
 
 ** Org-agenda
@@ -876,7 +893,6 @@ And then specify the location of Org-roam template location:
 Benefit of using dailies is the ability to links notes.
 Journals are considered as standard node.
 
-
 ** Key bindings
 :PROPERTIES:
 :ID:       c5bfae02-13c8-4344-8853-616496fd97a5
@@ -900,11 +916,8 @@ Journals are considered as standard node.
 - =C-c n d b= OR =org-roam-dailies-goto-back-note= Go back to one existing note from the actual note.
 - =C-c n d f= OR =org-roam-dailies-goto-next-note= Go forward to one existing note from the actual note.
 
-
 ** References
 This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]].
-
-
 
 * HOLD Mail
 - State "HOLD"       from              [2023-04-09 dim. 10:17] \\
