@@ -881,17 +881,22 @@ And then specify the location of Org-roam template location:
    :unnarrowed t)
 #+end_src
 
-*** ONGOING Org Roam Dailies (Or Journal)
-:LOGBOOK:
-- State "ONGOING"    from              [2023-05-03 mer. 21:35] \\
-  Finish the documentation. The default journal capture template is modified. We can also add mode capture template
-:END:
+*** Org Roam Dailies (Or Journal)
+The benefit of using Org Roam Dailies as a journaling tool is the ability to link notes as all journal notes are stored as Org Roam nodes.
+
+Before we can create and view journal entries, we first need to create a folder. By default, Org Roam will create journal files under the =daily/= subfolder of your =org-roam-directory=. In our case inside =~/lab/emacs/RoamNotes= folder.
+
+We can change the folder name =daily/= to something else, for example to =Journal/=:
 #+begin_src emacs-lisp :results none :tangle no
 (setq org-roam-dailies-directory "Journal/")
 #+end_src
 
-Benefit of using dailies is the ability to links notes.
-Journals are considered as standard node.
+We can also add one or more journal capture templates like the org capture template, the following snippet redefines the default journal capture template:
+#+begin_src emacs-lisp :results none :tangle no
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry "* Résumé \n%? \n* A améliorer \n\n* Terminé \n"
+      :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+#+end_src
 
 ** Key bindings
 :PROPERTIES:
