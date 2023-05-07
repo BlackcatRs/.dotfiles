@@ -832,12 +832,12 @@ Org Roam v2 package uses a customized build of SQLite database, so Org Roam need
               :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
               :unnarrowed t)
 
-             ("b" "Book notes" plain
+             ("b" "Book Notes" plain
               "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
               :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
               :unnarrowed t)
 
-             ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates - Deadlines|Events|Release|Dailies\n\n"
+             ("p" "Project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates - Deadlines|Events|Release|Dailies\n\n"
               :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
               :unnarrowed t)
              ))
@@ -909,9 +909,6 @@ We can also add one or more journal capture templates like the org capture templ
 #+end_src
 
 ** Key bindings
-:PROPERTIES:
-:ID:       c5bfae02-13c8-4344-8853-616496fd97a5
-:END:
 *** Org Roam
 - =C-c n f= Open a node [fn:1] and if not exists prompt you with a Org-roam capture template
 - =C-c n l= Indicates backlinks (where the actual node is used or linked).
