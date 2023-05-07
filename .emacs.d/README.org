@@ -810,56 +810,58 @@ Org Roam v2 package uses a customized build of SQLite database, so Org Roam need
 
 ** Org-roam config
 #+begin_src emacs-lisp :results none :tangle yes
-  (use-package org-roam
-    :ensure t
-    :custom
-    (org-roam-directory "~/lab/emacs/RoamNotes")
-    (org-roam-completion-everywhere t)
-    (org-roam-dailies-capture-templates
-      '(("d" "default" entry "* Résumé \n%? \n* A améliorer \n\n* Terminé \n"
-         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
-    (org-roam-capture-templates
-     '(
-       ("d" "Default" plain
-        "%?"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)
+  (if (file-exists-p "~/.emacs.d/vars.el")
+      (progn 
+        (use-package org-roam
+          :ensure t
+          :custom
+          (org-roam-directory voc/RoamNotes)
+          (org-roam-completion-everywhere t)
+          (org-roam-dailies-capture-templates
+           '(("d" "default" entry "* Résumé \n%? \n* A améliorer \n\n* Terminé \n"
+              :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+          (org-roam-capture-templates
+           '(
+             ("d" "Default" plain
+              "%?"
+              :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+              :unnarrowed t)
 
-       ("l" "Programming language" plain
-        "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)
+             ("l" "Programming language" plain
+              "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+              :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+              :unnarrowed t)
 
-       ("b" "Book notes" plain
-        "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)
+             ("b" "Book notes" plain
+              "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+              :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+              :unnarrowed t)
 
-       ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates - Deadlines|Events|Release|Dailies\n\n"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-        :unnarrowed t)
-       ))
+             ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates - Deadlines|Events|Release|Dailies\n\n"
+              :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+              :unnarrowed t)
+             ))
 
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert)
-           ("C-c n c" . org-roam-capture)
-           :map org-mode-map
-           ("C-M-i    .  completion-at-point")
-           :map org-roam-dailies-map
-           ("Y" . org-roam-dailies-capture-yesterday)
-           ("T" . org-roam-dailies-capture-tomorrow))
-    :config
-    ;; Reload the custom keybindings that defined above
-    (org-roam-setup)
+          :bind (("C-c n l" . org-roam-buffer-toggle)
+                 ("C-c n f" . org-roam-node-find)
+                 ("C-c n i" . org-roam-node-insert)
+                 ("C-c n c" . org-roam-capture)
+                 :map org-mode-map
+                 ("C-M-i    .  completion-at-point")
+                 :map org-roam-dailies-map
+                 ("Y" . org-roam-dailies-capture-yesterday)
+                 ("T" . org-roam-dailies-capture-tomorrow))
+          :config
+          ;; Reload the custom keybindings that defined above
+          (org-roam-setup)
 
-    :bind-keymap
-    ("C-c n d" . org-roam-dailies-map)
+          :bind-keymap
+          ("C-c n d" . org-roam-dailies-map)
 
-    :config
-    (require 'org-roam-dailies) ;; Ensure the keymap is available
-    (org-roam-db-autosync-mode)
-    (setq org-roam-dailies-directory "Journal/"))
+          :config
+          (require 'org-roam-dailies) ;; Ensure the keymap is available
+          (org-roam-db-autosync-mode)
+          (setq org-roam-dailies-directory "Journal/"))))
 #+end_src
 
 *** Org Roam Capture Template
@@ -870,7 +872,7 @@ We can also create Org-roam capture template using Org Mode's capture template s
 Another useful template that we can create is for capturing details about a new, particularly the tasks, goals, and any important dates you might need to remember. The new thing we've added this time is the =#+filetags: Project= configuration inside of the =file+head= section. We can use this =Project= string as a tag to get a customized view in Org Agenda using Org Roam DB API. The tag may also show up in your completion list if you're using ~Vertico~ and ~Marginalia~, check out this [[https://www.youtube.com/watch?v=J0OaRy85MOo][video on Vertico]].
 
 *** Optional - Org Roam capture template in a Org file
-We can also define capture template in a Org file under =~/lab/emacs/RoamNotes/Template= folder in a =BookNoteTemplate.org= Org file:
+We can also define capture template in a =BookNoteTemplate.org= Org file under a subfolder =Template/= into Org Roam folder (defined by =org-roam-directory)=: 
 #+begin_src org :results none :tangle no
  * Source
    Author: %^{Author}
@@ -884,7 +886,7 @@ We can also define capture template in a Org file under =~/lab/emacs/RoamNotes/T
 And then specify the location of Org-roam template location:
 #+begin_src emacs-lisp :results none :tangle no
   ("b" "Book notes" plain
-   (file "~/lab/emacs/RoamNotes/Template/BookNoteTemplate.org")
+   (file "~/RoamNotes/Template/BookNoteTemplate.org")
    :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
    :unnarrowed t)
 #+end_src
