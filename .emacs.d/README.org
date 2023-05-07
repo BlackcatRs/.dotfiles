@@ -519,7 +519,37 @@ The =efs/all-mode-setup= function is inspired by the DRY principle which aims to
           ;; e.g : *Bold* transforme into bold text.  
           org-hide-emphasis-markers t)
 
-    (efs/org-font-setup))
+    (efs/org-font-setup))  
+#+end_src
+
+Custom state that representing the flow order.
+=TODO=:    An event that need to done at scheduled time
+=ONGOING=: Currently working on that section/subject
+=NEXT=:    An event must be scheduled after the end of the previous TODO event.
+=DONE=:    A finished event.
+
+=WAITING=: A pending event due to the absence of a dependency.
+=HOLD=: A scheduled event temporarily suspended but to be scheduled in the future.
+=CANCELLED=: An event cancelled for a reason
+#+begin_src emacs-lisp :results none
+;; Custom states 
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "ONGOING(o@/!)" "NEXT(n)" "|" "DONE(d)")
+	;; This states store a timestamp and note
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+#+end_src
+
+Predefined tags that can be accessible from any org file:
+#+begin_src emacs-lisp :results none
+  (setq org-tag-alist
+        '((:startgroup)
+          (:endgroup)
+          ("@HOME" . ?h)
+          ("@WORK" . ?w)
+          ("Appointment" . ?a)
+          ("Planning" . ?p)
+          ("Note" . ?n)
+          ("Idea" . ?i)))
 #+end_src
 
 *** Org-bullets
@@ -543,29 +573,6 @@ Change default Org heading style:
         org-agenda-tags-column 75   ;; Space between task heading and tags
         org-deadline-warning-days 5 ;; Dispaly tasks with deadline 5 days
         org-use-speed-commands t)   ;; Use single key to execute an action
-        
-
-  (setq org-agenda-files (list
-                          "~/lab/emacs/test_files/TODO.org"
-                          "~/lab/emacs/test_files/Events.org"
-                          "~/lab/emacs/test_files/Repeaters.org"))
-#+end_src
-
-Custom state that representing the flow order.
-=TODO=:    An event that need to done at scheduled time
-=ONGOING=: Currently working on that section/subject
-=NEXT=:    An event must be scheduled after the end of the previous TODO event.
-=DONE=:    A finished event.
-
-=WAITING=: A pending event due to the absence of a dependency.
-=HOLD=: A scheduled event temporarily suspended but to be scheduled in the future.
-=CANCELLED=: An event cancelled for a reason
-#+begin_src emacs-lisp :results none
-;; Custom states 
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "ONGOING(o@/!)" "NEXT(n)" "|" "DONE(d)")
-	;; This states store a timestamp and note
-        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 #+end_src
 
 Refiling or moving unwanted item usually finished tasks to different place for archiving purpose:
@@ -577,20 +584,6 @@ Refiling or moving unwanted item usually finished tasks to different place for a
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 #+end_src
-
-Predefined tags that can be accessible from any org file:
-#+begin_src emacs-lisp :results none
-  (setq org-tag-alist
-        '((:startgroup)
-          (:endgroup)
-          ("@HOME" . ?h)
-          ("@WORK" . ?w)
-          ("Appointment" . ?a)
-          ("Planning" . ?p)
-          ("Note" . ?n)
-          ("Idea" . ?i)))
-#+end_src
-
 
 Show the final state of the captured item in the agenda view to track what happened, such as =COMPLETED= or =CANCELED= tasks:
 #+begin_src emacs-lisp :results none
@@ -609,44 +602,59 @@ Habit tracking with ~org-habit~ package:
 (setq org-habit-graph-column 60)
 #+end_src
 
-Capture template for capturing tasks:
+The following code block executes only if the =~/.emacs.d/vars.el= file exists which contains variables with path to Org file. Ex =(defvar voc/todo "~/Org/TODO.org").=
+
+First at all, we define our list of Org Agenda files with =org-agenda-files= variable which will be used for storing different type events. 
+
+Next we define Org capture template in order to save events using =org-capture-templates= variable.
+
+Last block of code will collect information from our various Org files where we have captured tasks and/or notes and display them as we want. This is done by customizing the variable =org-agenda-custom-commands=, so for more details on customization we can use =describe-variable= and =org-agenda-custom-commands=. We can also  Emacs' documentation by pressing =C-h i > d > m > Org mode > m > Block agenda=:
 #+begin_src emacs-lisp :results none
-  ;; Capture tasks
-  (setq org-capture-templates
-        '(("c" "Unscheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Unscheduled Tasks")
-           "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
+  ;; Org Agenda
+  (if (file-exists-p "~/.emacs.d/vars.el")
+      (progn (load-file "~/.emacs.d/vars.el")
 
-          ("s" "Scheduled Task" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Scheduled Tasks")
-           "* TODO %? %^G\n SCHEDULED: %^t\n %U" :empty-lines 1)
+             (setq org-agenda-files (list
+                                     voc/todo
+                                     voc/events
+                                     voc/repeaters))
 
-          ("d" "Deadline" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Recursive Tasks")
-           "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
+             (setq org-capture-templates
+                   '(("c" "Unscheduled Task" entry (file+headline voc/todo "Unscheduled Tasks")
+                      "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
 
-          ("n" "Note" entry (file+headline "~/lab/emacs/test_files/agenda.org" "Notes")
-           "* %? %^G\n %U" :empty-lines 1)
+                     ("s" "Scheduled Task" entry (file+headline voc/events "Scheduled Tasks")
+                      "* TODO %? %^G\n SCHEDULED: %^t\n %U" :empty-lines 1)
 
-          ("j" "Journal" entry (file+olp+datetree "~/lab/emacs/test_files/journal.org")
-           "* [%<%H:%M>]\n %?" :empty-lines 1)
-          ))
+                     ("d" "Deadline" entry (file+headline voc/repeaters "Recursive Tasks")
+                      "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
+
+                     ("n" "Note" entry (file+headline voc/todo "Notes")
+                      "* %? %^G\n %U" :empty-lines 1)
+
+                     ("j" "Journal" entry (file+olp+datetree voc/journal)
+                      "* [%<%H:%M>]\n %?" :empty-lines 1)
+                     ))
+
+             ;; Dashboard
+             (setq org-agenda-custom-commands
+                   '((" " "Agenda"
+                      ((agenda ""
+                               ((org-agenda-span 'day)))
+                       (todo "TODO"
+                             ((org-agenda-overriding-header "Unscheduled Tasks")
+                              (org-agenda-files '(voc/todo))
+                              (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
+                              ))
+                       (todo "TODO"
+                             ((org-agenda-overriding-header "Unscheduled Project Tasks")                                                   
+                              (org-agenda-files '(voc/events))
+                              (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline)))))))))
+    )
 #+end_src
 
-This block of code will collect information from our various Org files where we have captured tasks and/or notes and display them as we want. This is done by customizing the variable =org-agenda-custom-commands=, so for more details on customization we can use =describe-variable= and =org-agenda-custom-commands=. We can also  Emacs' documentation by pressing =C-h i > d > m > Org mode > m > Block agenda=:
+Defining shortcuts to view Org Agenda and to capture tasks:
 #+begin_src emacs-lisp :results none
-  ;; Dashboard
-  (setq org-agenda-custom-commands
-        '((" " "Agenda"
-           ((agenda ""
-                    ((org-agenda-span 'day)))
-            (todo "TODO"
-                  ((org-agenda-overriding-header "Unscheduled tasks")
-                   (org-agenda-files '("~/lab/emacs/test_files/TODO.org"))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
-                   ))
-            (todo "TODO"
-                  ((org-agenda-overriding-header "Unscheduled project tasks")                                                   
-                   (org-agenda-files '("~/lab/emacs/test_files/Events.org"))
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
-
   ;; Global keyboard shortcuts
   (global-set-key (kbd "C-c c") #'org-capture)
   (global-set-key (kbd "C-c a") #'org-agenda)
