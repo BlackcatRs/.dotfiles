@@ -534,7 +534,7 @@ Custom state that representing the flow order.
 #+begin_src emacs-lisp :results none
 ;; Custom states 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "ONGOING(o@/!)" "NEXT(n)" "|" "DONE(d)")
+      '((sequence "TODO(t@/!)" "ONGOING(o@/!)" "NEXT(n@/!)" "|" "DONE(d)")
 	;; This states store a timestamp and note
         (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 #+end_src
