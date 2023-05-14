@@ -37,6 +37,7 @@
   - [[#org-mode-basics-configuration][Org-mode Basics Configuration]]
   - [[#org-agenda][Org-agenda]]
   - [[#hold-push-notification][HOLD Push notification]]
+  - [[#org-file-to-markdown][Org file to Markdown]]
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
@@ -728,6 +729,46 @@ Defining shortcuts to view Org Agenda and to capture tasks:
    :on-close 'my-on-close-function)
 #+end_src
 
+** Org file to Markdown
+*** Installation
+First we need to install the ~ox-hugo~ package which is an Org exporter backend that exports Org to Hugo-compatible Markdown ([[https://github.com/russross/blackfriday][Blackfriday]]) and generates also the front-matter (in TOML or YAML format). And it is recommended to install this package from Melpa (not Melpa Stable): 
+#+begin_src emacs-lisp :results none
+(use-package ox-hugo
+  :ensure t   ;Auto-install the package from Melpa
+  :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
+  :after ox)
+#+end_src
+
+*** Auto-export on Saving
+I only want to export certain Org files to Hugo-compatible Markdown but ~ox-hugo~ can also [[https://ox-hugo.scripter.co/doc/auto-export-on-saving/#enable-for-the-whole-project][export all Org files]] in a specified directory to Markdown.  In order to export a particular Org file to Markdown we need to add the following heading section to Org file that we want to export to Markdown:
+#+begin_src org :results none :tangle no
+ * Footnotes
+ * COMMENT Local Variables                                           :ARCHIVE:
+   # Local Variables:
+   # eval: (org-hugo-auto-export-mode)
+   # End:
+#+end_src
+
+*About Footnotes:* Here I recommend adding the =* Footnotes header= too so that in case you add any Org footnotes, they go directly to that section you created. Otherwise, Org will auto-create a new Footnotes heading at the end of the file.. and the =Local Variables= heading would then no longer be at the end of the file. This will prevents =org-hugo-auto-export-mode= minor mode from activating.
+
+*** Usage
+In order to export Org file to Markdown, we first need to setup some Org keyword to tell ~ox-hugo~ where to place generated Markdown file and some extra data  (front-matter data) to insert into generated Markdown file:
+
+Mandatory Org keywords in for "[[https://ox-hugo.scripter.co/doc/blogging-flow/][One post per Org file]]" blogging flow: 
+- =#+hugo_base_dir: .= Path to store generated Markdown file
+- =#+title: Introduction to ox-hugo= Title of the Hugo post
+
+[[https://ox-hugo.scripter.co/doc/org-meta-data-to-hugo-front-matter/][Front-matter]]:
+- =#+hugo_section: notes= Name of the section (a subfolder under =#+hugo_base_dir= folder) to store the generated Markdown file
+- =#+hugo_front_matter_format: yaml= Generate front-matter in YAML format  
+- =#+date: 2017-07-24= Creation date
+- =#+hugo_auto_set_lastmod: t= Date the file was last modified
+- =#+hugo_tags: toto zulu= Add tags =toto= and =zulu= to front-matter
+- =#+hugo_categories: x y= Add categories
+- =#+hugo_custom_front_matter: :languages '(French)= My custom taxonomies that i use in Hugo ([[https://ox-hugo.scripter.co/doc/custom-front-matter/][More info]])
+- =#+hugo_draft: true= Indicates whether the file is ready to publish or not. 
+- =#+OPTIONS: toc:t= Generate automatically table of content.
+
 * Spell check and correction
 #+begin_src emacs-lisp :results none
 ;; Start - Checking and Correcting Spelling --------------------------
@@ -780,7 +821,6 @@ Defining shortcuts to view Org Agenda and to capture tasks:
              (add-hook 'after-save-hook 'langtool-check nil 'make-it-local)))
 ;; End - Checking and Correcting Spelling ----------------------------
 #+end_src
-
 * Eshell
 ** Keybinding to clear eshell buffer
 #+begin_src emacs-lisp :results none
