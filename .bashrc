@@ -78,6 +78,7 @@ alias la='exa -a --color=always --group-directories-first'  # all files and dirs
 alias ls='exa -lg --color=always --group-directories-first'  # long format
 alias lt='exa -aT --color=always --group-directories-first' # tree listing
 alias l.='exa -a | grep -E "^\."'
+alias ln='exa -lgs newest --color=always --group-directories-first' # sort new items acending order
 
 # pacman and yay
 alias pacsyu='sudo pacman -Syyu'                 # update only standard pkgs
