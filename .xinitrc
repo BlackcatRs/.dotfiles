@@ -41,6 +41,11 @@ bar &
 # started in. So we need to update gpg-agent's startuptty.
 gpg-connect-agent updatestartuptty /bye &
 
+
+# Run notification daemon
+exec /usr/bin/dunst &
+
+
 # Run window manager dwm
-exec dwm
+exec /usr/local/bin/dwm
 
