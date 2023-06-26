@@ -36,7 +36,7 @@
 - [[#org][Org]]
   - [[#org-mode-basics-configuration][Org-mode Basics Configuration]]
   - [[#org-agenda][Org-agenda]]
-  - [[#hold-push-notification][HOLD Push notification]]
+  - [[#push-notification][Push notification]]
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
@@ -48,6 +48,7 @@
   - [[#email-client][Email Client]]
   - [[#keybinding][Keybinding]]
   - [[#references][References]]
+- [[#emacs-as-daemon][Emacs as Daemon]]
 
 * Requirements
 ** Fonts
@@ -761,10 +762,13 @@ This block of code will collect information from our various Org files where we 
   (global-set-key (kbd "C-c a") #'org-agenda)
 #+end_src
 
-** HOLD Push notification
-- State "HOLD"       from              [2023-04-09 dim. 10:11] \\
-  Check the reliability of the notification system before putting into production
-*** Method 1
+** Push notification
+*** CANCELLED Method 1
+CLOSED: [2023-06-26 lun. 08:30]
+:LOGBOOK:
+- State "CANCELLED"  from              [2023-06-26 lun. 08:30] \\
+  This method has never been tested and instead we use method 3.
+:END:
 #+begin_src emacs-lisp :results none :tangle no
   (defun djcb-popup (title msg &optional icon sound)
   ;;   "Show a popup if we're on X, or echo it otherwise; TITLE is the
@@ -809,7 +813,12 @@ This block of code will collect information from our various Org files where we 
   (setq appt-disp-window-function (function djcb-appt-display))
 #+end_src
 
-*** Method 2 
+*** CANCELLED Method 2
+CLOSED: [2023-06-26 lun. 08:33]
+:LOGBOOK:
+- State "CANCELLED"  from              [2023-06-26 lun. 08:33] \\
+  This method has never been tested and instead we use method 3.
+:END:
 #+begin_src emacs-lisp :results none :tangle no
   (require 'notifications)
 
@@ -827,6 +836,20 @@ This block of code will collect information from our various Org files where we 
    :actions '("Confirm" "I agree" "Refuse" "I disagree")
    :on-action 'my-on-action-function
    :on-close 'my-on-close-function)
+#+end_src
+
+*** Method 3
+Org-wild-notifier requires the Dunst notification daemon and Emacs as daemon to display Org agenda events.
+#+begin_src emacs-lisp :results none :tangle yes
+  (use-package org-wild-notifier
+    :ensure t
+    :custom 
+    (alert-default-style 'notifications)
+    (org-wild-notifier-alert-time '(1 10 30))
+    (org-wild-notifier-keyword-whitelist '("TODO"))
+    (org-wild-notifer-notification-title "Org wild notifier")
+    :config
+    (org-wild-notifier-mode 1))
 #+end_src
 
 * Spell check and correction
@@ -1129,3 +1152,32 @@ Many of the same keybinding in ~Headers~ mode/buffer will work in ~View~ mode/bu
 
 ** References
 Emacs Mail by [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ][System Crafters]]
+
+* Emacs as Daemon
+Emacs supports a client/server mode where new files are opened in a running instance of Emacs. We can start Emacs manually in daemon mode which loads the user’s standard init files, but headless:
+#+begin_src shell :results none :tangle no
+  emacs --daemon
+#+end_src
+
+We can also start Emacs in daemon mode at startup by creating Systemd unit file =~/.config/systemd/user/emacs.service=:
+#+begin_src shell :results none :tangle no
+  [Unit]
+  Description=Emacs text editor
+  Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+  [Service]
+  Type=forking
+  ExecStart=/usr/bin/emacs --daemon
+  ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+  Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+  Restart=on-failure
+
+  [Install]
+  WantedBy=default.target
+#+end_src
+
+Enable the unit by running:
+#+begin_src shell :results none :tangle no
+  systemctl enable --user emacs
+  systemctl start --user emacs
+#+end_src
