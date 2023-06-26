@@ -18,7 +18,6 @@
 - [[#key-bindings][Key bindings]]
   - [[#command-log-mode][Command-log-mode]]
   - [[#custom-key-bindings][Custom key bindings]]
-- [[#waiting-custom-keybindings-i-dont-know-vim-very-well][WAITING Custom keybindings [I don't know Vim very well]]]
 - [[#projectile-and-magit][Projectile and Magit]]
   - [[#projectile][Projectile]]
   - [[#counsel-projectile][Counsel-projectile]]
@@ -34,12 +33,10 @@
 - [[#auto-table-of-content-for-markdown-and-org][Auto table of content for Markdown and Org]]
 - [[#mode-configuration][Mode configuration]]
 - [[#emacs-backup-files][Emacs backup files]]
-- [[#keybinding-to-run-rofi][Keybinding to run rofi]]
 - [[#org][Org]]
   - [[#org-mode-basics-configuration][Org-mode Basics Configuration]]
   - [[#org-agenda][Org-agenda]]
-<<<<<<< HEAD
-  - [[#hold-push-notification][HOLD Push notification]]
+  - [[#push-notification][Push notification]]
   - [[#org-file-to-markdown][Org file to Markdown]]
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
@@ -52,21 +49,6 @@
 - [[#hold-mail][HOLD Mail]]
   - [[#mu4e][Mu4e]]
 - [[#footnotes][Footnotes]]
-=======
-  - [[#push-notification][Push notification]]
-- [[#spell-check-and-correction][Spell check and correction]]
-- [[#eshell][Eshell]]
-  - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
-- [[#hold-org-roam][HOLD Org-roam]]
-- [[#ongoing-mail][ONGOING Mail]]
-  - [[#prerequisite][Prerequisite]]
-  - [[#syncing-mails][Syncing Mails]]
-  - [[#index-mailbox][Index mailbox]]
-  - [[#email-client][Email Client]]
-  - [[#keybinding][Keybinding]]
-  - [[#references][References]]
-- [[#emacs-as-daemon][Emacs as Daemon]]
->>>>>>> custom
 
 * Requirements
 ** Fonts
@@ -629,7 +611,6 @@ Next we define Org capture template in order to save events using =org-capture-t
 
 Last block of code will collect information from our various Org files where we have captured tasks and/or notes and display them as we want. This is done by customizing the variable =org-agenda-custom-commands=, so for more details on customization we can use =describe-variable= and =org-agenda-custom-commands=. We can also  Emacs' documentation by pressing =C-h i > d > m > Org mode > m > Block agenda=:
 #+begin_src emacs-lisp :results none
-<<<<<<< HEAD
   ;; Org Agenda
   (if (file-exists-p "~/.emacs.d/vars.el")
       (progn (load-file "~/.emacs.d/vars.el")
@@ -638,23 +619,6 @@ Last block of code will collect information from our various Org files where we 
                                      voc/todo
                                      voc/events
                                      voc/repeaters))
-
-             (setq org-capture-templates
-                   '(("c" "Unscheduled Task" entry (file+headline voc/todo "Unscheduled Tasks")
-                      "* %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
-
-                     ("s" "Scheduled Task" entry (file+headline voc/events "Scheduled Tasks")
-                      "* TODO %? %^G\n SCHEDULED: %^t\n %U" :empty-lines 1)
-
-                     ("d" "Deadline" entry (file+headline voc/repeaters "Recursive Tasks")
-                      "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
-
-                     ("n" "Note" entry (file+headline voc/todo "Notes")
-                      "* %? %^G\n %U" :empty-lines 1)
-
-                     ("j" "Journal" entry (file+olp+datetree voc/journal)
-                      "* [%<%H:%M>]\n %?" :empty-lines 1)
-                     ))
 
              ;; Dashboard
              (setq org-agenda-custom-commands
@@ -671,7 +635,7 @@ Last block of code will collect information from our various Org files where we 
                               (org-agenda-files '(voc/events))
                               (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline)))))))))
     )
-=======
+
   ;; Capture tasks
   (setq org-capture-templates
         '(("c" "Unscheduled Task" entry (file+headline "~/lab/emacs/test_files/TODO.org" "Unscheduled Tasks")
@@ -689,13 +653,10 @@ Last block of code will collect information from our various Org files where we 
           ("j" "Journal" entry (file+olp+datetree "~/lab/emacs/test_files/Journal.org")
            "* [%<%H:%M>]\n %?" :empty-lines 1)
           ))
->>>>>>> custom
 #+end_src
 
 Defining shortcuts to view Org Agenda and to capture tasks:
 #+begin_src emacs-lisp :results none
-<<<<<<< HEAD
-=======
   ;; Dashboard
   (setq org-agenda-custom-commands
         `(("a" "Agenda"
@@ -739,7 +700,6 @@ Defining shortcuts to view Org Agenda and to capture tasks:
                           (org-agenda-block-separator nil)
                           (org-agenda-overriding-header "\nUnscheduled Tasks")))))))
 
->>>>>>> custom
   ;; Global keyboard shortcuts
   (global-set-key (kbd "C-c c") #'org-capture)
   (global-set-key (kbd "C-c a") #'org-agenda)
@@ -821,7 +781,6 @@ CLOSED: [2023-06-26 lun. 08:33]
    :on-close 'my-on-close-function)
 #+end_src
 
-<<<<<<< HEAD
 ** Org file to Markdown
 *** Installation
 First we need to install the ~ox-hugo~ package which is an Org exporter backend that exports Org to Hugo-compatible Markdown ([[https://github.com/russross/blackfriday][Blackfriday]]) and generates also the front-matter (in TOML or YAML format). And it is recommended to install this package from Melpa (not Melpa Stable): 
@@ -877,7 +836,6 @@ Org-wild-notifier requires the Dunst notification daemon and Emacs as daemon to 
     (org-wild-notifier-mode 1))
 #+end_src
 
->>>>>>> custom
 * Spell check and correction
 #+begin_src emacs-lisp :results none
 ;; Start - Checking and Correcting Spelling --------------------------
@@ -1013,7 +971,6 @@ Org Roam v2 package uses a customized build of SQLite database, so Org Roam need
           (setq org-roam-dailies-directory "Journal/"))))
 #+end_src
 
-<<<<<<< HEAD
 *** Org Roam Capture Template
 In the Org-roam capture template, the =d= represents the shortcut key to select a node template and =default= is used as a name to node template. =%?= is the org mode syntax that indicates where the cursor lands in a node file. The code =%<%Y%m%d%H%M%S>-${slug}.org= creates a unique string for node file name and =#+title: ${title}\n= sets the title in the node file. =:unnarrowed t= expands the node file or show the entire content of the file without folding the content.
 
