@@ -70,7 +70,12 @@ vm () {
 }
 
 # emacs
-alias e='emacs -nw'
+if systemctl --user is-active --quiet emacs
+then
+    alias e='emacsclient -c -nw'
+else
+    alias e='emacs -nw'
+fi
 
 # Changing "ls" to "exa"
 alias ll='exa -agl --color=always --group-directories-first' # my preferred listing
