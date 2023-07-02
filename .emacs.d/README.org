@@ -93,13 +93,13 @@ Set up the visible bell:
 * Font Configuration
 #+begin_src emacs-lisp :results none
 ;; Adjust this font size for your system!
-(defvar runemacs/default-font-size 100)
+(defvar runemacs/default-font-size 120)
 
-(set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height runemacs/default-font-size)
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 100)
+(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Fira Code Retina" :height 110 :weight 'Regular)
 #+end_src
 
 * Package Configuration
@@ -483,16 +483,16 @@ The =efs/all-mode-setup= function is inspired by the DRY principle which aims to
                                (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     ;; Set faces (display options like font, size, etc) for heading levels
-    (dolist (face '((org-level-1 . 1.2)
-                    (org-level-2 . 1.1)
-                    (org-level-3 . 1.05)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.1)
-                    (org-level-6 . 1.1)
-                    (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))
-      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
+    (dolist (face '((org-level-1 . 1.1)
+                    (org-level-2 . 1.0)
+                    (org-level-3 . 0.95)
+                    (org-level-4 . 0.90)
+                    (org-level-5 . 1.0)
+                    (org-level-6 . 1.0)
+                    (org-level-7 . 1.0)
+                    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :font "Fira Code" :weight 'Medium :height (cdr face)))
+    
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
     (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
@@ -1100,3 +1100,4 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
 * Footnotes
 
 [fn:1] Node is a Org file that contains data. 
+
