@@ -70,14 +70,20 @@ vm () {
 }
 
 # emacs
-alias e='emacs -nw'
+if systemctl --user is-active --quiet emacs
+then
+    alias e='emacsclient -c -nw'
+else
+    alias e='emacs -nw'
+fi
 
 # Changing "ls" to "exa"
 alias ll='exa -agl --color=always --group-directories-first' # my preferred listing
 alias la='exa -a --color=always --group-directories-first'  # all files and dirs
 alias ls='exa -lg --color=always --group-directories-first'  # long format
 alias lt='exa -aT --color=always --group-directories-first' # tree listing
-alias l.='exa -a | egrep "^\."'
+alias l.='exa -a | grep -E "^\."'
+alias ln='exa -lgs newest --color=always --group-directories-first' # sort new items acending order
 
 # pacman and yay
 alias pacsyu='sudo pacman -Syyu'                 # update only standard pkgs
