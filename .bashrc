@@ -162,7 +162,10 @@ colorscript random
 # export GIT_SSH_COMMAND='ssh -i ~/.ssh/BlackcatRs'
 
 ### Default application to use
-export EDITOR="emacs"
+# Use default instance of Emacs running as daemon and "-c" creates a
+# new frame for that instance. "-c" launches Emacs in normal mode
+# instead of daemon mode if no daemon is disponible.
+export EDITOR="emacsclient -c -a emacs"
 export TERMINAL="alacritty"
 export BROWSER="firefox"
 
