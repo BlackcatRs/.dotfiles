@@ -932,10 +932,10 @@ sudo apt update && sudo apt install mu4e isync
 #+end_src
 
 ** Syncing Mails
-We will use ~isync~ program to download mails to local Maildir folder. We can also create use a program called ~offlineimap~ which is a bit slower but it can work on Windows.
+We will use ~isync~ program to download mails to local Maildir folder. We can also use a program called ~offlineimap~ which is a bit slower but it can work on Windows. Download mails from remote Maildir folder using =.mbsyncrc= configuration file with following settings:
 
-*Note: isync is the name of the project, mbsync is the name of the executable*
-#+begin_src
+*NOTE: isync is the name of the project, mbsync is the name of the executable.*
+#+begin_src :results none :tangle no
 IMAPAccount gmail
 Host imap.gmail.com
 User systemcrafters.test@gmail.com
@@ -981,7 +981,7 @@ mbsync -a
 Once mails have been synced to local Maildir, run a initial indexing process by providing you e-mail address to =mu= program:
 #+begin_src shell :tangle no
 mu index --maildir=~/Mail --my-address=systemcrafters.test@gmail.com
-mu init --maildir=DIR --my-address=ADDRESS
+mu init --maildir=~/Mail --my-address=systemcrafters.test@gmail.com
 #+end_src
 
 *NOTE: You will need to use --my-address for every e-mail address you use in a multiple account setup.*
@@ -1012,7 +1012,7 @@ mu init --maildir=DIR --my-address=ADDRESS
   ;;  to translate the names of these folders. For Norwegian
   ;;  "[Gmail]/Corbeille" would be "[Gmail]/Papirkurv".
   (setq mu4e-drafts-folder "/[Gmail]/Brouillons")
-  (setq mu4e-sent-folder   "/[Gmail]/Messages envoyés")
+  (setq mu4e-sent-folder   "/[Gmail]/Messages envoy&AOk-s")
   (setq mu4e-refile-folder "/[Gmail]/Tous les messages")
   (setq mu4e-trash-folder  "/[Gmail]/Corbeille")
 
@@ -1032,6 +1032,8 @@ mu init --maildir=DIR --my-address=ADDRESS
 
   ;; Run mu4e in the background to sync mail periodically
   ;; (mu4e t)
+
+  (global-set-key (kbd "C-c m") 'mu4e)
   )
 ;; End - Mail --------------------------------------------------------
 #+end_src
