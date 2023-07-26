@@ -92,14 +92,14 @@ Set up the visible bell:
 
 * Font Configuration
 #+begin_src emacs-lisp :results none
-;; Adjust this font size for your system!
-(defvar runemacs/default-font-size 120)
+  ;; Font and font size of Emacs window
+  (set-face-attribute 'default nil :font "Fira Code Retina" :height 100)
 
-(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height runemacs/default-font-size)
-;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
-;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Fira Code Retina" :height 110 :weight 'Regular)
+  ;; Font and font size of source code block in Org mode
+  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 100)
+
+  ;; Font and font size of Heading and text in Org mode
+  (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 100 :weight 'Regular)
 #+end_src
 
 * Package Configuration
