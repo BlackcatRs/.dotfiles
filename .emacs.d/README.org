@@ -781,6 +781,20 @@ CLOSED: [2023-06-26 lun. 08:33]
    :on-close 'my-on-close-function)
 #+end_src
 
+*** Method 3
+Org-wild-notifier requires the Dunst notification daemon and Emacs as daemon to display Org agenda events.
+#+begin_src emacs-lisp :results none :tangle yes
+  (use-package org-wild-notifier
+    :ensure t
+    :custom 
+    (alert-default-style 'notifications)
+    (org-wild-notifier-alert-time '(1 10 30))
+    (org-wild-notifier-keyword-whitelist '("TODO"))
+    (org-wild-notifer-notification-title "Org wild notifier")
+    :config
+    (org-wild-notifier-mode 1))
+#+end_src
+
 ** Org file to Markdown
 *** Installation
 First we need to install the ~ox-hugo~ package which is an Org exporter backend that exports Org to Hugo-compatible Markdown ([[https://github.com/russross/blackfriday][Blackfriday]]) and generates also the front-matter (in TOML or YAML format). And it is recommended to install this package from Melpa (not Melpa Stable): 
@@ -801,7 +815,7 @@ I only want to export certain Org files to Hugo-compatible Markdown but ~ox-hugo
    # End:
 #+end_src
 
-*About Footnotes:* Here I recommend adding the =* Footnotes header= too so that in case you add any Org footnotes, they go directly to that section you created. Otherwise, Org will auto-create a new Footnotes heading at the end of the file.. and the =Local Variables= heading would then no longer be at the end of the file. This will prevents =org-hugo-auto-export-mode= minor mode from activating.
+*About Footnotes:* Here I recommend adding the =Footnotes= header manually so that in case you add any Org footnotes, they go directly to that section you created. Otherwise, Org will auto-create a new Footnotes heading at the end of the file and the =COMMENT Local Variables= heading would then no longer be at the end of the file. This will prevents =org-hugo-auto-export-mode= minor mode from activating.
 
 *** Usage
 In order to export Org file to Markdown, we first need to setup some Org keyword to tell ~ox-hugo~ where to place generated Markdown file and some extra data  (front-matter data) to insert into generated Markdown file:
@@ -820,21 +834,6 @@ Mandatory Org keywords in for "[[https://ox-hugo.scripter.co/doc/blogging-flow/]
 - =#+hugo_custom_front_matter: :languages '(French)= My custom taxonomies that i use in Hugo ([[https://ox-hugo.scripter.co/doc/custom-front-matter/][More info]])
 - =#+hugo_draft: true= Indicates whether the file is ready to publish or not. 
 - =#+OPTIONS: toc:t= Generate automatically table of content.
-
-=======
-*** Method 3
-Org-wild-notifier requires the Dunst notification daemon and Emacs as daemon to display Org agenda events.
-#+begin_src emacs-lisp :results none :tangle yes
-  (use-package org-wild-notifier
-    :ensure t
-    :custom 
-    (alert-default-style 'notifications)
-    (org-wild-notifier-alert-time '(1 10 30))
-    (org-wild-notifier-keyword-whitelist '("TODO"))
-    (org-wild-notifer-notification-title "Org wild notifier")
-    :config
-    (org-wild-notifier-mode 1))
-#+end_src
 
 * Spell check and correction
 #+begin_src emacs-lisp :results none
