@@ -968,7 +968,7 @@ Settings you may need to change:
 
 For the security conscious:
     - Decrypt GPG encrypted password file: =gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.passwords/gmail.gpg=
-    - Use ~Password Store~ password manager program to simplify this: =pass Mail/MyGmail=
+    - To use ~Password Store~ password manager program : =pass Mail/MyGmail=
 
 Start the initial sync: 
 #+begin_src shell :tangle no
@@ -1041,7 +1041,7 @@ mu index
 
 Controlling the number of messages that will get displayed to user by =mu4e= by default:
 - =mu4e-headers-results-limit=: The number of messages to display in mail listings (default 500)
-- =mu4e-headers-full-search=: If =t=, shows all messages, ignoring limit
+- =mu4e-headers-full-search=: If =t=, shows all messages, ignoring limit.
 
 You can toggle =mu4e-headers-full-search= with =M-x mu4e-headers-toggle-full-search=!
 
@@ -1103,4 +1103,7 @@ Many of the same keybinding in ~Headers~ mode/buffer will work in ~View~ mode/bu
 | ~]]~  | ~]]~   | =mu4e-headers-next-unread= | Moves to next unread message           |
 
 ** References
-Emacs Mail by [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ][System Crafters]]
+- Emacs Mail by [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ][System Crafters]]
+- [[https://www.reddit.com/r/emacs/comments/8q84dl/tip_how_to_easily_manage_your_emails_with_mu4e/][How to easily manage your emails with mu4e]]
+-  [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4e for Dummies]]
+
