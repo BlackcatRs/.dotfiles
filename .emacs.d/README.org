@@ -611,31 +611,34 @@ Next we define Org capture template in order to save events using =org-capture-t
 
 Last block of code will collect information from our various Org files where we have captured tasks and/or notes and display them as we want. This is done by customizing the variable =org-agenda-custom-commands=, so for more details on customization we can use =describe-variable= and =org-agenda-custom-commands=. We can also  Emacs' documentation by pressing =C-h i > d > m > Org mode > m > Block agenda=:
 #+begin_src emacs-lisp :results none
-  ;; Org Agenda
-  (load-file "~/.emacs.d/vars.el")
+   ;; Org Agenda
+   (load-file "~/.emacs.d/vars.el")
 
-  (setq org-agenda-files (list
-                          voc/todo
-                          voc/events
-                          voc/repeaters))
+   (setq org-agenda-files (list
+                           voc/todo
+                           voc/events
+                           voc/repeaters))
 
-  ;; Capture tasks
-  (setq org-capture-templates
-        '(("c" "Unscheduled Task" entry (file+headline voc/todo "Unscheduled Tasks")
-           "* HOLD %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
+   ;; Capture tasks
+   (setq org-capture-templates
+         '(("c" "Unscheduled Task" entry (file+headline voc/todo "Unscheduled Tasks")
+            "* HOLD %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
 
-          ("s" "Scheduled Task" entry (file+headline voc/events "Scheduled Tasks")
-           "* TODO %?\n SCHEDULED: %^t\n %U" :empty-lines 1)
+           ("l" "Task with File Link" entry (file+headline voc/todo "Unscheduled Tasks")
+            "* HOLD %?\n Entered on <%<%Y-%m-%d %H:%M>>\n %a\n %i" :empty-lines 1)
 
-          ("d" "Deadline" entry (file+headline voc/repeaters "Recursive Tasks")
-           "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
+           ("s" "Scheduled Task" entry (file+headline voc/events "Scheduled Tasks")
+            "* TODO %?\n SCHEDULED: %^t\n %U" :empty-lines 1)
 
-          ("n" "Note" entry (file+headline voc/todo "Notes")
-           "* %? %^G\n %U" :empty-lines 1)
+           ("d" "Deadline" entry (file+headline voc/repeaters "Recursive Tasks")
+            "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
 
-          ("j" "Journal" entry (file+olp+datetree voc/journal)
-           "* [%<%H:%M>]\n %?" :empty-lines 1)
-          ))
+           ("n" "Note" entry (file+headline voc/todo "Notes")
+            "* %? %^G\n %U" :empty-lines 1)
+
+           ("j" "Journal" entry (file+olp+datetree voc/journal)
+            "* [%<%H:%M>]\n %?" :empty-lines 1)
+           ))
 #+end_src
 
 Defining shortcuts to view Org Agenda and to capture tasks:
