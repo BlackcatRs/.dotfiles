@@ -548,7 +548,7 @@ Predefined tags that can be accessible from any org file:
           ("@PERSO" . ?h)
           ("@WORK" . ?w)
           ("Appointment" . ?a)
-          ("Planning" . ?p)
+          ("Birthday" . ?b)
           ("Note" . ?n)
           ("Idea" . ?i)))
 #+end_src
@@ -614,11 +614,6 @@ Last block of code will collect information from our various Org files where we 
   ;; Org Agenda
   (load-file "~/.emacs.d/vars.el")
 
-  (setq org-agenda-files (list
-                          voc/todo
-                          voc/events
-                          voc/repeaters))
-
   ;; Capture tasks
   (setq org-capture-templates
         '(("c" "Unscheduled Task" entry (file+headline voc/todo "Unscheduled Tasks")
@@ -630,17 +625,20 @@ Last block of code will collect information from our various Org files where we 
           ("d" "Deadline" entry (file+headline voc/events "Recursive Tasks")
            "* TODO %? %(org-set-tags-command) \nDEADLINE: %^T" :empty-lines 1)
 
+          ("l" "Unscheduled Task + Reference" entry (file+headline voc/todo "Unscheduled Tasks")
+           "* %^{prompt|ONGOING|TODO|NEXT|WAITING|HOLD} %? \nEntered on <%<%Y-%m-%d %H:%M>> \n%a" :empty-lines 1)
+
+          ("r" "Readings" entry (file+headline voc/todo "Books To Read")
+           "* HOLD %^{Title} \nAuthor: %^{Author} \nYear: %^{Year} \nGenre: %^{Genre} \nReason to read: %? \nEntered on <%<%Y-%m-%d %H:%M>>" :empty-lines 1)
+
+          ("b" "Birthday" entry (file+headline voc/birthdays "Family")
+           "* %? :Birthday: \n<%<%Y-%m-%d +1y>>" :empty-lines 1)
+
           ("n" "Note" entry (file+headline voc/todo "Notes")
            "* %? %^G\n %U" :empty-lines 1)
 
           ("j" "Journal" entry (file+olp+datetree voc/journal)
            "* [%<%H:%M>]\n %?" :empty-lines 1)
-
-          ("l" "Unscheduled Task + Reference" entry (file+headline voc/todo "Unscheduled Tasks")
-           "* %^{prompt|ONGOING|TODO|NEXT|WAITING|HOLD} %? \nEntered on <%<%Y-%m-%d %H:%M>> \n%a" :empty-lines 1)
-
-          ("b" "Book to Read" entry (file+headline voc/todo "Books To Read")
-           "* HOLD %^{Title} \nAuthor: %^{Author} \nYear: %^{Year} \nGenre: %^{Genre} \nReason to read: %? \nEntered on <%<%Y-%m-%d %H:%M>>" :empty-lines 1)
           ))
 #+end_src
 
@@ -652,6 +650,13 @@ Defining shortcuts to view Org Agenda and to capture tasks:
 
   (set-face-attribute 'org-agenda-structure nil :foreground "#a9a1e1" :weight 'ultra-bold)
   (set-face-attribute 'org-agenda-date nil :foreground "#CE93D8" :weight 'light)
+
+  ;; "org-agenda-files" contains a list of files from which Org Agenda
+  ;; retrieves data, I have set this variable in ~/.emacs.d/vars.el
+  ;; file.
+  ;; (setq org-agenda-files
+  ;;       '("~/Org/Tasks.org"
+  ;;         "~/Org/Birthdays.org"))
 
   (defvar voc-org-custom-daily-agenda
     `((agenda "" ((org-agenda-span 1)
@@ -673,8 +678,8 @@ Defining shortcuts to view Org Agenda and to capture tasks:
                       (org-agenda-overriding-header "Important Unscheduled Tasks")))
 
       (todo "ONGOING|NEXT" ((org-agenda-start-on-weekday nil)
-                       (org-agenda-block-separator ?_)
-                       (org-agenda-overriding-header "Ongoing Tasks")))
+                            (org-agenda-block-separator ?_)
+                            (org-agenda-overriding-header "Ongoing Tasks")))
 
       (agenda "" ((org-agenda-start-on-weekday nil)
                   (org-agenda-compact-blocks nil)
@@ -811,7 +816,7 @@ Org-wild-notifier requires the Dunst notification daemon and Emacs as daemon to 
     (alert-default-style 'notifications)
     (org-wild-notifier-alert-time '(1 10 30))
     (org-wild-notifier-keyword-whitelist '("TODO"))
-    (org-wild-notifer-notification-title "Org wild notifier")
+    (org-wild-notifier-notification-title "Org Agenda")
     :config
     (org-wild-notifier-mode 1))
 #+end_src
