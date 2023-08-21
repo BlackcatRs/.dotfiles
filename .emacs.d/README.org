@@ -625,10 +625,10 @@ Last block of code will collect information from our various Org files where we 
            "* HOLD %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
 
           ("s" "Scheduled Task" entry (file+headline voc/events "Scheduled Tasks")
-           "* TODO %?\n SCHEDULED: %^t\n %U" :empty-lines 1)
+           "* TODO %?\n SCHEDULED: %^T\n %U" :empty-lines 1)
 
-          ("d" "Deadline" entry (file+headline voc/repeaters "Recursive Tasks")
-           "* TODO %? %(org-set-tags-command)\n  DEADLINE: %^t" :empty-lines 1)
+          ("d" "Deadline" entry (file+headline voc/events "Recursive Tasks")
+           "* TODO %? %(org-set-tags-command) \nDEADLINE: %^T" :empty-lines 1)
 
           ("n" "Note" entry (file+headline voc/todo "Notes")
            "* %? %^G\n %U" :empty-lines 1)
