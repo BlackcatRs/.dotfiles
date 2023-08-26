@@ -549,6 +549,7 @@ Predefined tags that can be accessible from any org file:
           ("@WORK" . ?w)
           ("Appointment" . ?a)
           ("Birthday" . ?b)
+          ("Book" . ?r)
           ("Note" . ?n)
           ("Idea" . ?i)))
 #+end_src
