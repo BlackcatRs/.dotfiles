@@ -627,22 +627,22 @@ Last block of code will collect information from our various Org files where we 
   ;; Capture tasks
   (setq org-capture-templates
         '(("c" "Unscheduled Task" entry (file+headline voc/todo "Unscheduled Tasks")
-           "* HOLD %?\n Entered on <%<%Y-%m-%d %H:%M>> \n" :empty-lines 1)
+           "* HOLD %?\nEntered on <%<%Y-%m-%d %H:%M>>\n" :empty-lines 1)
 
           ("s" "Scheduled Task" entry (file+headline voc/events "Scheduled Tasks")
-           "* TODO %?\n SCHEDULED: %^T\n %U" :empty-lines 1)
+           "* TODO %?\nSCHEDULED: %^T\n%U" :empty-lines 1)
 
           ("d" "Deadline" entry (file+headline voc/events "Recursive Tasks")
            "* TODO %? %(org-set-tags-command) \nDEADLINE: %^T" :empty-lines 1)
 
           ("l" "Unscheduled Task + Reference" entry (file+headline voc/todo "Unscheduled Tasks")
-           "* %^{prompt|ONGOING|TODO|NEXT|WAITING|HOLD} %? \nEntered on <%<%Y-%m-%d %H:%M>> \n%a" :empty-lines 1)
+           "* %^{prompt|ONGOING|TODO|NEXT|WAITING|HOLD} %?\nEntered on <%<%Y-%m-%d %H:%M>>\n%a" :empty-lines 1)
 
           ("r" "Readings" entry (file+headline voc/todo "Books To Read")
            "* HOLD %^{Title} \nAuthor: %^{Author} \nYear: %^{Year} \nGenre: %^{Genre} \nReason to read: %? \nEntered on <%<%Y-%m-%d %H:%M>>" :empty-lines 1)
 
           ("b" "Birthday" entry (file+headline voc/birthdays "Family")
-           "* %? :Birthday: \n<%<%Y-%m-%d +1y>>" :empty-lines 1)
+           "* %? :Birthday:\n<%<%Y-%m-%d +1y>>" :empty-lines 1)
 
           ("n" "Note" entry (file+headline voc/todo "Notes")
            "* %? %^G\n %U" :empty-lines 1)
