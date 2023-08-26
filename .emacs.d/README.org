@@ -652,6 +652,9 @@ Defining shortcuts to view Org Agenda and to capture tasks:
   (set-face-attribute 'org-agenda-structure nil :foreground "#a9a1e1" :weight 'ultra-bold)
   (set-face-attribute 'org-agenda-date nil :foreground "#CE93D8" :weight 'light)
 
+  (set-face-attribute 'org-scheduled-previously nil :foreground "#F44336" :weight 'bold)
+
+
   ;; "org-agenda-files" contains a list of files from which Org Agenda
   ;; retrieves data, I have set this variable in ~/.emacs.d/vars.el
   ;; file.
@@ -689,16 +692,19 @@ Defining shortcuts to view Org Agenda and to capture tasks:
                   (org-deadline-warning-days 0)
                   (org-agenda-block-separator ?_)
                   ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
+                  (org-agenda-entry-types '(:scheduled))
+                  ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
                   (org-agenda-overriding-header "Upcoming Tasks (+3d)")))
 
-      (tags-todo "-Book/HOLD" ((org-agenda-start-on-weekday nil)
-                               (org-agenda-block-separator ?_)
-                               (org-agenda-overriding-header "Unscheduled Tasks")
-                               (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))
-                               (org-agenda-skip-function
-                                `(org-agenda-skip-entry-if
-                                  'regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))))
+      (tags-todo "-Book/TODO|HOLD|WAITING"
+                 ((org-agenda-overriding-header "Unscheduled Tasks")
+                  (org-agenda-block-separator ?_)
+                  (org-agenda-start-on-weekday nil)
+
+                  (org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled
+                                                                       regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))
+                                                                       deadline)))))
+
 
       (agenda "" ((org-agenda-time-grid nil)
                   (org-agenda-start-on-weekday nil)
