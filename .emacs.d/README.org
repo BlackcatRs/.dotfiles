@@ -642,7 +642,7 @@ Last block of code will collect information from our various Org files where we 
            "* HOLD %^{Title} \nAuthor: %^{Author} \nYear: %^{Year} \nGenre: %^{Genre} \nReason to read: %? \nEntered on <%<%Y-%m-%d %H:%M>>" :empty-lines 1)
 
           ("b" "Birthday" entry (file+headline voc/birthdays "Family")
-           "* %? :Birthday:\n<%<%Y-%m-%d +1y>>" :empty-lines 1)
+           "* %? :Birthday:\nSCHEDULED: <%<%Y-%m-%d ++1y>>\nBirth of date: <%<%Y-%m-%d>>" :empty-lines 1)
 
           ("n" "Note" entry (file+headline voc/todo "Notes")
            "* %? %^G\n %U" :empty-lines 1)
