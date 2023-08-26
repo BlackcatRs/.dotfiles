@@ -91,14 +91,23 @@ Set up the visible bell:
 #+end_src
 
 * Font Configuration
+Emacs can display text in several different styles, called faces. Each face can specify various face attributes, such as the font, height, weight, slant, foreground and background color, and underlining or overlining.
+
+Emacs uses primarily three faces to display the text namely ~variable-pitch~, ~fixed-pitch~ and ~default~:
+1. The ~fixed-pitch~ face will display the text using a monospaced font (also called a fixed-pitch, fixed-width, or non-proportional font) whose letters and characters each occupy the same amount of horizontal space.
+2. The ~variable-pitch~ face will display the text using a variable-width font where letters and spacings have different widths.
+3. And the ~default~ face is fallback face that will used by Emacs to display text that don't want to use other faces such ~variable-pitch~, ~org-code~, ~fixed-pitch~, etc... 
+
+Which face to use is defined by the theme or we can define it manually in the Emacs config, but we don't because there are so many, even though we have defined a face for [[Org-mode][Org mode]].
+
 #+begin_src emacs-lisp :results none
   ;; Font and font size of Emacs window
   (set-face-attribute 'default nil :font "Fira Code" :height 100)
 
-  ;; Font and font size of source code block in Org mode
+  ;; This will affect the font and font size of source code block in Org mode
   (set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 100)
 
-  ;; Font and font size of Heading and text in Org mode
+  ;; This will affect font and font size of Heading and text in Org mode
   (set-face-attribute 'variable-pitch nil :font "Iosevka Aile" :height 100 :weight 'normal)
 #+end_src
 
