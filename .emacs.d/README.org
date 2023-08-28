@@ -110,7 +110,9 @@ Which face to use is defined by the theme or we can define it manually in the Em
   ;; (set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 120)
   ;; ;; This will affect font and font size of Heading and text in Org mode
   ;; (set-face-attribute 'variable-pitch nil :font "Iosevka Aile" :height 120 :weight 'normal)
-  (load-file "~/.emacs.d/faces.el")
+  
+  (if (file-exists-p "~/.emacs.d/faces.el")
+      (progn (load-file "~/.emacs.d/faces.el")))
 #+end_src
 
 * Package Configuration
