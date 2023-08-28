@@ -101,14 +101,16 @@ Emacs uses primarily three faces to display the text namely ~variable-pitch~, ~f
 Which face to use is defined by the theme or we can define it manually in the Emacs config, but we don't because there are so many, even though we have defined a face for [[Org-mode][Org mode]].
 
 #+begin_src emacs-lisp :results none
-  ;; Font and font size of Emacs window
-  (set-face-attribute 'default nil :font "Fira Code" :height 100)
+  ;; I have configured these three faces in the .emacs.d/faces.el file
+  ;; which is unique on my all PCs
 
-  ;; This will affect the font and font size of source code block in Org mode
-  (set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 100)
-
-  ;; This will affect font and font size of Heading and text in Org mode
-  (set-face-attribute 'variable-pitch nil :font "Iosevka Aile" :height 100 :weight 'normal)
+  ;; ;; Font and font size of Emacs window
+  ;; (set-face-attribute 'default nil :font "Fira Code" :height 120)
+  ;; ;; This will affect the font and font size of source code block in Org mode
+  ;; (set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 120)
+  ;; ;; This will affect font and font size of Heading and text in Org mode
+  ;; (set-face-attribute 'variable-pitch nil :font "Iosevka Aile" :height 120 :weight 'normal)
+  (load-file "~/.emacs.d/faces.el")
 #+end_src
 
 * Package Configuration
