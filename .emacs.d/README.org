@@ -101,7 +101,7 @@ Emacs uses primarily three faces to display the text namely ~variable-pitch~, ~f
 Which face to use is defined by the theme or we can define it manually in the Emacs config, but we don't because there are so many, even though we have defined a face for [[Org-mode][Org mode]].
 
 #+begin_src emacs-lisp :results none
-  ;; I have configured these three faces in the .emacs.d/faces.el file
+  ;; I have configured these three faces in the ~/.emacs.d/faces.el file
   ;; which is unique on my all PCs
 
   ;; ;; Font and font size of Emacs window
