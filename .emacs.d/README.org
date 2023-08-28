@@ -654,97 +654,98 @@ Last block of code will collect information from our various Org files where we 
 
 Defining shortcuts to view Org Agenda and to capture tasks:
 #+begin_src emacs-lisp :results none
-  ;; Dashboard
-  (set-face-attribute 'org-scheduled-today nil :foreground "#DFDFDF" :inherit 'org-scheduled-previously)
-  (set-face-attribute 'org-scheduled-previously nil :foreground "#9ca0a4")
+      ;; Dashboard
+      (set-face-attribute 'org-scheduled-today nil :foreground "#DFDFDF" :inherit 'org-scheduled-previously)
+      (set-face-attribute 'org-scheduled-previously nil :foreground "#9ca0a4")
 
-  (set-face-attribute 'org-agenda-structure nil :foreground "#a9a1e1" :weight 'ultra-bold)
-  (set-face-attribute 'org-agenda-date nil :foreground "#CE93D8" :weight 'light)
+      (set-face-attribute 'org-agenda-structure nil :foreground "#a9a1e1" :weight 'ultra-bold)
+      (set-face-attribute 'org-agenda-date nil :foreground "#CE93D8" :weight 'light)
 
-  (set-face-attribute 'org-scheduled-previously nil :foreground "#F44336" :weight 'bold)
+      (set-face-attribute 'org-scheduled-previously nil :foreground "#F44336" :weight 'bold)
 
 
-  ;; "org-agenda-files" contains a list of files from which Org Agenda
-  ;; retrieves data, I have set this variable in ~/.emacs.d/vars.el
-  ;; file.
-  ;; (setq org-agenda-files
-  ;;       '("~/Org/Tasks.org"
-  ;;         "~/Org/Birthdays.org"))
+      ;; "org-agenda-files" contains a list of files from which Org Agenda
+      ;; retrieves data, I have set this variable in ~/.emacs.d/vars.el
+      ;; file.
+      ;; (setq org-agenda-files
+      ;;       '("~/Org/Tasks.org"
+      ;;         "~/Org/Birthdays.org"))
 
-  (defvar voc-org-custom-daily-agenda
-    `((agenda "" ((org-agenda-span 1)
-                  (org-deadline-warning-days 0)
-                  ;; Show all past scheduled items that are not yet finished or with TODO state
-                                          ;(org-scheduled-past-days 0)
-                  ;; Set the the value of "org-agenda-date" face to "org-agenda-date" face
-                  (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
-                  (org-agenda-entry-types '(:scheduled))
-                  ;; (org-agenda-format-date "%A %-e %B %Y")
-                  (org-agenda-time-grid nil)
-                  (org-agenda-overriding-header "Today's Agenda")))
+      (defvar voc-org-custom-daily-agenda
+        `((agenda "" ((org-agenda-span 1)
+                      (org-deadline-warning-days 0)
+                      ;; Show all past scheduled items that are not yet finished or with TODO state
+                                              ;(org-scheduled-past-days 0)
+                      ;; Set the the value of "org-agenda-date" face to "org-agenda-date" face
+                      (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+                      (org-agenda-entry-types '(:scheduled
+                                                :deadline))
+                      ;; (org-agenda-format-date "%A %-e %B %Y")
+                      (org-agenda-time-grid nil)
+                      (org-agenda-overriding-header "Today's Agenda")))
 
-      (tags-todo "*" ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+          (tags-todo "*" ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+                          (org-agenda-block-separator ?_)
+                          (org-agenda-skip-function
+                           `(org-agenda-skip-entry-if
+                             'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
+                          (org-agenda-overriding-header "Important Unscheduled Tasks")))
+
+          (todo "ONGOING|NEXT" ((org-agenda-start-on-weekday nil)
+                                (org-agenda-block-separator ?_)
+                                (org-agenda-overriding-header "Ongoing Tasks")))
+
+          (agenda "" ((org-agenda-start-on-weekday nil)
+                      (org-agenda-compact-blocks nil)
+                      (org-agenda-start-day "+1d")
+                      (org-agenda-span 3)
+                      (org-deadline-warning-days 0)
                       (org-agenda-block-separator ?_)
-                      (org-agenda-skip-function
-                       `(org-agenda-skip-entry-if
-                         'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
-                      (org-agenda-overriding-header "Important Unscheduled Tasks")))
+                      ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-entry-types '(:scheduled
+                                                :deadline))
+                      ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
+                      (org-agenda-overriding-header "Upcoming Tasks (+3d)")))
 
-      (todo "ONGOING|NEXT" ((org-agenda-start-on-weekday nil)
-                            (org-agenda-block-separator ?_)
-                            (org-agenda-overriding-header "Ongoing Tasks")))
+          (tags-todo "-Book/TODO|HOLD|WAITING"
+                     ((org-agenda-overriding-header "Unscheduled Tasks")
+                      (org-agenda-block-separator ?_)
+                      (org-agenda-start-on-weekday nil)
 
-      (agenda "" ((org-agenda-start-on-weekday nil)
-                  (org-agenda-compact-blocks nil)
-                  (org-agenda-start-day "+1d")
-                  (org-agenda-span 3)
-                  (org-deadline-warning-days 0)
-                  (org-agenda-block-separator ?_)
-                  ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                  (org-agenda-entry-types '(:scheduled))
-                  ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
-                  (org-agenda-overriding-header "Upcoming Tasks (+3d)")))
+                      (org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled
+                                                                           regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))
+                                                                           deadline)))))
 
-      (tags-todo "-Book/TODO|HOLD|WAITING"
-                 ((org-agenda-overriding-header "Unscheduled Tasks")
-                  (org-agenda-block-separator ?_)
-                  (org-agenda-start-on-weekday nil)
+          (agenda "" ((org-agenda-time-grid nil)
+                      (org-agenda-start-on-weekday nil)
+                      (org-agenda-start-day "+4d")
+                      (org-agenda-span 14)
+                      (org-agenda-show-all-dates nil)
+                      (org-deadline-warning-days 0)
+                      (org-agenda-block-separator ?_)
+                      (org-agenda-entry-types '(:deadline))
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
+                      (org-agenda-overriding-header "Upcoming Deadlines (+14d)")))
 
-                  (org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled
-                                                                       regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))
-                                                                       deadline)))))
+          (tags-todo "Book/HOLD" ((org-agenda-block-separator ?_)
+                                  (org-agenda-overriding-header "Books To Read")))))
 
-
-      (agenda "" ((org-agenda-time-grid nil)
-                  (org-agenda-start-on-weekday nil)
-                  (org-agenda-start-day "+4d")
-                  (org-agenda-span 14)
-                  (org-agenda-show-all-dates nil)
-                  (org-deadline-warning-days 0)
-                  (org-agenda-block-separator ?_)
-                  (org-agenda-entry-types '(:deadline))
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
-                  (org-agenda-overriding-header "Upcoming Deadlines (+14d)")))
-
-      (tags-todo "Book/HOLD" ((org-agenda-block-separator ?_)
-                              (org-agenda-overriding-header "Books To Read")))))
-
-  (setq org-agenda-custom-commands
-        `(("a" "Daily agenda and top priority tasks"
-           ,voc-org-custom-daily-agenda)
-          ("P" "Plain text daily agenda and top priorities"
-           ,voc-org-custom-daily-agenda
-           ((org-agenda-with-colors nil)
-            (org-agenda-prefix-format "%t %s")
-            (org-agenda-current-time-string ,(car (last org-agenda-time-grid)))
-            (org-agenda-fontify-priorities nil)
-            (org-agenda-remove-tags t))
-           ("agenda.txt"))))
+      (setq org-agenda-custom-commands
+            `(("a" "Daily agenda and top priority tasks"
+               ,voc-org-custom-daily-agenda)
+              ("P" "Plain text daily agenda and top priorities"
+               ,voc-org-custom-daily-agenda
+               ((org-agenda-with-colors nil)
+                (org-agenda-prefix-format "%t %s")
+                (org-agenda-current-time-string ,(car (last org-agenda-time-grid)))
+                (org-agenda-fontify-priorities nil)
+                (org-agenda-remove-tags t))
+               ("agenda.txt"))))
 
 
-  ;; Global keyboard shortcuts
-  (global-set-key (kbd "C-c c") #'org-capture)
-  (global-set-key (kbd "C-c a") #'org-agenda)
+      ;; Global keyboard shortcuts
+      (global-set-key (kbd "C-c c") #'org-capture)
+      (global-set-key (kbd "C-c a") #'org-agenda)
 #+end_src
 
 ** Push notification
