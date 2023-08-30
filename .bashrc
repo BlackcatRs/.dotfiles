@@ -147,6 +147,25 @@ get () {
     wget $1 -O $filename
 }
 
+# Compress PDF files using ghostscript
+reduce () {
+    # Return error if no args is provide 
+    if [ -z "$1" ] || [ -z "$2" ]; then
+	echo Usage :
+	echo "reduce <input_file.pdf> <compressed.pdf>"
+	return 1
+    fi
+
+    /usr/bin/gs -sDEVICE=pdfwrite \
+		-dCompatibilityLevel=1.4 \
+		-dPDFSETTINGS=/prepress \
+		-dNOPAUSE \
+		-dQUIET \
+		-dBATCH \
+		-sOutputFile=$2 \
+		$1
+}
+
 ### Required by lxapprence ###
 export QT_QPA_PLATFORMTHEME="qt5ct"  
 
