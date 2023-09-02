@@ -663,7 +663,7 @@ Last block of code will collect information from our various Org files where we 
            "* %^{prompt|ONGOING|TODO|NEXT|WAITING|HOLD} %?\nEntered on <%<%Y-%m-%d %H:%M>>\n%a" :empty-lines 1)
 
           ("r" "Readings" entry (file+headline voc/todo "Books To Read")
-           "* HOLD %^{Title} \nAuthor: %^{Author} \nYear: %^{Year} \nGenre: %^{Genre} \nReason to read: %? \nEntered on <%<%Y-%m-%d %H:%M>>" :empty-lines 1)
+           "* HOLD %^{Title} :Book: \nAuthor: %^{Author} \nYear: %^{Year} \nGenre: %^{Genre} \nReason to read: %? \nEntered on <%<%Y-%m-%d %H:%M>>" :empty-lines 1)
 
           ("b" "Birthday" entry (file+headline voc/birthdays "Family")
            "* %? :Birthday:\nSCHEDULED: <%<%Y-%m-%d ++1y>>\nBirth of date: <%<%Y-%m-%d>>" :empty-lines 1)
