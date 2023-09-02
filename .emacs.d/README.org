@@ -576,13 +576,30 @@ Custom state that representing the flow order.
 Predefined tags that can be accessible from any org file:
 #+begin_src emacs-lisp :results none
   (setq org-tag-alist
-        '((:startgroup)
-          (:endgroup)
+        '((:startgrouptag)
+          ("Book" . ?r)
+          (:grouptags)
+          ("Programming")
+          ("OS")
+          ("Productivity")
+          ("Privacy")
+          ("Learning")
+          ("Psychology")
+          ("Security")
+          (:endgrouptag)
+
+          (:startgrouptag)
+          ("OS")
+          (:grouptags)
+          ("Linux")
+          ("Windows")
+          (:endgrouptag)
+
           ("@PERSO" . ?h)
           ("@WORK" . ?w)
           ("Appointment" . ?a)
           ("Birthday" . ?b)
-          ("Book" . ?r)
+          ;; ("Book" . ?r)
           ("Note" . ?n)
           ("Idea" . ?i)))
 #+end_src
