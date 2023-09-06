@@ -198,11 +198,11 @@ Flexible and simple tools for minibuffer completion in Emacs:
 - =Swiper=, an Ivy-enhanced alternative to Isearch.
   
 #+begin_src emacs-lisp :results none
-;; No need to manually install Swiper or Ivy, it will install as dependencies with Counsel
+  ;; No need to manually install Swiper or Ivy, it will install as dependencies with Counsel
   (use-package counsel
     :bind (("C-M-j" . 'counsel-switch-buffer)
-	   :map minibuffer-local-map
-	   ("C-r" . 'counsel-minibuffer-history))
+           :map minibuffer-local-map
+           ("C-r" . 'counsel-minibuffer-history))
     :custom
     (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
     :config
@@ -210,19 +210,19 @@ Flexible and simple tools for minibuffer completion in Emacs:
 
   (use-package ivy
     :diminish
-    :bind (("C-s" . swiper)
-	   :map ivy-minibuffer-map
-	   ("TAB" . ivy-alt-done)	
-	   ("C-l" . ivy-alt-done)
-	   ("C-n" . ivy-next-line)
-	   ("C-p" . ivy-previous-line)
-	   :map ivy-switch-buffer-map
-	   ("C-k" . ivy-previous-line)
-	   ("C-l" . ivy-done)
-	   ("C-d" . ivy-switch-buffer-kill)
-	   :map ivy-reverse-i-search-map
-	   ("C-k" . ivy-previous-line)
-	   ("C-d" . ivy-reverse-i-search-kill))
+    :bind (
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done)	
+           ("C-l" . ivy-alt-done)
+           ("C-n" . ivy-next-line)
+           ("C-p" . ivy-previous-line)
+           :map ivy-switch-buffer-map
+           ("C-k" . ivy-previous-line)
+           ("C-l" . ivy-done)
+           ("C-d" . ivy-switch-buffer-kill)
+           :map ivy-reverse-i-search-map
+           ("C-k" . ivy-previous-line)
+           ("C-d" . ivy-reverse-i-search-kill))
     :config
     (ivy-mode 1))
 
@@ -294,6 +294,11 @@ Use =escape= key to quit or close prompts:
 #+begin_src emacs-lisp :results none
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
+
+First save the current cursor location before searching so that we can jump to that location after searching using =Ctrl+c &= key.
+#+begin_src emacs-lisp :results none
+  (global-set-key (kbd "C-s") (lambda () (interactive) (org-mark-ring-push) (swiper)))
 #+end_src
 
 * Projectile and Magit
