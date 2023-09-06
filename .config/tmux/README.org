@@ -1,5 +1,7 @@
-* Tmux
+* Tmux Configuration
 =Tmux= is a terminal multiplexer that runs the window in a process and not in a session, which means the process will not die even after closing the session.
+
+The =XDG_CONFIG_HOME/tmux/tmux.conf= (or =~/.tmux.conf=) contains my custom Tmux configuration which includes custom keyboard shortcuts, status bar and plugins to load when Tmux starts.
 
 Create a new tmux session:
 #+begin_src shell
@@ -16,6 +18,16 @@ Open an existing tmux session:
   tmux attach -t <Session_name>
 #+end_src
 
+** TODO Plugins
+:LOGBOOK:
+- State "TODO"       from              [2023-09-06 Wed 21:02] \\
+  This plugin need to be installed in order to load by Tmux.
+:END:
+#+begin_src
+# run-shell /opt/tmux-logging/logging.tmux
+set -g @plugin 'tmux-plugins/tmux-logging'
+#+end_src
+
 ** Keybinding
 - The default prefix key is ~Ctrl + b~ but i changed to ~Alt + a~.
 - ~Prefix key + c~ Create a new window.
@@ -25,3 +37,4 @@ Open an existing tmux session:
 - ~Prefix key + s~ and enter windows ID to move the pane to corresponding window ID.
 - ~Prefix key + j~ and enter windows ID to add the pane from the corresponding window ID.
 - ~Alt + .~ List previously entered command argument by argument.
+
