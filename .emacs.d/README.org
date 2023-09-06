@@ -586,6 +586,7 @@ Predefined tags that can be accessible from any org file:
           ("Learning")
           ("Psychology")
           ("Security")
+          ("Software")
           (:endgrouptag)
 
           (:startgrouptag)
