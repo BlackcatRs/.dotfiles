@@ -1,0 +1,27 @@
+* Tmux
+=Tmux= is a terminal multiplexer that runs the window in a process and not in a session, which means the process will not die even after closing the session.
+
+Create a new tmux session:
+#+begin_src shell
+  tmux new -s <session_name>
+#+end_src
+
+List all tmux sessions:
+#+begin_src shell
+  tmux ls
+#+end_src
+
+Open an existing tmux session:
+#+begin_src shell
+  tmux attach -t <Session_name>
+#+end_src
+
+** Keybinding
+- The default prefix key is ~Ctrl + b~ but i changed to ~Alt + a~.
+- ~Prefix key + c~ Create a new window.
+- ~Prefix key + <Window_ID>~ Switch between windows.
+- ~Prefix key + d~ Detach/background a session.
+- ~Prefix key + z~ Show only the current pane.
+- ~Prefix key + s~ and enter windows ID to move the pane to corresponding window ID.
+- ~Prefix key + j~ and enter windows ID to add the pane from the corresponding window ID.
+- ~Alt + .~ List previously entered command argument by argument.
