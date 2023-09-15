@@ -128,6 +128,9 @@ alias cal="calcurse-caldav; calcurse; calcurse-caldav"
 # Copy the password to clipboard
 alias pass="pass -c"
 
+# Copy the output to clipboard
+alias copy="xclip -selection clipboard"
+
 # Backup a file
 bak () {
     file_name="$1"
