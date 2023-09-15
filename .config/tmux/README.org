@@ -37,4 +37,4 @@ set -g @plugin 'tmux-plugins/tmux-logging'
 - ~Prefix key + s~ and enter windows ID to move the pane to corresponding window ID.
 - ~Prefix key + j~ and enter windows ID to add the pane from the corresponding window ID.
 - ~Alt + .~ List previously entered command argument by argument.
-
+- ~Prefix key + space~ Switch to next layout.
