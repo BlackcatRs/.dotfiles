@@ -51,3 +51,7 @@ flycheck_*.el
 
 # Org-babel genereted file
 .emacs.d/README.el
+
+# Ignore tmux plugins except 'tpm' folder
+.config/tmux/plugins/*
+!.config/tmux/plugins/tpm/*
