@@ -38,3 +38,10 @@ set -g @plugin 'tmux-plugins/tmux-logging'
 - ~Prefix key + j~ and enter windows ID to add the pane from the corresponding window ID.
 - ~Alt + .~ List previously entered command argument by argument.
 - ~Prefix key + space~ Switch to next layout.
+- In copy mode (~Prefix key + [~):
+  - ~Space~ Start selection.
+  - ~H~ Move to top of screen.
+  - ~M~ Move to middle of screen.
+  - ~L~ Move to bottom of screen.
+  - ~0~ Jump to the start of the line.
+  - ~$~ Jump to the end of the line.
