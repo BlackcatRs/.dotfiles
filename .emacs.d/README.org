@@ -530,7 +530,7 @@ The =efs/all-mode-setup= function is inspired by the DRY principle which aims to
                     (org-level-7 . 1.0)
                     (org-level-8 . 1.0)))
       (set-face-attribute (car face) nil :font "Fira Code" :weight 'Medium :height (cdr face)))
-    
+
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
     (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
@@ -557,8 +557,9 @@ The =efs/all-mode-setup= function is inspired by the DRY principle which aims to
           ;; Output the result string instead of showing synctaxe.
           ;; e.g : *Bold* transforme into bold text.  
           org-hide-emphasis-markers t)
-
-    (efs/org-font-setup))  
+    (efs/org-font-setup)
+    
+    :bind (("C-c l" . org-store-link)))
 #+end_src
 
 Custom state that representing the flow order.
