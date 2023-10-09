@@ -18,6 +18,11 @@ Open an existing tmux session:
   tmux attach -t <Session_name>
 #+end_src
 
+Open a new tmux session with "VPN" as tmux window name:
+#+begin_src shell
+  /usr/bin/qterminal -e /usr/bin/tmux new \; rename-window VPN
+#+end_src
+
 * TODO Plugins
 :LOGBOOK:
 - State "TODO"       from              [2023-09-06 Wed 21:02] \\
