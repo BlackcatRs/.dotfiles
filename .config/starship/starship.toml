@@ -33,9 +33,9 @@ format = '[\[$symbol$status\]]($style) '
 disabled = false
 
 [hostname]
-format = '[$hostname](bold red) '
+format = '[$hostname](bold red) [->](fg:2) '
 disabled = false
 
 [username]
 format = '[$user]($style)[@](fg:250)'
-disabled = false
+disabled = true
