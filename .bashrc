@@ -238,4 +238,4 @@ shopt -s histappend
 # XDG Base Directory
 export XDG_CONFIG_HOME="$HOME/.config"
 # Starship config file location
-export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship.toml
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
