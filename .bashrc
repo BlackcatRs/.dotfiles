@@ -234,3 +234,8 @@ shopt -s histappend
 # This happens when gpg-agent doesn't know which TTY to prompt on, which is happening here because you are redirecting stdin.
 
 # You can put export GPG_TTY=$(tty) in your ~/.bashrc to setup the TTY for each login shell.
+
+# XDG Base Directory
+export XDG_CONFIG_HOME="$HOME/.config"
+# Starship config file location
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship.toml
