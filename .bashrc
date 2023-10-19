@@ -196,10 +196,16 @@ if [[ "$(tty)" = "/dev/tty1" ]]; then
     pgrep startx || startx
 fi
 
-# Allow SSH client to access use gpg-agent instead ssh-agent. This is
+# Inform SSH client to use gpg-agent instead ssh-agent. This is
 # done by changing the value of the SSH_AUTH_SOCK environment variable.
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-gpgconf --launch gpg-agent
+#gpgconf --launch gpg-agent
+
+# Inform gpg-agent about TTY on which prompt for GPG key passphrase
+# and update gpg-agent to take effect all changes.
+export GPG_TTY=$(tty)
+gpg-connect-agent updatestartuptty /bye >/dev/null
+
 
 # This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case i ever need to use it.
 # xmodmap ~/.Xmodmap
@@ -230,12 +236,7 @@ HISTFILESIZE=2000
 shopt -s histappend
 
 
-
-# This happens when gpg-agent doesn't know which TTY to prompt on, which is happening here because you are redirecting stdin.
-
-# You can put export GPG_TTY=$(tty) in your ~/.bashrc to setup the TTY for each login shell.
-
 # XDG Base Directory
 export XDG_CONFIG_HOME="$HOME/.config"
-# Starship config file location
+### Starship config file location
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
