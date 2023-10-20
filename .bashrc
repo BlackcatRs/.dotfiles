@@ -185,7 +185,7 @@ colorscript random
 
 ### Default application to use
 # Use default instance of Emacs running as daemon and "-c" creates a
-# new frame for that instance. "-c" launches Emacs in normal mode
+# new frame for that instance. "-a" launches Emacs in normal mode
 # instead of daemon mode if no daemon is disponible.
 export EDITOR="emacsclient -c -a emacs"
 export TERMINAL="alacritty"
