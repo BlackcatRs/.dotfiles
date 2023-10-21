@@ -169,6 +169,17 @@ reduce () {
 		$1
 }
 
+# Covnert file format
+md2org () {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+	echo Usage :
+	echo "md2org <input_file.md> <output_file.org>"
+	return 1
+    fi
+
+    pandoc -f markdown -t org -o ${2} ${1};
+}
+
 ### Required by lxapprence ###
 export QT_QPA_PLATFORMTHEME="qt5ct"  
 
