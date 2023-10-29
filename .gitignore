@@ -55,3 +55,6 @@ flycheck_*.el
 # Ignore tmux plugins except 'tpm' folder
 .config/tmux/plugins/*
 !.config/tmux/plugins/tpm/*
+
+# Ingore Qalculalte history file
+.config/qalculate/qalc.history
