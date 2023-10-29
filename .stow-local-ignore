@@ -6,6 +6,7 @@ LICENSE
 .*~
 install.sh
 .gitignore
+.gitmodules
 .Xmodmap
 README.md
 shell-color-scripts
