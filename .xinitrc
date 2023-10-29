@@ -17,7 +17,7 @@ feh --no-fehbg --bg-fill "$HOME/.dotfiles/.config/wallpaper/2545282.jpg" &
 
 # Run the status bar with dwm window manager and status bar can find
 # here - https://github.com/BlackcatRs/blackdwm/blob/main/scripts/bar
-bar &
+"$HOME/.local/bin/bar" &
 
 # GPG depends on pinentry to provide user interaction for typing the
 # passwords such as the passphrase of GPG key. In order to function
