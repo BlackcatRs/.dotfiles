@@ -12,3 +12,4 @@ shell-color-scripts
 \.emacs.d/README.*
 \.emacs.d/Shortcut.md
 \.config/mutt/*
+\.local/bin/rofi-wifi-menu.sh
