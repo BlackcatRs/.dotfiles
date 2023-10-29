@@ -6,3 +6,10 @@ listview {
 	lines: 6;
 }
 
+element {
+  padding: 8 0;
+}
+
+element-icon {
+  padding: 0 0 0 0;
+}
