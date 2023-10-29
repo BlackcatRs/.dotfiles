@@ -1,0 +1,54 @@
+* Rofi
+** Installation
+#+begin_src shell
+  sudo pacman -S rofi
+#+end_src
+
+** Configuration
+Rofi can be configured using the ~~/.config/rofi/config.rasi~ configuration file.
+
+* Rofi Plugins
+** Rofi-emoji
+*** Installation
+In Arch Linux we can install using ~pacman~:
+#+begin_src shell
+  sudo pacman -S rofi-emoji
+#+end_src
+
+*** Configuration
+By default =Rofi-emoji= copies the selected emoji and then tries to insert it directly in the focused window. For such, it requires =xdotool= in the X11 environment or =wtype= in the Wayland environment.
+
+In Arch Linux we can install using ~pacman~:
+#+begin_src shell
+  sudo pacman -S xdotool
+#+end_src
+
+*** References
+Refer to the link for more installation and configuration info:
+https://github.com/BlackcatRs/rofi-emoji
+
+** Rofi-calc
+The =rofi-calc= performs some basic arithmetic operations and advanced arithmetic operations using input provided in natural language using =Qalculate= (binary ~qalc~) and provides results.
+
+So we can try natural language queries such ~500 + 25%~ or ~5000 EUR to USD~ or ~150 to hex~. It can also solve linear equations on the fly. Try ~60x + 30 = 50~, for instance.
+
+*** Installation
+In Arch Linux we can install using ~pacman~:
+#+begin_src shell
+  sudo pacman -S rofi-calc
+#+end_src
+
+*** References
+Refer to the link for more installation and configuration info:
+https://github.com/BlackcatRs/rofi-calc
+
+* FIXME [/]
+[X] Transparency
+
+** Shortcuts to Add
+- rofi -show emoji -config emoji.rasi
+  super + shift + e
+  
+- rofi -show calc -modi calc -no-show-match -no-sort  -config calc.rasi
+  super + shift + c
+

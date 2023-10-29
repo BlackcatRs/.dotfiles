@@ -1,0 +1,8 @@
+inputbar {
+  children: [prompt, entry];
+}
+
+listview {
+	lines: 6;
+}
+
