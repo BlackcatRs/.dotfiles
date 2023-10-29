@@ -1,8 +1,6 @@
 * Ranger
 ** Basic Ranger shortcuts
-These are the basic key binds in ranger, even outside of my configs.
-Note that they are mostly vim-based.
-
+These are the basic key binds in ranger, even outside of my configs. Note that they are mostly vim-based:
 -  =h/j/k/l=  -- Move left/down/up/right (where left moves up in the
   directory structure, right moves into a folder)
 -  =Space=  -- select/highlight file
@@ -18,25 +16,21 @@ Note that they are mostly vim-based.
   -  =I=  -- rename file adding at the beginning
 
 ** Shortcuts
-As I say in the main readme, there are shortcut commands generated for
-ranger based on what bookmarked directories and files you give it. For
-directory shortcuts, here are the "verbs":
+As I say in the main [[file:~/.dotfiles/README.org][README]], there are automatically generated shortcuts using the script  [[file:~/.dotfiles/.local/bin/shortcuts][~/.local/bin/shortcuts]] for various programs, including ranger. The script uses the directories and files bookmarked in [[file:~/.dotfiles/.config/shell/bm-dirs][~/.config/shell/bm-dirs]] and [[file:~/.dotfiles/.config/shell/bm-files][~/.config/shell/bm-files]].
+
+For directory shortcuts, here are the "verbs":
 -  =g=  -- "go or cd"
 -  =t=  -- "new tab"
 -  =m=  -- "move file"
 -  =Y=  -- "yank or copy file"
 
 These "verbs" take "nouns" or "arguments," like these:
-
 -  =d=  -- "~/Documents"
 -  =D=  -- "~/Downloads"
 -  =cf=  -- "~/.config"
 - And many others, including those you add to =~/.bmdirs=.
 
-Press any "verb" followed by any "argument" to perform a folder
-operation. "gd" will cd to ~/Documents, for example. "mD" will move the
-selected file(s) to ~/Downloads. "tcf" will create a new tab in
-~/.config, etc. etc.
+Press any "verb" followed by any "argument" to perform a folder operation. "gd" will cd to ~/Documents, for example. "mD" will move the selected file(s) to ~/Downloads. "tcf" will create a new tab in ~/.config, etc. etc.
 
 ** TODO Many little additions!
 :LOGBOOK:
@@ -49,8 +43,7 @@ selected file(s) to ~/Downloads. "tcf" will create a new tab in
   -  =mkd=  -- Make a directory/folder
   -  =sc=  -- Makes a link/shortcut (ln -sT)
   -  =D=  -- delete selected file
-  -  =X=  -- Extract a zip/rar/tar.gz, whatever. Runs a script that picks
-    the right command for the right archive.
+  -  =X=  -- Extract a zip/rar/tar.gz, whatever. Runs a script that picks the right command for the right archive.
   -  =Z=  -- zips a folder up into a .tar.gz archive.
   -  =CTRL-f=  -- Fuzzy find a file
   -  =CTRL-l=  -- Fuzzy locate a file
@@ -58,8 +51,7 @@ selected file(s) to ~/Downloads. "tcf" will create a new tab in
 - Document manipulation:
   -  =p1s=  -- print this file on the default printer, one-sided (lpr)
   -  =p2s=  -- print this file on the default printer, double-sided (lpr)
-  -  =MP=  -- convert to a .pdf with pandoc (I use this to convert markdown,
-    etc.)
+  -  =MP=  -- convert to a .pdf with pandoc (I use this to convert markdown, etc.)
   -  =MX=  -- compile selected document in XeLaTeX
   -  =ML=  -- compile selected document in LaTeX
   -  =TC=  -- clear all non-visible TeX build files in this directory
@@ -68,10 +60,8 @@ selected file(s) to ~/Downloads. "tcf" will create a new tab in
   -  =Txh=  -- copy handout template to new file
 
 - Image commands:
-  -  =bg=  -- makes an image your background (assuming i3 is looking at
-    ~/.local/share/bg for your background)
-  -  =bw=  -- runs Pywal on the selected image, making it your background
-    and generating a color scheme based off of it.
+  -  =bg=  -- makes an image your background (assuming i3 is looking at ~/.local/share/bg for your background)
+  -  =bw=  -- runs Pywal on the selected image, making it your background and generating a color scheme based off of it.
   -  =C=  -- rotates an image (requires imagemagick)
   -  =F=  -- flips an image (requires imagemagick)
   -  =TR=  -- add transparency to image file
@@ -95,5 +85,4 @@ selected file(s) to ~/Downloads. "tcf" will create a new tab in
 
 - Downloading:
   -  =ytv=  -- Download online video (paste in url) (requires youtube-dl)
-  -  =yta=  -- Download audio of online video (paste in url) (requires
-    youtube-dl)
+  -  =yta=  -- Download audio of online video (paste in url) (requires youtube-dl)
