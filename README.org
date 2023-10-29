@@ -38,3 +38,21 @@ run check-parens
 
 * Program I Use
 =Pandoc= - A universal document converter.
+
+* FIXME
+** TODO .dotfiles README
+:LOGBOOK:
+- State "TODO"       from              [2023-10-29 dim. 22:41] \\
+  Write a proper READEME as Luke Smith
+:END:
+
+** TODO Bookmark folder and files
+:LOGBOOK:
+- State "TODO"       from              [2023-10-29 dim. 22:38] \\
+  Write a doc for bookmarked files and folders
+:END:
+** TODO Shell Aliases
+:LOGBOOK:
+- State "TODO"       from              [2023-10-29 dim. 22:39] \\
+  Create aliases using the style used by https://github.com/LukeSmithxyz/voidrice/blob/master/.config/shell/aliasrc file in =/home/vts/.config/shell/aliasrc= file
+:END:
