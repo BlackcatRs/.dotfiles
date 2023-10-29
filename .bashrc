@@ -8,25 +8,17 @@
 # If .env file exist then load it
 [[ -f ~/.env ]] && . ~/.env
 
-### Required by status bar script ###
-export DWM_PATH='/home/vts/git'
-
 ### PROMPT
 # This is commented out if using starship prompt
 # PS1='[\u@\h \W]\$ '
 
 ### PATH
-if [ -d "$HOME/.local/bin" ] ;
-  then PATH="$HOME/.local/bin:$PATH"
+if [ -d "$HOME/.local/bin" ]; then
+    /usr/bin/mkdir -p "$HOME/.local/bin"
+    PATH="$HOME/.local/bin:$PATH"
 fi
-
-if [ -d "$DWM_PATH/black-dwm-6.3/scripts" ] ;
-  then PATH="$DWM_PATH/black-dwm-6.3/scripts:$PATH"
-fi
-
 
 ### ALIASES ###
-
 # navigation
 up () {
   local d=""
