@@ -2,21 +2,40 @@
 # ~/.bashrc is sourced when running interactive shell
 #
 
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+
 
 # If .env file exist then load it
 [[ -f ~/.env ]] && . ~/.env
 
-### PROMPT
-# This is commented out if using starship prompt
-# PS1='[\u@\h \W]\$ '
 
-### PATH
+# XDG Base Directory specification which that where config files
+# should be looked for by defining one or more base directories.
+# https://wiki.archlinux.org/title/XDG_Base_Directory
+[ ! -d "$HOME/.config" ] && /usr/bin/mkdir -p "$HOME/.config"
+[ ! -d "$HOME/.local/state" ] && /usr/bin/mkdir -p "$HOME/.local/state"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+
+# ~/ Clean-up:
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml  # Starship config 
+export HISTFILE="$XDG_STATE_HOME"/bash/history # Bash history
+
+
+# Load aliases and shortcuts if existent.
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc"
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
+
+
+# PATH
 if [ -d "$HOME/.local/bin" ]; then
     /usr/bin/mkdir -p "$HOME/.local/bin"
     PATH="$HOME/.local/bin:$PATH"
 fi
+
 
 ### ALIASES ###
 # navigation
@@ -69,59 +88,6 @@ else
     alias e='emacs -nw'
 fi
 
-# Changing "ls" to "exa"
-alias ll='exa -agl --color=always --group-directories-first' # my preferred listing
-alias la='exa -a --color=always --group-directories-first'  # all files and dirs
-alias ls='exa -lg --color=always --group-directories-first'  # long format
-alias lt='exa -aT --color=always --group-directories-first' # tree listing
-alias l.='exa -a | grep -E "^\."'
-alias ln='exa -lgs newest --color=always --group-directories-first' # sort new items acending order
-
-# pacman and yay
-alias pacsyu='sudo pacman -Syyu'                 # update only standard pkgs
-alias yaysua='yay -Sua --noconfirm'              # update only AUR pkgs (yay)
-alias yaysyu='yay -Syu --noconfirm'              # update standard pkgs and AUR pkgs (yay)
-alias parsua='paru -Sua --noconfirm'             # update only AUR pkgs (paru)
-alias parsyu='paru -Syu --noconfirm'             # update standard pkgs and AUR pkgs (paru)
-alias unlock='sudo rm /var/lib/pacman/db.lck'    # remove pacman lock
-alias cleanup='sudo pacman -Rns (pacman -Qtdq)'  # remove orphaned packages
-
-# Colorize grep output (good for log files)
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
-
-# confirm before overwriting something
-alias cp="cp -i"
-alias mv='mv -i'
-alias rm='rm -i'
-
-# adding flags
-alias df='df -h'                          # human-readable sizes
-alias free='free -m'                      # show sizes in MB
-alias lynx='lynx -cfg=~/.lynx/lynx.cfg -lss=~/.lynx/lynx.lss -vikeys'
-alias vifm='./.config/vifm/scripts/vifmrun'
-alias ncmpcpp='ncmpcpp ncmpcpp_directory=$HOME/.config/ncmpcpp/'
-alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
-
-# ps
-alias psa="ps auxf"
-alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
-alias psmem='ps auxf | sort -nr -k 4'
-alias pscpu='ps auxf | sort -nr -k 3'
-
-# Merge Xresources
-alias merge='xrdb -merge ~/.Xresources'
-
-# Replace cal with calcurse and sync calcurse before and afer changes
-# with remote caldav server
-alias cal="calcurse-caldav; calcurse; calcurse-caldav"
-
-# Copy the password to clipboard
-alias pass="pass -c"
-
-# Copy the output to clipboard
-alias copy="xclip -selection clipboard"
 
 # Backup a file
 bak () {
@@ -161,7 +127,7 @@ reduce () {
 		$1
 }
 
-# Covnert file format
+# Convert file format
 md2org () {
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo Usage :
@@ -172,32 +138,39 @@ md2org () {
     pandoc -f markdown -t org -o ${2} ${1};
 }
 
-### Required by lxapprence ###
-export QT_QPA_PLATFORMTHEME="qt5ct"  
 
-### SETTING THE STARSHIP PROMPT ###
+# STARSHIP PROMPT
 eval "$(starship init bash)"
 
-### RANDOM COLOR SCRIPT ###
-# Color script from https://gitlab.com/dwt1/shell-color-scripts.git ###
+# Random color script from
+# https://gitlab.com/dwt1/shell-color-scripts.git
 colorscript random
 
-### Specifie ssh key to git ###
-### This is ingnored because ssh keys are specified in ~/.ssh/config
-# export GIT_SSH_COMMAND='ssh -i ~/.ssh/BlackcatRs'
 
-### Default application to use
+# Default programs
+
 # Use default instance of Emacs running as daemon and "-c" creates a
 # new frame for that instance. "-a" launches Emacs in normal mode
 # instead of daemon mode if no daemon is disponible.
 export EDITOR="emacsclient -c -a emacs"
+
 export TERMINAL="alacritty"
 export BROWSER="firefox"
+
+
+### Required by lxapprence ###
+export QT_QPA_PLATFORMTHEME="qt5ct"  
+
 
 # run automatically "startx" after login
 if [[ "$(tty)" = "/dev/tty1" ]]; then
     pgrep startx || startx
 fi
+
+
+### Specifie ssh key to git ###
+### This is ingnored because ssh keys are specified in ~/.ssh/config
+# export GIT_SSH_COMMAND='ssh -i ~/.ssh/BlackcatRs'
 
 # Inform SSH client to use gpg-agent instead ssh-agent. This is
 # done by changing the value of the SSH_AUTH_SOCK environment variable.
@@ -226,10 +199,10 @@ export HISTCONTROL=ignoreboth:erasedups
 # HISTFILESIZE is the number of lines or commands (stored in memory
 # when runngin a bash session) that will be stored in the history file
 # (~/.bash_history) at the end of the bash session.
-
 # Notice the distinction between file on disk and list in memory.
 HISTSIZE=2000
 HISTFILESIZE=2000
+
 
 # shopt is a builtin command of the Bash shell that enables or
 # disables options for the current shell session.  append commands
@@ -237,9 +210,3 @@ HISTFILESIZE=2000
 # instead of overwriting (good for multiple connections) if
 # HISTFILESIZE value permits.
 shopt -s histappend
-
-
-# XDG Base Directory
-export XDG_CONFIG_HOME="$HOME/.config"
-### Starship config file location
-export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
