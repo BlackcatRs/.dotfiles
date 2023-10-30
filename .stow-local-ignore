@@ -14,3 +14,9 @@ shell-color-scripts
 \.emacs.d/Shortcut.md
 \.config/mutt/*
 \.local/bin/rofi-wifi-menu.sh
+
+# Xmodmap
+\.config/Xmodmap
+
+# Xbindkeys
+\.config/Xbindkeys
