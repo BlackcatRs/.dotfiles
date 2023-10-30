@@ -39,6 +39,10 @@ run check-parens
 * Program I Use
 =Pandoc= - A universal document converter.
 
+* Archive
+The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
+- Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
+
 * FIXME
 ** TODO .dotfiles README
 :LOGBOOK:

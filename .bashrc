@@ -8,13 +8,7 @@
 
 
 # If .env file exist then load it
-[[ -f ~/.env ]] && . ~/.env
-
-
-# run automatically "startx" after login
-if [[ "$(tty)" = "/dev/tty1" ]]; then
-    pgrep startx || startx
-fi
+[[ -f ~/.config/shell/env ]] && . ~/.config/shell/env
 
 
 # XDG Base Directory specification which that where config files
@@ -22,13 +16,18 @@ fi
 # https://wiki.archlinux.org/title/XDG_Base_Directory
 [ ! -d "$HOME/.config" ] && /usr/bin/mkdir -p "$HOME/.config"
 [ ! -d "$HOME/.local/state" ] && /usr/bin/mkdir -p "$HOME/.local/state"
+[ ! -d "$HOME/.local/share" ] && /usr/bin/mkdir -p "$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
 
 # ~/ Clean-up:
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml  # Starship config 
 export HISTFILE="$XDG_STATE_HOME"/bash/history # Bash history
+export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
+export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 
 
 # Load aliases and shortcuts if existent.
@@ -210,3 +209,9 @@ HISTFILESIZE=2000
 # instead of overwriting (good for multiple connections) if
 # HISTFILESIZE value permits.
 shopt -s histappend
+
+
+# Start graphical server on user's current tty if not already running.
+if [[ "$(tty)" = "/dev/tty1" ]]; then
+    pgrep startx || startx 
+fi
