@@ -27,7 +27,6 @@ export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml  # Starship con
 export HISTFILE="$XDG_STATE_HOME"/bash/history # Bash history
 export GTK_RC_FILES="$XDG_CONFIG_HOME"/gtk-1.0/gtkrc 
 export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
-export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
 # Load aliases and shortcuts if existent.
