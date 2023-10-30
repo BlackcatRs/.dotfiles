@@ -43,8 +43,8 @@ flycheck_*.el
 # directory configuration
 .dir-locals.el
 
-# Credentials
-.env
+# Sensitive file
+.config/shell/env
 
 # Fonts
 .local/share/fonts/*/.uuid
