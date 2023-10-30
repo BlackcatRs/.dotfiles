@@ -20,15 +20,15 @@
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_HOME="$HOME/.local/share"
-export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
 
 # ~/ Clean-up:
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml  # Starship config 
 export HISTFILE="$XDG_STATE_HOME"/bash/history # Bash history
+export GTK_RC_FILES="$XDG_CONFIG_HOME"/gtk-1.0/gtkrc 
 export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
 export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
-
+export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
 # Load aliases and shortcuts if existent.
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc"
