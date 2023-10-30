@@ -53,3 +53,6 @@ alias pass="pass -c"
 
 # Copy the output to clipboard
 alias copy="xclip -selection clipboard"
+
+# ~/ Clean-up:
+alias mbsync="mbsync -c $XDG_CONFIG_HOME/isync/mbsyncrc"
