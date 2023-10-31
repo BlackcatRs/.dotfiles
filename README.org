@@ -55,8 +55,20 @@ The files mentioned below can be deleted without any side effects, they are only
 - State "TODO"       from              [2023-10-29 dim. 22:38] \\
   Write a doc for bookmarked files and folders
 :END:
-** TODO Shell Aliases
+** DONE Shell Aliases
+CLOSED: [2023-10-31 mar. 10:50]
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2023-10-31 mar. 10:50]
 - State "TODO"       from              [2023-10-29 dim. 22:39] \\
   Create aliases using the style used by https://github.com/LukeSmithxyz/voidrice/blob/master/.config/shell/aliasrc file in =/home/vts/.config/shell/aliasrc= file
 :END:
+** Shortcuts to Implement
+Super + m music player
+Super + i htop
+Super +r ranger
+super f9 mount disk with dmenu
+super f10 unmount
+super  f3 select a multi screen 
+(gui program arandr)
+super printsrc record screen
+super u dropdown tmux terminal
