@@ -20,3 +20,7 @@ shell-color-scripts
 
 # Xbindkeys
 \.config/Xbindkeys
+
+# Bookmarks of file and directory
+\.config/shell/bm-dirs
+\.config/shell/bm-files
