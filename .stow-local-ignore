@@ -1,18 +1,20 @@
+# Git
 \.git
 \.gitmodules
-misc
-LICENSE
-^/.*\.org
-.*~
-install.sh
 .gitignore
 .gitmodules
-.Xmodmap
+LICENSE
+misc
 README.md
-shell-color-scripts
-\.emacs.d/README.*
-\.emacs.d/Shortcut.md
+
+# Emacs
+\.config/emacs/README.*
+\.config/emacs/Shortcut.md
 \.config/mutt/*
+^/.*\.org
+.*~
+
+# Scripts
 \.local/bin/rofi-wifi-menu.sh
 
 # Xmodmap
@@ -24,3 +26,7 @@ shell-color-scripts
 # Bookmarks of file and directory
 \.config/shell/bm-dirs
 \.config/shell/bm-files
+
+install.sh
+.Xmodmap
+shell-color-scripts
