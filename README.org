@@ -74,8 +74,9 @@ super printsrc record screen
 super u dropdown tmux terminal
 
 ** Create a script
-It will create directory:
+- It will create directory:
 ~/.config/shell
 ~/config/emacs
 
-Which link var.el to ~/config/emacs if exists.
+- Which link var.el to ~/config/emacs if exists.
+- Install =imagemagick= for Ranger to rotate an image
