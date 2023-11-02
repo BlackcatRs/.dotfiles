@@ -15,6 +15,7 @@
   - [[#which-key][Which-key]]
   - [[#helpful][Helpful]]
   - [[#visual-fill-column][Visual-fill-column]]
+  - [[#rainbow-mode][Rainbow-mode]]
 - [[#key-bindings][Key bindings]]
   - [[#command-log-mode][Command-log-mode]]
   - [[#custom-key-bindings][Custom key bindings]]
@@ -101,7 +102,7 @@ Emacs uses primarily three faces to display the text namely ~variable-pitch~, ~f
 Which face to use is defined by the theme or we can define it manually in the Emacs config, but we don't because there are so many, even though we have defined a face for [[Org-mode][Org mode]].
 
 #+begin_src emacs-lisp :results none
-  ;; I have configured these three faces in the ~/.emacs.d/faces.el file
+  ;; I have configured these three faces in the ~/.config/emacs/faces.el file
   ;; which is unique on my all PCs
 
   ;; ;; Font and font size of Emacs window
@@ -111,8 +112,8 @@ Which face to use is defined by the theme or we can define it manually in the Em
   ;; ;; This will affect font and font size of Heading and text in Org mode
   ;; (set-face-attribute 'variable-pitch nil :font "Iosevka Aile" :height 120 :weight 'normal)
 
-  (if (file-exists-p "~/.emacs.d/faces.el")
-      (progn (load-file "~/.emacs.d/faces.el")
+  (if (file-exists-p "~/.config/emacs/faces.el")
+      (progn (load-file "~/.config/emacs/faces.el")
              (defun voc/set-font-faces ()
                (message "Setting faces!")
                ;; Font and font size of Emacs window
@@ -280,6 +281,12 @@ Text alignment in the buffer:
     :hook (org-mode . efs/org-mode-visual-fill)
     (markdown-mode . efs/org-mode-visual-fill))
 
+#+end_src
+
+** Rainbow-mode
+#+begin_src emacs-lisp :results none
+  ;; Visualizing Color Codes
+  (use-package rainbow-mode)
 #+end_src
 
 * Key bindings
@@ -500,8 +507,8 @@ The =efs/all-mode-setup= function is inspired by the DRY principle which aims to
 
 * Emacs backup files
 #+begin_src emacs-lisp :results none
-;; Save all emacs backup files (files ending in ~) in ~/.emacs.d/backup
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+;; Save all emacs backup files (files ending in ~) in ~/.config/emacs/backup
+(setq backup-directory-alist '(("." . "~/.config/emacs/backup"))
   backup-by-copying t    ; Don't delink hardlinks
   version-control t      ; Use version numbers on backups
   delete-old-versions t  ; Automatically delete excess backups
@@ -661,7 +668,7 @@ Habit tracking with ~org-habit~ package:
 (setq org-habit-graph-column 60)
 #+end_src
 
-The following code block executes only if the =~/.emacs.d/vars.el= file exists which contains variables with path to Org file. Ex =(defvar voc/todo "~/Org/TODO.org").=
+The following code block executes only if the =~/.config/emacs/vars.el= file exists which contains variables with path to Org file. Ex =(defvar voc/todo "~/Org/TODO.org").=
 
 First at all, we define our list of Org Agenda files with =org-agenda-files= variable which will be used for storing different type events. 
 
@@ -670,7 +677,7 @@ Next we define Org capture template in order to save events using =org-capture-t
 Last block of code will collect information from our various Org files where we have captured tasks and/or notes and display them as we want. This is done by customizing the variable =org-agenda-custom-commands=, so for more details on customization we can use =describe-variable= and =org-agenda-custom-commands=. We can also  Emacs' documentation by pressing =C-h i > d > m > Org mode > m > Block agenda=:
 #+begin_src emacs-lisp :results none
   ;; Org Agenda
-  (load-file "~/.emacs.d/vars.el")
+  (load-file "~/.config/emacs/vars.el")
 
   ;; Capture tasks
   (setq org-capture-templates
@@ -712,7 +719,7 @@ Defining shortcuts to view Org Agenda and to capture tasks:
   (set-face-attribute 'org-scheduled-previously nil :foreground "#F44336" :weight 'bold)
 
   ;; "org-agenda-files" contains a list of files from which Org Agenda
-  ;; retrieves data, I have set this variable in ~/.emacs.d/vars.el
+  ;; retrieves data, I have set this variable in ~/.config/emacs/vars.el
   ;; file.
   ;; (setq org-agenda-files
   ;;       '("~/Org/Tasks.org"
@@ -1006,7 +1013,7 @@ Org Roam v2 package uses a customized build of SQLite database, so Org Roam need
 
 ** Org-roam config
 #+begin_src emacs-lisp :results none :tangle yes
-  (if (file-exists-p "~/.emacs.d/vars.el")
+  (if (file-exists-p "~/.config/emacs/vars.el")
       (progn 
         (use-package org-roam
           :ensure t

@@ -72,3 +72,10 @@ super  f3 select a multi screen
 (gui program arandr)
 super printsrc record screen
 super u dropdown tmux terminal
+
+** Create a script
+It will create directory:
+~/.config/shell
+~/config/emacs
+
+Which link var.el to ~/config/emacs if exists.

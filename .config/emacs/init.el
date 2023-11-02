@@ -1,6 +1,6 @@
 ;; Method 1
 (require 'org)
-(org-babel-load-file "~/.dotfiles/.emacs.d/README.org")
+(org-babel-load-file "~/.dotfiles/.config/emacs/README.org")
 
 ;; Method 2
 ;(setq org-babel-load-languages '((emacs-lisp . t)))

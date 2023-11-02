@@ -50,7 +50,7 @@ flycheck_*.el
 .local/share/fonts/*/.uuid
 
 # Org-babel genereted file
-.emacs.d/README.el
+.config/emacs/README.el
 
 # Tmux plugins except 'tpm' folder
 .config/tmux/plugins/*

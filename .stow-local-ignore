@@ -10,7 +10,6 @@ README.md
 # Emacs
 \.config/emacs/README.*
 \.config/emacs/Shortcut.md
-\.config/mutt/*
 ^/.*\.org
 .*~
 
@@ -30,3 +29,4 @@ README.md
 install.sh
 .Xmodmap
 shell-color-scripts
+\.config/mutt/*
