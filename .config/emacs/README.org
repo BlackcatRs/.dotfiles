@@ -49,6 +49,7 @@
   - [[#references][References]]
 - [[#hold-mail][HOLD Mail]]
   - [[#mu4e][Mu4e]]
+- [[#ongoing-run-shell-command][ONGOING Run Shell Command]]
 - [[#footnotes][Footnotes]]
 
 * Requirements
@@ -1193,6 +1194,26 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
 ;; End - Emacs Mail --------------------------------------------------
 #+end_src
 
+* ONGOING Run Shell Command
+:LOGBOOK:
+- State "ONGOING"    from              [2023-11-06 lun. 14:22] \\
+  Make an explanation to this section and put it in prodcution
+:END:
+#+begin_src emacs-lisp :results none :tangle no
+  (defvar *afilename-cmd*
+    '(("/home/vts/git/cv/cv.tex" . "pdflatex ~/git/cv/cv.tex")
+      ("/home/someone/.xbindkeysrc" . "xbindkeys -p"))
+    "File association list with their respective command.")
+
+  (defun my/cmd-after-saved-file ()
+    "Execute a command after saved a specific file."
+    (let* ((match (assoc (buffer-file-name) *afilename-cmd*)))
+      (when match
+        (async-shell-command (cdr match) nil))))
+
+  (add-hook 'after-save-hook 'my/cmd-after-saved-file)
+  (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
+#+end_src
 * Footnotes
 
 [fn:1] Node is a Org file that contains data. 
