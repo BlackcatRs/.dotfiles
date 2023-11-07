@@ -1,0 +1,23 @@
+#! /usr/bin/env bash
+
+EMACS_DIR="~/git/dotrice/.config/emacs"
+
+run_emacs() {
+    # Create an instance "lab" of Emacs which will run as daemon
+    /usr/bin/emacs --daemon=lab --init-directory=$EMACS_DIR/assets/ -q --load $EMACS_DIR/init.el
+
+    # Create a frame/window for Emacs instance "lab"
+    /usr/bin/emacsclient --create-frame --socket-name=lab
+
+    # Kill the previously created Emacs instance "lab"
+    emacsclient -e "(kill-emacs)" --socket-name=lab
+}
+
+
+if [ ! -S /run/user/1000/emacs/lab ]; then
+    run_emacs
+else
+    # Kill existing Emacs instance "lab"
+    emacsclient -e "(kill-emacs)" --socket-name=lab
+    run_emacs
+fi
