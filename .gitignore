@@ -18,8 +18,9 @@ tramp
 /eshell/history
 /eshell/lastdir
 
-# elpa packages
+# Emacs packages
 .config/emacs/elpa/
+.config/emacs/assets/
 
 # reftex files
 *.rel
