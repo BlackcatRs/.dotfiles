@@ -56,6 +56,7 @@
   - [[#index-mailbox][Index mailbox]]
   - [[#email-client][Email Client]]
   - [[#keybinding][Keybinding]]
+  - [[#search-queries][Search queries]]
   - [[#references-1][References]]
 - [[#footnotes][Footnotes]]
 
@@ -1306,7 +1307,7 @@ mu index
 
 ** Email Client
 =Mu4e= is an email client for Emacs and it's consider as Emacs interface for =mu= mail indexer. A typical example could be a mail syncing program like ~isync~ which download mail from remote Maildir folder to local Maildir folder and then =mu= indexer will be used to index mail. Then an Emacs mail client can read mails.
-#+begin_src emacs-lisp :results none :tangle no
+#+begin_src emacs-lisp :results none :tangle yes
   ;; Start - Mail ------------------------------------------------------
   (use-package mu4e
     ;; using :ensure nil because we installed mu4e using the distro's
@@ -1314,7 +1315,7 @@ mu index
     :ensure nil
     :defer 20 ; Wait until 20 seconds after startup
     ;; Path where the package manager is installed mu4e files
-    ;; :load-path "/usr/share/emacs/site-lisp/mu4e/"
+    :load-path "/usr/share/emacs/site-lisp/mu4e/"
 
     :config
     ;; This is set to 't' to avoid mail syncing issues when using mbsync
@@ -1322,23 +1323,23 @@ mu index
 
     ;; Refresh mail using isync every 10 minutes
     (setq mu4e-update-interval (* 10 60))
-    (setq mu4e-get-mail-command "mbsync -a")
-    (setq mu4e-maildir "~/Mail")
+    (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c /home/vts/git/dotrice/.config/isync/mbsyncrc")
+    (setq mu4e-maildir "~/.local/share/mail/vithurshanselvarajah@gmail.com/")
 
     ;;  If your Gmail is set up with a different lanugage you also need
     ;;  to translate the names of these folders. For Norwegian
     ;;  "[Gmail]/Corbeille" would be "[Gmail]/Papirkurv".
-    (setq mu4e-drafts-folder "/[Gmail]/Brouillons")
-    (setq mu4e-sent-folder   "/[Gmail]/Messages envoy&AOk-s")
-    (setq mu4e-refile-folder "/[Gmail]/Tous les messages")
-    (setq mu4e-trash-folder  "/[Gmail]/Corbeille")
+    (setq mu4e-drafts-folder "/Drafts")
+    (setq mu4e-sent-folder   "/Sent Mail")
+    (setq mu4e-refile-folder "/All Mail")
+    (setq mu4e-trash-folder  "/Bin")
 
     (setq mu4e-maildir-shortcuts
-        '(("/Inbox"             . ?i)
-          ("/[Gmail]/Messages envoy&AOk-s" . ?s)
-          ("/[Gmail]/Corbeille"     . ?t)
-          ("/[Gmail]/Brouillons"    . ?d)
-          ("/[Gmail]/Tous les messages"  . ?a)))
+        '(("/INBOX"             . ?i)
+          ("/Sent Mail" . ?s)
+          ("/Bin"     . ?t)
+          ("/Drafts"    . ?d)
+          ("/All Mail"  . ?a)))
 
     (setq mu4e-bookmarks
           '((:name "Unread messages" :query "flag:unread AND NOT flag:trashed AND maildir:/Inbox" :key ?i)
@@ -1421,9 +1422,22 @@ Many of the same keybinding in ~Headers~ mode/buffer will work in ~View~ mode/bu
 | ~[[~  | ~[[~   | =mu4e-headers-prev-unread= | Moves to previous unread message       |
 | ~]]~  | ~]]~   | =mu4e-headers-next-unread= | Moves to next unread message           |
 
+** Search queries
+Run the function =mu4e-search= or press letter  =s= from within mu4e to start searching:
+- =something= - General text search for "something".
+- =from:stallman= - Emails from a particular sender.
+- =date:today..now= - Date range.
+- =flag:attach= - Emails with an attachment.
+- =maildir:/Inbox= - Search in a specific mail directory.
+
+You can also use logic statements like and , not:
+- =maildir:/Inbox and from:eli and docs=
+
+Documentation: https://www.djcbsoftware.nl/code/mu/mu4e/Queries.html
+
 ** References
-- Emacs Mail by [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ][System Crafters]]
 - [[https://www.reddit.com/r/emacs/comments/8q84dl/tip_how_to_easily_manage_your_emails_with_mu4e/][How to easily manage your emails with mu4e]]
+- Emacs Mail by [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ][System Crafters]]
 - [[https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/][mu4e for Dummies]]
 
 * Footnotes
