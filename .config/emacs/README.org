@@ -1222,8 +1222,11 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
   (add-hook 'after-save-hook 'my/cmd-after-saved-file)
   (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
 #+end_src
+
 * ONGOING Mail
 :LOGBOOK:
+- State "ONGOING"    from "ONGOING"    [2023-11-08 mer. 21:44] \\
+  Configure SMTP by watching https://www.youtube.com/watch?v=WiyqU7gmKsk&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ&index=3 video.
 - State "ONGOING"    from "ONGOING"    [2023-08-10 jeu. 10:49] \\
   - Finished watching the above video
   - Process HTML in the message content
