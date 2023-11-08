@@ -1239,10 +1239,16 @@ Install ~isync~ using your package manager, and you should install ~mu4e~ using 
 sudo apt update && sudo apt install mu4e isync
 #+end_src
 
-** Syncing Mails
+** TODO Syncing Mails
+:LOGBOOK:
+- State "TODO"       from              [2023-11-08 mer. 20:53] \\
+  Move useful info to isync/readme.org and delete this section.
+  Then make a link to isync/readme.org file
+:END:
 We will use ~isync~ program to download mails to local Maildir folder. We can also use a program called ~offlineimap~ which is a bit slower but it can work on Windows. Download mails from remote Maildir folder using =.mbsyncrc= configuration file with following settings:
 
 *NOTE: isync is the name of the project, mbsync is the name of the executable.*
+
 #+begin_src :results none :tangle no
 IMAPAccount gmail
 Host imap.gmail.com
@@ -1275,7 +1281,7 @@ Some older accounts name =Bin= as Trash, and if the names of the remote folders 
 
 The value of =SSLVersions= is depends on the output of:
 #+begin_src shell
-  gpg2 -c .mbsyncpass-acc1
+  openssl s_client -connect imap.gmail.com:993 -showcerts | grep Protocol
 #+end_src
 
 
@@ -1308,63 +1314,95 @@ mu index
 ** Email Client
 =Mu4e= is an email client for Emacs and it's consider as Emacs interface for =mu= mail indexer. A typical example could be a mail syncing program like ~isync~ which download mail from remote Maildir folder to local Maildir folder and then =mu= indexer will be used to index mail. Then an Emacs mail client can read mails.
 #+begin_src emacs-lisp :results none :tangle yes
-;; Start - Mail ------------------------------------------------------
-(use-package mu4e
-  ;; using :ensure nil because we installed mu4e using the distro's
-  ;; package manager to stay compatible with mbsync
-  :ensure nil
-  :defer 20 ; Wait until 20 seconds after startup
-  ;; Path where the package manager is installed mu4e files
-  :load-path "/usr/share/emacs/site-lisp/mu4e/"
+  ;; Start - Mail ------------------------------------------------------
+  (use-package mu4e
+    ;; using :ensure nil because we installed mu4e using the distro's
+    ;; package manager to stay compatible with mbsync
+    :ensure nil
+    :defer 20 ; Wait until 20 seconds after startup
+    ;; Path where the package manager is installed mu4e files
+    :load-path "/usr/share/emacs/site-lisp/mu4e/"
 
-  :config
-  ;; This is set to 't' to avoid mail syncing issues when using mbsync
-  (setq mu4e-change-filenames-when-moving t)
+    :config
+    ;; This is set to 't' to avoid mail syncing issues when using mbsync
+    (setq mu4e-change-filenames-when-moving t)
+    ;; (setq mu4e-user-mail-address-list '("vithurshanselvarajah@gmail.com"
+    ;;                                   "mu4e.example@outlook.it"))
+    ;; don't keep message buffers around
+    (setq message-kill-buffer-on-exit t)
+    ;; Shortcut to view mails
+    (global-set-key (kbd "C-c m") 'mu4e)
+    ;; don't ask when quitting
+    (setq mu4e-confirm-quit nil)
+    ;; Refresh mail using isync every 10 minutes
+    (setq mu4e-update-interval (* 10 60))
+    (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c /home/vts/git/dotrice/.config/isync/mbsyncrc")
+    (setq mu4e-maildir "~/.local/share/mail")
+    ;; Set first context as default
+    (setq mu4e-context-policy 'pick-first)
 
-  (setq mu4e-user-mail-address-list '("vithurshanselvarajah@gmail.com"
-				    "mu4e.example@outlook.it"))
+    ;;  If your Gmail is set up with a different lanugage you also need
+    ;;  to translate the names of these folders. For Norwegian
+    ;;  "[Gmail]/Corbeille" would be "[Gmail]/Papirkurv".
+    (setq mu4e-contexts
+          (list
+           ;; Laposte - vithurshan@laposte.net
+           (make-mu4e-context
+            :name "Laposte"
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/vithurshan@laposte.net" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address   . "vithurshan@laposte.net")
+                    (user-full-name      . "Vithurshan SELVARAJAH Laposte")
+                    (mu4e-drafts-folder  . "/vithurshan@laposte.net/DRAFT")
+                    (mu4e-sent-folder    . "/vithurshan@laposte.net/Sent Items")
+                    (mu4e-refile-folder  . "/vithurshan@laposte.net/Archives")
+                    (mu4e-trash-folder   . "/vithurshan@laposte.net/Deleted Items")
+                    (mu4e-maildir-shortcuts . (("/vithurshan@laposte.net/Inbox"         . ?i)
+                                               ("/vithurshan@laposte.net/Sent Items"    . ?s)
+                                               ("/vithurshan@laposte.net/Deleted Items" . ?t)
+                                               ("/vithurshan@laposte.net/DRAFT"         . ?d)))
+                    ))
 
-  ;; don't keep message buffers around
-  (setq message-kill-buffer-on-exit t)
+           ;; Gmail - vithurshanselvarajah@gmail.com
+           (make-mu4e-context
+            :name "Gmail"
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/vithurshanselvarajah@gmail.com" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "vithurshanselvarajah@gmail.com")
+                    (user-full-name    . "Vithurshan SELVARAJAH Gmail")
+                    (mu4e-drafts-folder  . "/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons")
+                    (mu4e-sent-folder  . "/vithurshanselvarajah@gmail.com/[Gmail]/Messages envoy&AOk-s")
+                    (mu4e-refile-folder  . "/vithurshanselvarajah@gmail.com/[Gmail]/Tous les messages")
+                    (mu4e-trash-folder  . "/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille")
+                    (mu4e-maildir-shortcuts . (("/vithurshanselvarajah@gmail.com/Inbox"                        . ?i)
+                                               ("/vithurshanselvarajah@gmail.com/[Gmail]/Messages envoy&AOk-s" . ?s)
+                                               ("/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille"            . ?t)
+                                               ("/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons"           . ?d)
+                                               ("/vithurshanselvarajah@gmail.com/[Gmail]/Tous les messages"    . ?a)))
+                    ))
+           ))
 
+    (setq mu4e-maildir-shortcuts
+          '(("/Inbox"             . ?i)
+            ("/[Gmail]/Messages envoy&AOk-s" . ?s)
+            ("/[Gmail]/Corbeille"     . ?t)
+            ("/[Gmail]/Brouillons"    . ?d)
+            ("/[Gmail]/Tous les messages"  . ?a)))
 
-  ;; Refresh mail using isync every 10 minutes
-  (setq mu4e-update-interval (* 10 60))
-  (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c /home/vts/git/dotrice/.config/isync/mbsyncrc")
-  (setq mu4e-maildir "~/.local/share/mail/vithurshanselvarajah@gmail.com/")
+    (setq mu4e-bookmarks
+          '((:name "Unread messages" :query "flag:unread AND NOT flag:trashed AND maildir:/Inbox" :key ?i)
+            (:name "Today's messages" :query "maildir:/Inbox date:today..now" :key ?t)
+            (:name "The Boss" :query "from:stallman" :key ?s)
+            (:name "Last 7 days" :query "date:7d..now" :hide-unread t :key ?w)
+            (:name "Messages with images" :query "mime:image/*" :key ?p)))
 
-  ;;  If your Gmail is set up with a different lanugage you also need
-  ;;  to translate the names of these folders. For Norwegian
-  ;;  "[Gmail]/Corbeille" would be "[Gmail]/Papirkurv".
-  (setq mu4e-drafts-folder "/[Gmail]/Brouillons")
-  (setq mu4e-sent-folder   "/[Gmail]/Messages envoy&AOk-s")
-  (setq mu4e-refile-folder "/[Gmail]/Tous les messages")
-  (setq mu4e-trash-folder  "/[Gmail]/Corbeille")
-
-  (setq mu4e-maildir-shortcuts
-	'(("/Inbox"             . ?i)
-          ("/[Gmail]/Messages envoy&AOk-s" . ?s)
-          ("/[Gmail]/Corbeille"     . ?t)
-          ("/[Gmail]/Brouillons"    . ?d)
-          ("/[Gmail]/Tous les messages"  . ?a)))
-
-  (setq mu4e-bookmarks
-        '((:name "Unread messages" :query "flag:unread AND NOT flag:trashed AND maildir:/Inbox" :key ?i)
-          (:name "Today's messages" :query "maildir:/Inbox date:today..now" :key ?t)
-          (:name "The Boss" :query "from:stallman" :key ?s)
-          (:name "Last 7 days" :query "date:7d..now" :hide-unread t :key ?w)
-          (:name "Messages with images" :query "mime:image/*" :key ?p)))
-
-  ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
-  (mu4e t)
-
-  ;; Shortcut to view mails
-  (global-set-key (kbd "C-c m") 'mu4e)
-
-  ;; don't ask when quitting
-  (setq mu4e-confirm-quit nil)
-  )
-;; End - Mail --------------------------------------------------------
+    ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
+    (mu4e t))
+  ;; End - Mail --------------------------------------------------------
 #+end_src
 
 Controlling the number of messages that will get displayed to user by =mu4e= by default:
