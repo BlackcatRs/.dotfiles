@@ -1239,68 +1239,10 @@ Install ~isync~ using your package manager, and you should install ~mu4e~ using 
 sudo apt update && sudo apt install mu4e isync
 #+end_src
 
-** TODO Syncing Mails
-:LOGBOOK:
-- State "TODO"       from              [2023-11-08 mer. 20:53] \\
-  Move useful info to isync/readme.org and delete this section.
-  Then make a link to isync/readme.org file
-:END:
+** Syncing Mails
 We will use ~isync~ program to download mails to local Maildir folder. We can also use a program called ~offlineimap~ which is a bit slower but it can work on Windows. Download mails from remote Maildir folder using =.mbsyncrc= configuration file with following settings:
 
-*NOTE: isync is the name of the project, mbsync is the name of the executable.*
-
-#+begin_src :results none :tangle no
-IMAPAccount gmail
-Host imap.gmail.com
-User systemcrafters.test@gmail.com
-PassCmd "cat ~/.oh-no-insecure-password"
-SSLType IMAPS
-CertificateFile /etc/ssl/certs/ca-certificates.crt
-
-IMAPStore gmail-remote
-Account gmail
-
-MaildirStore gmail-local
-Subfolders Verbatim
-Path ~/Mail/
-Inbox ~/Mail/Inbox
-
-Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
-Patterns * ![Gmail]* "[Gmail]/Messages envoy&AOk-s" "[Gmail]/Suivis" "[Gmail]/Tous les messages" "[Gmail]/Corbeille" "[Gmail]/Brouillons"
-Create Both
-SyncState *
-#+end_src
-*NOTE: Be careful of how you manage whitespace between lines in this file, the spaces define groupings!*
-
-Some older accounts name =Bin= as Trash, and if the names of the remote folders are not mentioned correctly in the configuration file, then it will causes an error. Or if your Gmail is set up with a different lanugage, then you need to translate the names of these folders. For Norwegian =[Gmail]/Corbeille= would be =[Gmail]/Papirkurv=. Check the names of remote folders of ~gmail~ account:
-#+begin_src shell
-  mbsync -c ~/.emacs.d/mu4e/.mbsyncrc -Dmn acc1-gmail
-#+end_src
-
-The value of =SSLVersions= is depends on the output of:
-#+begin_src shell
-  openssl s_client -connect imap.gmail.com:993 -showcerts | grep Protocol
-#+end_src
-
-
-Settings you may need to change:
-    - =PassCmd= - We’re getting the contents of a plain text file here, you might want to use *gpg!*
-    - =Pass= - If you want to use plaintext password (not recommended!), doesn’t need quotation marks
-    - =CertificateFile= - This location can vary based on your Linux distribution!
-    - =Patterns= - Defines which folders will be synced
-
-For the security conscious:
-    - Decrypt GPG encrypted password file: =gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.passwords/gmail.gpg=
-    - To use ~Password Store~ password manager program : =pass Mail/MyGmail=
-
-Start the initial sync: 
-#+begin_src shell :tangle no
-mbsync -a
-#+end_src      
-
-*NOTE: mbsync won’t create the base maildir for you, you’ll have to create it: mkdir ~/Mail*
+Refer to the [[file:~/git/dotrice/.config/isync/README.org][isync/README.org]] file for a more detailed explanation of Isync configuration.
 
 ** Index mailbox
 Once mails have been synced to local Maildir, run a initial indexing process by providing you e-mail address to =mu= program:
