@@ -55,8 +55,8 @@
   - [[#syncing-mails][Syncing Mails]]
   - [[#index-mailbox][Index mailbox]]
   - [[#email-client][Email Client]]
-  - [[#keybinding][Keybinding]]
   - [[#search-queries][Search queries]]
+  - [[#keybinding][Keybinding]]
   - [[#references-1][References]]
 - [[#footnotes][Footnotes]]
 
@@ -98,6 +98,11 @@ Display column and line number:
 Set up the visible bell:
 #+begin_src emacs-lisp :results none :tangle no
 (setq visible-bell t) ; Set up the visible bell
+#+end_src
+
+By default, the Emacs =auth-source= library retrieves passwords from the =~/.authinfo= file which is defined by the =auth-sources= variable. This could be in a plain text or a GPG encrypted format. Since we are following the XDG Base Directory specification, we'll change the location accordingly:
+#+begin_src emacs-lisp :results none
+(setq auth-sources '("~/.local/share/emacs/authinfo.gpg"))
 #+end_src
 
 * Font Configuration
@@ -1261,8 +1266,7 @@ mu index
 #+begin_src emacs-lisp :results none :tangle yes
   ;; Start - Mail ------------------------------------------------------
   (use-package mu4e
-    ;; using :ensure nil because we installed mu4e using the distro's
-    ;; package manager to stay compatible with mbsync
+    ;; Install mu4e using the distro's package manager to stay compatible with mbsync
     :ensure nil
     :defer 20 ; Wait until 20 seconds after startup
     ;; Path where the package manager is installed mu4e files
@@ -1271,8 +1275,6 @@ mu index
     :config
     ;; This is set to 't' to avoid mail syncing issues when using mbsync
     (setq mu4e-change-filenames-when-moving t)
-    ;; (setq mu4e-user-mail-address-list '("vithurshanselvarajah@gmail.com"
-    ;;                                   "mu4e.example@outlook.it"))
     ;; don't keep message buffers around
     (setq message-kill-buffer-on-exit t)
     ;; Shortcut to view mails
@@ -1283,8 +1285,18 @@ mu index
     (setq mu4e-update-interval (* 10 60))
     (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c /home/vts/git/dotrice/.config/isync/mbsyncrc")
     (setq mu4e-maildir "~/.local/share/mail")
+    ;; Use "flowed" format to display mails to recipient
+    (setq mu4e-compose-format-flowed t)
     ;; Set first context as default
     (setq mu4e-context-policy 'pick-first)
+    ;; Only ask if a context hasn't been previously picked
+    (setq mu4e-compose-context-policy 'ask-if-none)
+    ;; Configure the function to use for sending mail
+    (setq message-send-mail-function 'smtpmail-send-it)
+    ;; Ask user to select a key when signing/encrypting
+    (setq mm-sign-option 'guided)
+    (setq mm-encrypt-option 'guided)
+
 
     ;;  If your Gmail is set up with a different lanugage you also need
     ;;  to translate the names of these folders. For Norwegian
@@ -1299,7 +1311,13 @@ mu index
               (when msg
                 (string-prefix-p "/vithurshan@laposte.net" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address   . "vithurshan@laposte.net")
-                    (user-full-name      . "Vithurshan SELVARAJAH Laposte")
+                    (user-full-name      . "Vithurshan SELVARAJAH")
+                    (mu4e-compose-signature . "Vithurshan SELVARAJAH\n* Mon site web – www.atomicl.net\n* LinkedIn – www.linkedin.com/in/vithurshan-selvarajah\n* RSS Feed - www.atomicl.net/index.xml")
+                    ;; The SMTP password will be retrieved from the file
+                    ;; defined in the "auth-sources" variable
+                    (smtpmail-smtp-server  . "smtp.laposte.net")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . ssl)
                     (mu4e-drafts-folder  . "/vithurshan@laposte.net/DRAFT")
                     (mu4e-sent-folder    . "/vithurshan@laposte.net/Sent Items")
                     (mu4e-refile-folder  . "/vithurshan@laposte.net/Archives")
@@ -1318,7 +1336,10 @@ mu index
               (when msg
                 (string-prefix-p "/vithurshanselvarajah@gmail.com" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "vithurshanselvarajah@gmail.com")
-                    (user-full-name    . "Vithurshan SELVARAJAH Gmail")
+                    (user-full-name    . "Vithurshan SELVARAJAH")
+                    (smtpmail-smtp-server  . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)
+                    (smtpmail-stream-type  . ssl)
                     (mu4e-drafts-folder  . "/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons")
                     (mu4e-sent-folder  . "/vithurshanselvarajah@gmail.com/[Gmail]/Messages envoy&AOk-s")
                     (mu4e-refile-folder  . "/vithurshanselvarajah@gmail.com/[Gmail]/Tous les messages")
@@ -1350,70 +1371,29 @@ mu index
   ;; End - Mail --------------------------------------------------------
 #+end_src
 
+*** SMTP Conf
+Now we need to set SMTP credentials in =~/.local/share/emacs/authinfo.gpg= file as defined earlier for Mu4e to send mails. Whenever we save a file with ".gpg" extension, Emacs uses the =epa (Easy PGP Assistant)= library to encrypt the password using GnuPG:
+#+begin_src
+  machine smtp.gmail.com login vithurshanselvarajah@gmail.com password <your-password> port 465
+#+end_src
+
+Passwords set in the file can also be extracted manually using =(auth-source-search:host "smtp.gmail.com")= Emacs-lisp function.
+
+*** Do Not Wrap Lines 
+Traditional emails have a width limit of 79 characters for each line in the email body and by default Mu4e will use this limit to wrap lines in the email body. Instead, we can use the "flowed" format which tells the recipient's email client to adjust the width of line based on their screen size:
+#+begin_src emacs-lisp :results none :tangle no
+  ;; Use "flowed" format to display mails to recipient
+  (setq mu4e-compose-format-flowed t)
+#+end_src
+
+Refer to this [[https://joeclark.org/ffaq.html][article]] for more details on "flowed" format.
+
+*** Mu4e Dashboard [Optional]
 Controlling the number of messages that will get displayed to user by =mu4e= by default:
 - =mu4e-headers-results-limit=: The number of messages to display in mail listings (default 500)
 - =mu4e-headers-full-search=: If =t=, shows all messages, ignoring limit.
 
 You can toggle =mu4e-headers-full-search= with =M-x mu4e-headers-toggle-full-search=!
-
-** Keybinding
-Run =mu4e= to see the landing page or email dashboard =mu4e=. When reading mail, you start out in the ~Headers~ buffer and when you select an email with =RET=, the ~View~ buffer is displayed in a window below the ~Headers~ buffer window.
-
-Keybinding on ~Headers~ mode/buffer:
-
-| Key | Evil  | Command                             | Description                          |
-|-----+-------+-------------------------------------+--------------------------------------|
-|     |       | *Movement*                            |                                      |
-| ~C-n~ | ~j~     | =next-line=                           | Moves to the next header line        |
-| ~C-p~ | ~k~     | =previous-line=                       | Moves to the previous header line    |
-| ~[[~  | ~[[~    | =mu4e-headers-prev-unread=            | Moves to previous unread message     |
-| ~]]~  | ~]]~    | =mu4e-headers-next-unread=            | Moves to next unread message         |
-| ~j~   | ~J~     | =mu4e~headers-jump-to-maildir=        | Jump to another mail directory       |
-|     |       |                                     |                                      |
-|     |       | *Toggles*                             |                                      |
-| ~P~   | ~zt~    | =mu4e-headers-toggle-threading=       | Toggles threaded message display     |
-| ~W~   | ~zr~    | =mu4e-headers-toggle-include-related= | Toggles related message display      |
-|     |       |                                     |                                      |
-|     |       | *Marking*                             |                                      |
-| ~d~   | ~d~     | =mu4e-headers-mark-for-trash=         | Marks message for deletion           |
-| ~m~   | ~m~     | =mu4e-headers-mark-for-move=          | Marks message for move to folder     |
-| ~+~   | ~+~     | =mu4e-headers-mark-for-flag=          | Marks message for flagging           |
-| ~-~   | ~-~     | =mu4e-headers-mark-for-unflag=        | Marks message for unflagging         |
-| ~?~   |       | =mu4e-headers-mark-for-unread=        | Marks message as unread              |
-| ~!~   |       | =mu4e-headers-mark-for-read=          | Marks message as read                |
-| ~%~   | ~%~     | =mu4e-headers-mark-pattern=           | Marks based on a regex pattern       |
-| ~u~   | ~u~     | =mu4e-headers-mark-for-unmark=        | Removes mark for message             |
-| ~U~   | ~U~     | =mu4e-mark-unmark-all=                | Unmarks all marks in the view        |
-| ~x~   | ~x~     | =mu4e-mark-execute-all=               | Executes all marks in the view       |
-|     |       |                                     |                                      |
-|     |       | *Searching*                           |                                      |
-| ~s~   | ~s~     | =mu4e-headers-search=                 | Search all e-mails                   |
-| ~S~   | ~S~     | =mu4e-headers-search-edit=            | Edit current search (useful!)        |
-| ~/~   | ~/~     | =mu4e-headers-search-narrow=          | Narrow down the current results      |
-| ~b~   | ~b~     | =mu4e-headers-search-bookmark=        | Select a bookmark to search with     |
-| ~B~   | ~B~     | =mu4e-headers-search-bookmark-edit=   | Edit bookmark before search          |
-| ~g~   | ~gr~    | =mu4e-rerun-search=                   | Rerun the current search             |
-|     |       |                                     |                                      |
-|     |       | *Composing*                           |                                      |
-| ~C~   | ~C~, ~cc~ | =mu4e-compose-new=                    | Compose a new e-mail                 |
-| ~R~   | ~R~, ~cr~ | =mu4e-compose-reply=                  | Compose a reply to selected email    |
-| ~F~   | ~F~, ~cf~ | =mu4e-compose-forward=                | Compose a forward for selected email |
-| ~E~   | ~E~, ~ce~ | =mu4e-compose-edit=                   | Edit selected draft message          |
-|     |       |                                     |                                      |
-|     |       | *Other Actions*                       |                                      |
-| ~q~   | ~q~     | =mu4e~headers-quit-buffer=            | Quit the headers view                |
-
-
-Many of the same keybinding in ~Headers~ mode/buffer will work in ~View~ mode/buffer:
-| Key | Evil | Command                  | Description                            |
-|-----+------+--------------------------+----------------------------------------|
-|     |      | *Movement*                 |                                        |
-| ~C-n~ | ~j~    | =next-line=                | Moves to the next line in message      |
-| ~C-p~ | ~k~    | =previous-line=            | Moves to the previous line in message  |
-| ~n~   | ~C-j~  | =mu4e-view-headers-next=   | Moves to next email in header list     |
-| ~p~   | ~C-k~  | =mu4e-view-headers-prev=   | Moves to previous email in header list |
-| ~[[~  | ~[[~   | =mu4e-headers-prev-unread= | Moves to previous unread message       |
-| ~]]~  | ~]]~   | =mu4e-headers-next-unread= | Moves to next unread message           |
 
 ** Search queries
 Run the function =mu4e-search= or press letter  =s= from within mu4e to start searching:
@@ -1427,6 +1407,68 @@ You can also use logic statements like and , not:
 - =maildir:/Inbox and from:eli and docs=
 
 Documentation: https://www.djcbsoftware.nl/code/mu/mu4e/Queries.html
+
+** Keybinding
+Run =mu4e= to see the landing page or email dashboard =mu4e=. When reading mail, you start out in the ~Headers~ buffer and when you select an email with =RET=, the ~View~ buffer is displayed in a window below the ~Headers~ buffer window.
+
+Keybinding on ~Headers~ mode/buffer:
+
+| Key         | Evil  | Command                             | Description                          |   |
+|-------------+-------+-------------------------------------+--------------------------------------+---|
+|             |       | *Movement*                            |                                      |   |
+| ~C-n~         | ~j~     | =next-line=                           | Moves to the next header line        |   |
+| ~C-p~         | ~k~     | =previous-line=                       | Moves to the previous header line    |   |
+| ~[[~          | ~[[~    | =mu4e-headers-prev-unread=            | Moves to previous unread message     |   |
+| ~]]~          | ~]]~    | =mu4e-headers-next-unread=            | Moves to next unread message         |   |
+| ~j~           | ~J~     | =mu4e~headers-jump-to-maildir=        | Jump to another mail directory       |   |
+|             |       |                                     |                                      |   |
+|             |       | *Toggles*                             |                                      |   |
+| ~P~           | ~zt~    | =mu4e-headers-toggle-threading=       | Toggles threaded message display     |   |
+| ~W~           | ~zr~    | =mu4e-headers-toggle-include-related= | Toggles related message display      |   |
+|             |       |                                     |                                      |   |
+|             |       | *Marking*                             |                                      |   |
+| ~d~           | ~d~     | =mu4e-headers-mark-for-trash=         | Marks message for deletion           |   |
+| ~m~           | ~m~     | =mu4e-headers-mark-for-move=          | Marks message for move to folder     |   |
+| ~+~           | ~+~     | =mu4e-headers-mark-for-flag=          | Marks message for flagging           |   |
+| ~-~           | ~-~     | =mu4e-headers-mark-for-unflag=        | Marks message for unflagging         |   |
+| ~?~           |       | =mu4e-headers-mark-for-unread=        | Marks message as unread              |   |
+| ~!~           |       | =mu4e-headers-mark-for-read=          | Marks message as read                |   |
+| ~%~           | ~%~     | =mu4e-headers-mark-pattern=           | Marks based on a regex pattern       |   |
+| ~u~           | ~u~     | =mu4e-headers-mark-for-unmark=        | Removes mark for message             |   |
+| ~U~           | ~U~     | =mu4e-mark-unmark-all=                | Unmarks all marks in the view        |   |
+| ~x~           | ~x~     | =mu4e-mark-execute-all=               | Executes all marks in the view       |   |
+|             |       |                                     |                                      |   |
+|             |       | *Searching*                           |                                      |   |
+| ~s~           | ~s~     | =mu4e-headers-search=                 | Search all e-mails                   |   |
+| ~S~           | ~S~     | =mu4e-headers-search-edit=            | Edit current search (useful!)        |   |
+| ~/~           | ~/~     | =mu4e-headers-search-narrow=          | Narrow down the current results      |   |
+| ~b~           | ~b~     | =mu4e-headers-search-bookmark=        | Select a bookmark to search with     |   |
+| ~B~           | ~B~     | =mu4e-headers-search-bookmark-edit=   | Edit bookmark before search          |   |
+| ~g~           | ~gr~    | =mu4e-rerun-search=                   | Rerun the current search             |   |
+|             |       |                                     |                                      |   |
+|             |       | *Composing*                           |                                      |   |
+| ~C~           | ~C~, ~cc~ | =mu4e-compose-new=                    | Compose a new e-mail                 |   |
+| ~R~           | ~R~, ~cr~ | =mu4e-compose-reply=                  | Compose a reply to selected email    |   |
+| ~F~           | ~F~, ~cf~ | =mu4e-compose-forward=                | Compose a forward for selected email |   |
+| ~C-c C-d~     |       | =message-dont-send=                   | Save the composed mail as draft      |   |
+| ~E~           | ~E~, ~ce~ | =mu4e-compose-edit=                   | Edit selected draft message          |   |
+| ~C-c C-a~     |       | =mml-attach-file=                     | Attach a file                        |   |
+| ~C-c RET s p~ |       | =mml-secure-message-sign-pgpmime=     | Sign the message                     |   |
+| ~C-c RET C p~ |       | =mml-secure-encrypt-pgpmime=          | Encrypt the message                  |   |
+|             |       | *Other Actions*                       |                                      |   |
+| ~q~           | ~q~     | =mu4e~headers-quit-buffer=            | Quit the headers view                |   |
+
+
+Many of the same keybinding in ~Headers~ mode/buffer will work in ~View~ mode/buffer:
+| Key | Evil | Command                  | Description                            |
+|-----+------+--------------------------+----------------------------------------|
+|     |      | *Movement*                 |                                        |
+| ~C-n~ | ~j~    | =next-line=                | Moves to the next line in message      |
+| ~C-p~ | ~k~    | =previous-line=            | Moves to the previous line in message  |
+| ~n~   | ~C-j~  | =mu4e-view-headers-next=   | Moves to next email in header list     |
+| ~p~   | ~C-k~  | =mu4e-view-headers-prev=   | Moves to previous email in header list |
+| ~[[~  | ~[[~   | =mu4e-headers-prev-unread= | Moves to previous unread message       |
+| ~]]~  | ~]]~   | =mu4e-headers-next-unread= | Moves to next unread message           |
 
 ** References
 - [[https://www.reddit.com/r/emacs/comments/8q84dl/tip_how_to_easily_manage_your_emails_with_mu4e/][How to easily manage your emails with mu4e]]
