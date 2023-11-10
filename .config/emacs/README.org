@@ -1273,29 +1273,46 @@ mu index
     :load-path "/usr/share/emacs/site-lisp/mu4e/"
 
     :config
-    ;; This is set to 't' to avoid mail syncing issues when using mbsync
+    ;; Avoid mail syncing issues when using "mbsync"
     (setq mu4e-change-filenames-when-moving t)
-    ;; don't keep message buffers around
-    (setq message-kill-buffer-on-exit t)
-    ;; Shortcut to view mails
+
+
+    ;; Configure the function to use for sending mail
+    (setq message-send-mail-function 'smtpmail-send-it)
+
+
+    ;; Shortcut to Mu4e dashboard
     (global-set-key (kbd "C-c m") 'mu4e)
-    ;; don't ask when quitting
+    ;; Distroy message buffers on exit
+    (setq message-kill-buffer-on-exit t)
+    ;; Disable prompt when quitting
     (setq mu4e-confirm-quit nil)
+
+
     ;; Refresh mail using isync every 10 minutes
     (setq mu4e-update-interval (* 10 60))
     (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c /home/vts/git/dotrice/.config/isync/mbsyncrc")
     (setq mu4e-maildir "~/.local/share/mail")
-    ;; Use "flowed" format to display mails to recipient
-    (setq mu4e-compose-format-flowed t)
-    ;; Set first context as default
+
+    ;; Set first context ("Laposte") as default
     (setq mu4e-context-policy 'pick-first)
-    ;; Only ask if a context hasn't been previously picked
+    ;; Prompt for context when composing mail if a context hasn't been previously picked
     (setq mu4e-compose-context-policy 'ask-if-none)
-    ;; Configure the function to use for sending mail
-    (setq message-send-mail-function 'smtpmail-send-it)
+
+
     ;; Ask user to select a key when signing/encrypting
     (setq mm-sign-option 'guided)
     (setq mm-encrypt-option 'guided)
+
+
+    ;; Common setting for all mail accounts
+    ;; Use "flowed" format to display mails to recipient
+    (setq mu4e-compose-format-flowed t)
+    ;; Disable colors for HTML mails.
+    (setq shr-use-colors nil)
+    ;; Enable spell checking
+    (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
+    (setq user-full-name  "Vithurshan SELVARJAH")
 
 
     ;;  If your Gmail is set up with a different lanugage you also need
@@ -1311,7 +1328,6 @@ mu index
               (when msg
                 (string-prefix-p "/vithurshan@laposte.net" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address   . "vithurshan@laposte.net")
-                    (user-full-name      . "Vithurshan SELVARAJAH")
                     (mu4e-compose-signature . "Vithurshan SELVARAJAH\n* Mon site web – www.atomicl.net\n* LinkedIn – www.linkedin.com/in/vithurshan-selvarajah\n* RSS Feed - www.atomicl.net/index.xml")
                     ;; The SMTP password will be retrieved from the file
                     ;; defined in the "auth-sources" variable
@@ -1336,7 +1352,6 @@ mu index
               (when msg
                 (string-prefix-p "/vithurshanselvarajah@gmail.com" (mu4e-message-field msg :maildir))))
             :vars '((user-mail-address . "vithurshanselvarajah@gmail.com")
-                    (user-full-name    . "Vithurshan SELVARAJAH")
                     (smtpmail-smtp-server  . "smtp.gmail.com")
                     (smtpmail-smtp-service . 465)
                     (smtpmail-stream-type  . ssl)
