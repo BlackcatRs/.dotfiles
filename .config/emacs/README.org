@@ -50,7 +50,7 @@
 - [[#hold-mail][HOLD Mail]]
   - [[#mu4e][Mu4e]]
 - [[#ongoing-run-shell-command][ONGOING Run Shell Command]]
-- [[#ongoing-mail][ONGOING Mail]]
+- [[#mail][Mail]]
   - [[#prerequisite][Prerequisite]]
   - [[#syncing-mails][Syncing Mails]]
   - [[#index-mailbox][Index mailbox]]
@@ -1228,8 +1228,10 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
   (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
 #+end_src
 
-* ONGOING Mail
+* Mail
+CLOSED: [2023-11-10 ven. 20:04]
 :LOGBOOK:
+- State "DONE"       from "ONGOING"    [2023-11-10 ven. 20:04]
 - State "ONGOING"    from "ONGOING"    [2023-11-08 mer. 21:44] \\
   Configure SMTP by watching https://www.youtube.com/watch?v=WiyqU7gmKsk&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ&index=3 video.
 - State "ONGOING"    from "ONGOING"    [2023-08-10 jeu. 10:49] \\
