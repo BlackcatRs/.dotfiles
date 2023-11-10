@@ -1250,12 +1250,12 @@ sudo apt update && sudo apt install mu4e isync
 ** Syncing Mails
 We will use ~isync~ program to download mails to local Maildir folder. We can also use a program called ~offlineimap~ which is a bit slower but it can work on Windows. Download mails from remote Maildir folder using =.mbsyncrc= configuration file with following settings:
 
-Refer to the [[file:~/git/dotrice/.config/isync/README.org][isync/README.org]] file for a more detailed explanation of Isync configuration.
+Refer to the [[file:../isync/README.org][isync/README.org]] file for a more detailed explanation of Isync configuration.
 
 ** Index mailbox
 Once mails have been synced to local Maildir, run a initial indexing process by providing you e-mail address to =mu= program:
 #+begin_src shell :tangle no
-mu init --maildir=~/Mail --my-address=systemcrafters.test@gmail.com
+mu init --maildir=~/Mail --my-address=vithurshanselvarajah@gmail.com
 mu index
 #+end_src
 
@@ -1291,7 +1291,7 @@ mu index
 
     ;; Refresh mail using isync every 10 minutes
     (setq mu4e-update-interval (* 10 60))
-    (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c /home/vts/git/dotrice/.config/isync/mbsyncrc")
+    (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c ~/.config/isync/mbsyncrc")
     (setq mu4e-maildir "~/.local/share/mail")
 
     ;; Set first context ("Laposte") as default
