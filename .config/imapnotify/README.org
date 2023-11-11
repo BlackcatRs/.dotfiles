@@ -1,0 +1,8 @@
+* Goimapnotify
+** FIXME [0/1]
+*** TODO Run Script on Receiving Mails
+:LOGBOOK:
+- State "TODO"       from              [2023-11-11 sam. 16:13]
+:END:
+Run this script on receiving new mails instead on running a command inside Goimapnotify conf:
+https://gist.github.com/BlackcatRs/26d239bb069d9cd337f621c495a50399
