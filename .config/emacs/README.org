@@ -1384,7 +1384,7 @@ mu index
           (:name "Messages with images" :query "mime:image/*" :key ?p)))
 
     ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
-    ;; (mu4e t)
+    (mu4e t)
     )
   ;; End - Mail --------------------------------------------------------
 #+end_src
