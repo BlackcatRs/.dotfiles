@@ -84,14 +84,13 @@ vm () {
     vboxmanage startvm $vm_name --type headless
 }
 
-# emacs
+# Launch Emacs in client or normal mode
 if systemctl --user is-active --quiet emacs
 then
     alias e='emacsclient -c -nw'
 else
     alias e='emacs -nw'
 fi
-
 
 # Backup a file
 bak () {
@@ -131,7 +130,29 @@ reduce () {
 		$1
 }
 
-# Convert file format
+# Extract pages from a PDF file
+extract () {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+	echo Usage :
+	echo "[-] extract <full_file.pdf> <page_number>"
+	return 1
+    fi
+    
+    re='^[0-9]+(-[0-9]+)*$'
+    if ! [[ $2 =~ $re ]] ; then
+	echo "[-] Page number should be the format: X or X-Y" >&2;
+	return 1
+    fi
+
+
+    OUTPUT_FILE_NAME="$(echo $1 | /usr/bin/cut -d '.' -f1)"
+    PAGE_TO_EXTRACT="$(echo $2 | sed -r 's/\-/_/g')"
+    OUTPUT_FILE_NAME="${OUTPUT_FILE_NAME}_P${PAGE_TO_EXTRACT}.pdf"
+
+   /usr/bin/pdftk $1 cat $2 output $OUTPUT_FILE_NAME
+}
+
+# Convert MD to ORG file
 md2org () {
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo Usage :
@@ -139,7 +160,7 @@ md2org () {
 	return 1
     fi
 
-    pandoc -f markdown -t org -o ${2} ${1};
+    /usr/bin/pandoc -f markdown -t org -o ${2} ${1};
 }
 
 

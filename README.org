@@ -36,9 +36,12 @@ Emacs :
 To find unbalanced parenthesis
 run check-parens 
 
+* My addition to .bashrc
+- =extract= command that extract pages from a given PDF files
+
 * Program I Use
 =Pandoc= - A universal document converter.
-
+=pdftk= - Extract pages from PDF files
 * Archive
 The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
