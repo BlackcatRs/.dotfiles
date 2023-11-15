@@ -1214,7 +1214,7 @@ This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMz
 :END:
 #+begin_src emacs-lisp :results none :tangle no
   (defvar *afilename-cmd*
-    '(("/home/vts/git/cv/cv.tex" . "pdflatex ~/git/cv/cv.tex")
+    '(("/home/vts/git/Resume/main.tex" . "pdflatex ~/git/Resume/main.tex")
       ("/home/someone/.xbindkeysrc" . "xbindkeys -p"))
     "File association list with their respective command.")
 
