@@ -34,12 +34,12 @@ add() {
 
 get() {
     URL="$(/usr/bin/grep -v "^#\|^$" $FILE | /usr/local/bin/dmenu -i -l 50 | cut -d' ' -f1)"
-    /usr/bin/firefox $URL > /dev/null &
+    [ ! -z $URL ] && /usr/bin/firefox $URL > /dev/null &
 }
 
 incognito() {
     URL="$(/usr/bin/grep -v "^#\|^$" $FILE | /usr/local/bin/dmenu -i -l 50 | cut -d' ' -f1)"
-    /usr/bin/firefox --private-window $URL > /dev/null &
+    [ ! -z $URL ] && /usr/bin/firefox --private-window $URL > /dev/null &
 }
 
 
