@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+BOOKMARK="$(/usr/bin/xclip -o)"
+FILE="${XDG_DATA_HOME:-$HOME/.local/share}/Bookmark/bookmarks"
+
+help()
+{
+   echo "Bookmark the URL"
+   echo
+   echo "Syntax: bookmark [help|add|get|incognito]"
+   echo "options:"
+   echo "help    Show help menu."
+   echo "add     Bookmark a URL."
+   echo "get     Open the URL"
+   echo "get     Open the URL in incognito"
+   echo
+}
+
+add() {
+    if /usr/bin/grep -q "^$BOOKMARK" "$FILE"; then
+	/usr/bin/notify-send "Already bookmarked!"
+    else
+	CATEGORY=$(cut -d ' ' -f2- $FILE | uniq | dmenu -i -l 50)
+	echo $CATEGORY
+	REGEX="^ +$"
+	if [[ $CATEGORY =~ $REGEX ]]; then
+	    /usr/bin/notify-send "Category Unspecified"
+	    return 1
+	fi
+	echo "$BOOKMARK $CATEGORY" >> $FILE
+	/usr/bin/notify-send "Bookmark added" "$BOOKMARK saved"
+    fi
+}
+
+get() {
+    URL="$(/usr/bin/grep -v "^#\|^$" $FILE | /usr/local/bin/dmenu -i -l 50 | cut -d' ' -f1)"
+    /usr/bin/firefox $URL > /dev/null &
+}
+
+incognito() {
+    URL="$(/usr/bin/grep -v "^#\|^$" $FILE | /usr/local/bin/dmenu -i -l 50 | cut -d' ' -f1)"
+    /usr/bin/firefox --private-window $URL > /dev/null &
+}
+
+
+case $1 in
+    "add")
+	add;;
+    "get")
+	get;;
+    "incognito")
+	incognito;;
+    *)
+	help;;
+esac
