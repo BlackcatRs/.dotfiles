@@ -1209,7 +1209,7 @@ mu index
   (use-package mu4e
     ;; Install mu4e using the distro's package manager to stay compatible with mbsync
     :ensure nil
-    :defer 120 ; Wait until 2 min after startup
+    :defer 15 ; Wait until 15 sec after startup
     ;; Path where the package manager is installed mu4e files
     :load-path "/usr/share/emacs/site-lisp/mu4e/"
 
