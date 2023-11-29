@@ -37,7 +37,8 @@ To find unbalanced parenthesis
 run check-parens 
 
 * My addition to .bashrc
-- =extract= command that extract pages from a given PDF files
+- ~extract~ command (defined in =.bashrc=) extracts pages from a given PDF files.
+- The script [[file:.local/bin/shortcuts][shortcuts]] will generate a file =$HOME/.config/shell/shortcutrc= (sourced by =.bashrc=) with aliases based on [[file:.config/shell/bm-files][bm-files]] and [[file:.config/shell/bm-files][bm-dirs]] files. This allows to use only one or some letters to move between folder or open a file.
 
 * Program I Use
 =Pandoc= - A universal document converter.
@@ -47,24 +48,12 @@ The files mentioned below can be deleted without any side effects, they are only
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
 
 * FIXME
-** TODO .dotfiles README
+** TODO Write a readme for Dotrice
 :LOGBOOK:
 - State "TODO"       from              [2023-10-29 dim. 22:41] \\
   Write a proper READEME as Luke Smith
 :END:
 
-** TODO Bookmark folder and files
-:LOGBOOK:
-- State "TODO"       from              [2023-10-29 dim. 22:38] \\
-  Write a doc for bookmarked files and folders
-:END:
-** DONE Shell Aliases
-CLOSED: [2023-10-31 mar. 10:50]
-:LOGBOOK:
-- State "DONE"       from "TODO"       [2023-10-31 mar. 10:50]
-- State "TODO"       from              [2023-10-29 dim. 22:39] \\
-  Create aliases using the style used by https://github.com/LukeSmithxyz/voidrice/blob/master/.config/shell/aliasrc file in =/home/vts/.config/shell/aliasrc= file
-:END:
 ** Shortcuts to Implement
 Super + m music player
 Super + i htop

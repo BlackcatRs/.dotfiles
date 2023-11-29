@@ -23,7 +23,7 @@ Open a new tmux session with "VPN" as tmux window name:
   /usr/bin/qterminal -e /usr/bin/tmux new \; rename-window VPN
 #+end_src
 
-* TODO Plugins
+* TODO Tmux Plugins
 :LOGBOOK:
 - State "TODO"       from              [2023-09-06 Wed 21:02] \\
   This plugin need to be installed in order to load by Tmux.
