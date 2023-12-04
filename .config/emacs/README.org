@@ -47,7 +47,7 @@
   - [[#org-roam-config][Org-roam config]]
   - [[#key-bindings-1][Key bindings]]
   - [[#references][References]]
-- [[#ongoing-run-shell-command][ONGOING Run Shell Command]]
+- [[#cancelled-run-shell-command][CANCELLED Run Shell Command]]
 - [[#mail][Mail]]
   - [[#prerequisite][Prerequisite]]
   - [[#syncing-mails][Syncing Mails]]
@@ -1149,8 +1149,12 @@ We can also add one or more journal capture templates like the org capture templ
 ** References
 This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]].
 
-* ONGOING Run Shell Command
+* CANCELLED Run Shell Command
+CLOSED: [2023-12-01 ven. 10:19]
 :LOGBOOK:
+- State "CANCELLED"  from "DONE"       [2023-12-01 ven. 10:19] \\
+  Not too import for now and it's working for now
+- State "DONE"       from "ONGOING"    [2023-12-01 ven. 10:19]
 - State "ONGOING"    from              [2023-11-06 lun. 14:22] \\
   Make an explanation to this section and put it in prodcution
 :END:
