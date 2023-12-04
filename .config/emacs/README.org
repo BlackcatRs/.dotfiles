@@ -712,7 +712,7 @@ Last block of code will collect information from our various Org files where we 
            "* %? :Birthday:\nSCHEDULED: <%<%Y-%m-%d ++1y>>\nBirth of date: <%<%Y-%m-%d>>" :empty-lines 1)
 
           ("n" "Note" entry (file+headline voc/todo "Notes")
-           "* %? %^G\n %U" :empty-lines 1)
+           "* HOLD %? :Note:\n %U" :empty-lines 1)
 
           ("j" "Journal" entry (file+olp+datetree voc/journal)
            "* [%<%H:%M>]\n %?" :empty-lines 1)
@@ -773,15 +773,6 @@ Defining shortcuts to view Org Agenda and to capture tasks:
                   ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
                   (org-agenda-overriding-header "Upcoming Tasks (+3d)")))
 
-      (tags-todo "-Book/TODO|HOLD|WAITING"
-                 ((org-agenda-overriding-header "Unscheduled Tasks")
-                  (org-agenda-block-separator ?_)
-                  (org-agenda-start-on-weekday nil)
-
-                  (org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled
-                                                                       regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))
-                                                                       deadline)))))
-
       (agenda "" ((org-agenda-time-grid nil)
                   (org-agenda-start-on-weekday nil)
                   (org-agenda-start-day "+4d")
@@ -792,6 +783,18 @@ Defining shortcuts to view Org Agenda and to capture tasks:
                   (org-agenda-entry-types '(:deadline))
                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "WAITING" "HOLD" "CANCELLED")))
                   (org-agenda-overriding-header "Upcoming Deadlines (+14d)")))
+
+      (tags-todo "Note/+TODO=\"HOLD\"" ((org-agenda-block-separator ?_)
+                                        (org-agenda-overriding-header "Notes")))
+
+      (tags-todo "-Book/TODO|HOLD|WAITING"
+                 ((org-agenda-overriding-header "Unscheduled Tasks")
+                  (org-agenda-block-separator ?_)
+                  (org-agenda-start-on-weekday nil)
+
+                  (org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled
+                                                                       regexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))
+                                                                       deadline)))))
 
       (tags-todo "Book/HOLD" ((org-agenda-block-separator ?_)
                               (org-agenda-overriding-header "Books To Read")))))
