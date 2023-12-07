@@ -30,3 +30,6 @@ install.sh
 .Xmodmap
 shell-color-scripts
 \.config/mutt/*
+
+# Application
+\.local/share/applications/internet.desktop
