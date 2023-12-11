@@ -787,7 +787,7 @@ Defining shortcuts to view Org Agenda and to capture tasks:
       (tags-todo "Note/+TODO=\"HOLD\"" ((org-agenda-block-separator ?_)
                                         (org-agenda-overriding-header "Notes")))
 
-      (tags-todo "-Book/TODO|HOLD|WAITING"
+      (tags-todo "-Book-Note/TODO|HOLD|WAITING"
                  ((org-agenda-overriding-header "Unscheduled Tasks")
                   (org-agenda-block-separator ?_)
                   (org-agenda-start-on-weekday nil)
