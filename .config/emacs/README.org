@@ -8,6 +8,7 @@
 - [[#package-configuration][Package Configuration]]
 - [[#helpful-ui-improvements][Helpful UI Improvements]]
   - [[#doom-modeline][Doom-modeline]]
+  - [[#nerd-icons][Nerd-icons]]
   - [[#doom-themes][Doom-themes]]
   - [[#rainbow-delimiters][Rainbow-delimiters]]
   - [[#ivy][Ivy]]
@@ -187,6 +188,12 @@ A status bar at bottom:
     :ensure t
     :init (doom-modeline-mode 1)
     :custom ((doom-modeline-height 20)))
+#+end_src
+
+** Nerd-icons
+[[https://github.com/rainstormstudio/nerd-icons.el][Nerd-icons]] is a library for easily using Nerd Font icons inside Emacs:
+#+begin_src emacs-lisp :results none tangle: no
+  (use-package nerd-icons)
 #+end_src
 
 ** Doom-themes
