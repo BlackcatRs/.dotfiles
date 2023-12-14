@@ -40,6 +40,7 @@
   - [[#org-agenda][Org-agenda]]
   - [[#push-notification][Push notification]]
   - [[#org-file-to-markdown][Org file to Markdown]]
+  - [[#org-mode-for-hugo][Org-mode for Hugo]]
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
@@ -953,6 +954,72 @@ Mandatory Org keywords in for "[[https://ox-hugo.scripter.co/doc/blogging-flow/]
 - =#+hugo_custom_front_matter: :languages '(French)= My custom taxonomies that i use in Hugo ([[https://ox-hugo.scripter.co/doc/custom-front-matter/][More info]])
 - =#+hugo_draft: true= Indicates whether the file is ready to publish or not. 
 - =#+OPTIONS: toc:t= Generate automatically table of content.
+
+** Org-mode for Hugo
+*** Update Date Automatically
+Update the value of front-matter ~#+lastmod~ with current date:
+#+begin_src emacs-lisp :results none :tangle yes
+  ;; Update Org files with last modified date when #+lastmod: is available
+  (setq time-stamp-active t
+        time-stamp-start "#\\+lastmod:[ \t]*"
+        time-stamp-end "$"
+        time-stamp-format "[%04Y-%02m-%02d %a]")
+  (add-hook 'before-save-hook 'time-stamp nil)
+#+end_src
+
+*** Insert Links
+The Org mode syntax for linking files could not work when Hugo tries to link the file as a web page. But we can create links between pages by combining the standard Org mode syntax and the ~ref~ Hugo shortcode, which looks like this:
+#+begin_src org :results none :tangle no
+[[{{< ref filename.org >}}][Description]]
+#+end_src
+
+We can automate the insertion of the template above which will create Hugo compatible link, then we can use =C-c C-l= keybinding and select the link type =hugo= to insert a link:
+#+begin_src emacs-lisp :results none :tangle yes
+  ;; Create Hugo links
+  (defun ews-get-hugo-directory ()
+    "Lists the directory of the current Hugo website or nil."
+    (if (string-match "\\(.*\\)content" default-directory)
+        (match-string 1 default-directory)
+      nil))
+
+  (defun ews-hugo-list-content ()
+    "List the content of the Hugo website of the current buffer.
+    When not in an apparent Hugo directory then return error."
+    (if-let* ((hugodir (ews-get-hugo-directory))
+              (hugo-p (not (null (directory-files hugodir nil "^config\\..*"))))
+              (content-dir (concat hugodir "content/")))
+        (let ((org-files (directory-files-recursively content-dir "\\.org\\'"))
+              (md-files (directory-files-recursively content-dir "\\.md\\'")))
+          (append org-files md-files))
+      (user-error "Not in a Hugo buffer")))
+
+  (defun ews-hugo-link-complete ()
+    "Complete a Hugo weblink through the `org-insert-link' and hugo: hyperlink type."
+    (let* ((posts (ews-hugo-list-content))
+           (titles (mapcar (lambda (post)
+                             (string-remove-prefix
+                              (concat (ews-get-hugo-directory)
+                                      "content/") post)) posts))
+           (selection (completing-read "Choose page:" titles))
+           (target (concat "/"
+                           (replace-regexp-in-string
+                            "_index.*" "" selection))))
+      (when titles
+        (concat "{{< ref \"" target "\" >}}"))))
+
+  ;; New link type for Org-Hugo internal links
+  (org-link-set-parameters
+   "hugo"
+   :complete #'ews-hugo-link-complete)
+#+end_src
+
+*** Insert Images
+The standard image syntax in Org mode works fine and Hugo will parse the usual metadata if present, such as captions, alternative text, title and width. The example below shows how to style an image with alt and title tags and set its width:
+#+begin_src org :results none :tangle no
+  #+attr_html: alt: Alternative text title: Image Title :width 800
+  #+caption: Caption text.
+  [[/images/file-path.png]]
+#+end_src
 
 * Spell check and correction
 #+begin_src emacs-lisp :results none
