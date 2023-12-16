@@ -22,7 +22,7 @@
     font = JetBrains Mono Nerd Font Medium 10
     line_height = 0
     markup = full
-    format = "<span weight='bold'>%s</span>\n%b"
+    format = "<span weight='heavy' color='#88C0D0' underline='single'>%s</span>\n%b"
     alignment = left
     vertical_alignment = center
     show_age_threshold = 60
