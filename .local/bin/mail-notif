@@ -8,7 +8,7 @@ pgrep -x mu >/dev/null || mu index
 
 # Runs only once 
 if [ ! -f /tmp/last_mail_check ]; then
-    # echo $(uptime -s | sed -r 's/ /T/g') > /tmp/last_mail_check
+    # LAST_MAIL_CHK=$(uptime -s | sed -r 's/ /T/g')
     echo $LAST_MU_SYNC > /tmp/last_mail_check
     NB_NEW_MAILS=$(mu find flag:new --skip-dups 2>/dev/null | wc -l)
     /usr/bin/dunstify -u normal "Received $NB_NEW_MAILS new mails"
