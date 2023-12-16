@@ -3,7 +3,7 @@ Description=Mailbox synchronization service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/mbsync -Va -c /path/to/mbsyncrc -a
+ExecStart=/usr/bin/mbsync -V -c /path/to/mbsyncrc -a
 Environment="DISPLAY=:0"
 # Environment="XAUTHORITY=/path/to/.Xauthority"
 
