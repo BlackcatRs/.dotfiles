@@ -6,7 +6,7 @@ Type=oneshot
 ExecStart=/usr/bin/mbsync -V -c /path/to/mbsyncrc -a
 ExecStartPost=/usr/bin/bash /path/to/bin/mail-notif
 Environment="DISPLAY=:0"
-Environment="XAUTHORITY=/path/to/.Xauthority"
+# Environment="XAUTHORITY=/path/to/.Xauthority"
 
 [Install]
 WantedBy=default.target
