@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# Wait until another instance of this script to complete
+PIDFILE=/var/run/user/1000/mail-notif.pid
+until [ ! -f $PIDFILE ]; do sleep 1; echo "Other process is running"; done
+echo $$ > "$PIDFILE"
+
+# Remove PID file on exit.
+trap "rm -f -- '$PIDFILE'" EXIT
+
 # Save the last execution time
 LAST_MU_SYNC=$(date +"%Y-%m-%dT%H:%M:%S")
 
