@@ -1433,6 +1433,62 @@ Controlling the number of messages that will get displayed to user by =mu4e= by 
 
 You can toggle =mu4e-headers-full-search= with =M-x mu4e-headers-toggle-full-search=!
 
+*** Org File as HTLM Formatted Email
+We can use content written using Org-mode which will be formatted into HTML and send through email:
+#+begin_src emacs-lisp :results none :tangle yes
+  (use-package org-mime
+  :ensure t)
+#+end_src
+
+- Once installed we can use =M-x org-mime-htmlize= inside of a mail composition buffer to convert the content into HTML.
+
+  Or we can run =M-x org-mime-edit-mail-in-org-mode= within mail composition buffer which will open a new buffer allows to compose mail in Org-mode (syntax highlighting, etc).
+
+- =org-mime-org-buffer-htmlize= - Send an entire Org file as an email message.
+
+- We can send a subtree (subheading) of the Org file as an email message, to do this we need to set the following properties to subtree:
+  #+begin_src org :results none :tangle no
+  * Mail message
+  :PROPERTIES:
+  :MAIL_SUBJECT: I wrote this in Org Mode!
+  :MAIL_TO: systemcrafters.test@gmail.com
+  :MAIL_CC: person2@gmail.com
+  :MAIL_BCC: person3@gmail.com
+  :END:
+
+  Here is the body of the message!
+  #+end_src
+
+  Then run the function =org-mime-org-subtree-htmlize= to send the subtree as email message.
+
+**** Automatically converting mail to HTML [Optional]
+We can automate the process of converting to HTML without explicitly evoking the =org-mime-htmlize= function:
+#+begin_src emacs-lisp :results none :tangle no
+  (add-hook 'message-send-hook 'org-mime-htmlize)
+#+end_src
+
+Or we can ask the user whether or not to convert to HTML:
+#+begin_src emacs-lisp :results none :tangle no  
+  (add-hook 'message-send-hook 'org-mime-confirm-when-no-multipart)
+#+end_src
+
+**** Customizing HTML output [Optional]
+The following prevent numbers in heading, author details and table of content from being exported:
+#+begin_src emacs-lisp :results none :tangle no
+  (setq org-mime-export-options '(:section-numbers nil
+                                  :with-author nil
+                                  :with-toc nil))
+#+end_src
+
+We can also customize the styling of individual HTML elements inside of the message using =org-mime-html-hook=. Here’s an example of making all code blocks have a dark background and light text:
+#+begin_src emacs-lisp :results none :tangle no
+  (add-hook 'org-mime-html-hook
+            (lambda ()
+              (org-mime-change-element-style
+               "pre" (format "color: %s; background-color: %s; padding: 0.5em;"
+                             "#E6E1DC" "#232323"))))
+#+end_src
+
 ** Search queries
 Run the function =mu4e-search= or press letter  =s= from within mu4e to start searching:
 - =something= - General text search for "something".
