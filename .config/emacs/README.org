@@ -55,6 +55,9 @@
   - [[#syncing-mails][Syncing Mails]]
   - [[#index-mailbox][Index mailbox]]
   - [[#email-client][Email Client]]
+  - [[#mu4e-custom-actions-for-capturing][Mu4e Custom Actions for Capturing]]
+  - [[#links-and-queries-to-mu4e-mails-in-org-mode-optional][Links and Queries to Mu4e Mails in Org-mode [Optional]]]
+  - [[#org-file-as-htlm-formatted-email][Org File as HTLM Formatted Email]]
   - [[#search-queries][Search queries]]
   - [[#keybinding][Keybinding]]
   - [[#references-1][References]]
@@ -198,7 +201,7 @@ A status bar at bottom:
 #+end_src
 
 ** Doom-themes
-#+begin_src emacs-lisp :results none :results none
+#+begin_src emacs-lisp :results none
   ;; Download doom themes
   (use-package doom-themes)
   (load-theme 'doom-one t)
@@ -701,17 +704,23 @@ Last block of code will collect information from our various Org files where we 
 
   ;; Capture tasks
   (setq org-capture-templates
-        '(("c" "Unscheduled Task" entry (file+headline voc/todo "Unscheduled Tasks")
+        '(("c" "Unschedule Task" entry (file+headline voc/todo "Unscheduled Tasks")
            "* HOLD %?\nEntered on <%<%Y-%m-%d %H:%M>>\n" :empty-lines 1)
 
-          ("s" "Scheduled Task" entry (file+headline voc/events "Scheduled Tasks")
+          ("s" "Schedule Task" entry (file+headline voc/events "Scheduled Tasks")
            "* TODO %?\nSCHEDULED: %^T\n%U" :empty-lines 1)
 
           ("d" "Deadline" entry (file+headline voc/events "Recursive Tasks")
            "* TODO %? %(org-set-tags-command) \nDEADLINE: %^T" :empty-lines 1)
 
-          ("l" "Unscheduled Task + Reference" entry (file+headline voc/todo "Unscheduled Tasks")
+          ("l" "Unschedule Task + Reference" entry (file+headline voc/todo "Unscheduled Tasks")
            "* %^{prompt|ONGOING|TODO|NEXT|WAITING|HOLD} %?\nEntered on <%<%Y-%m-%d %H:%M>>\n%a" :empty-lines 1)
+
+          ("m" "Email Workflow")
+          ("ms" "Schedule a Mail" entry (file+headline voc/events "Scheduled Tasks")
+           "* TODO %a\nSCHEDULED: %^T\n%U\n\n%:from\n%i%?" :empty-lines 1)
+          ("mr" "Read Later" entry (file+headline voc/todo "Unscheduled Tasks")
+           "* TODO [#B] %a\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+3d\"))\n%U\n\n%i" :immediate-finish t)
 
           ("r" "Readings" entry (file+headline voc/todo "Books To Read")
            "* HOLD %^{Title} :Book: \nAuthor: %^{Author} \nYear: %^{Year} \nGenre: %^{Genre} \nReason to read: %? \nEntered on <%<%Y-%m-%d %H:%M>>" :empty-lines 1)
@@ -903,7 +912,7 @@ CLOSED: [2023-06-26 lun. 08:33]
 
 *** Method 3
 Org-wild-notifier requires the Dunst notification daemon and Emacs as daemon to display Org agenda events.
-#+begin_src emacs-lisp :results none :tangle yes
+#+begin_src emacs-lisp :results none
   (use-package org-wild-notifier
     :ensure t
     :custom 
@@ -958,7 +967,7 @@ Mandatory Org keywords in for "[[https://ox-hugo.scripter.co/doc/blogging-flow/]
 ** Org-mode for Hugo
 *** Update Date Automatically
 Update the value of front-matter ~#+lastmod~ with current date:
-#+begin_src emacs-lisp :results none :tangle yes
+#+begin_src emacs-lisp :results none
   ;; Update Org files with last modified date when #+lastmod: is available
   (setq time-stamp-active t
         time-stamp-start "#\\+lastmod:[ \t]*"
@@ -974,7 +983,7 @@ The Org mode syntax for linking files could not work when Hugo tries to link the
 #+end_src
 
 We can automate the insertion of the template above which will create Hugo compatible link, then we can use =C-c C-l= keybinding and select the link type =hugo= to insert a link:
-#+begin_src emacs-lisp :results none :tangle yes
+#+begin_src emacs-lisp :results none
   ;; Create Hugo links
   (defun ews-get-hugo-directory ()
     "Lists the directory of the current Hugo website or nil."
@@ -1101,7 +1110,7 @@ Org Roam uses a database to keep track of "nodes" (a file with a specific conten
 Org Roam v2 package uses a customized build of SQLite database, so Org Roam need C/C++ compiler like =gcc= or =clang= installed on the system.
 
 ** Org-roam config
-#+begin_src emacs-lisp :results none :tangle yes
+#+begin_src emacs-lisp :results none
   (if (file-exists-p "~/.config/emacs/vars.el")
       (progn 
         (use-package org-roam
@@ -1285,7 +1294,7 @@ mu index
 
 ** Email Client
 =Mu4e= is an email client for Emacs and it's consider as Emacs interface for =mu= mail indexer. A typical example could be a mail syncing program like ~isync~ which download mail from remote Maildir folder to local Maildir folder and then =mu= indexer will be used to index mail. Then an Emacs mail client can read mails.
-#+begin_src emacs-lisp :results none :tangle yes
+#+begin_src emacs-lisp :results none
   ;; Start - Mail ------------------------------------------------------
   (use-package mu4e
     ;; Install mu4e using the distro's package manager to stay compatible with mbsync
@@ -1404,9 +1413,7 @@ mu index
           (:name "Messages with images" :query "mime:image/*" :key ?p)))
 
     ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
-    (mu4e t)
-    )
-  ;; End - Mail --------------------------------------------------------
+    (mu4e t))
 #+end_src
 
 *** SMTP Conf
@@ -1433,11 +1440,44 @@ Controlling the number of messages that will get displayed to user by =mu4e= by 
 
 You can toggle =mu4e-headers-full-search= with =M-x mu4e-headers-toggle-full-search=!
 
-*** Org File as HTLM Formatted Email
+** Mu4e Custom Actions for Capturing
+We can set custom actions that allow to use org capture template without invoking the =org-capture= or =mu4e-org-store-and-capture= functions:
+#+begin_src emacs-lisp :results none
+  (defun voc/capture-mail-read-later (msg)
+    (interactive)
+    (call-interactively 'org-store-link)
+    (org-capture nil "mr"))
+
+  ;; Add custom actions for capture templates from the header and
+  ;; message views
+  (add-to-list 'mu4e-headers-actions
+               '("read later" . voc/capture-mail-read-later) t)
+  (add-to-list 'mu4e-view-actions
+               '("read later" . voc/capture-mail-read-later) t)
+#+end_src
+
+** Links and Queries to Mu4e Mails in Org-mode [Optional]
+We can create links and queries from within org-mode to Mu4e mails using:
+#+begin_src emacs-lisp :results none :tangle no
+  (require 'mu4e-org)
+#+end_src
+
+Then we can link mails from within org-mode buffer using the following function which needs to be run within Mu4e header view to copy the link then it can be retrieved using =C-c C-l=:
+#+begin_src emacs-lisp :results none :tangle no
+  (defun voc/store-link-to-mu4e-query ()
+    (interactive)
+    (let ((mu4e-org-link-query-in-headers-mode t))
+      (call-interactively 'org-store-link)))
+#+end_src
+
+- [[mu4e:query:(maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox) AND (from:alert@indeed.com)][Job Alert from Indeed]]
+
+** Org File as HTLM Formatted Email
 We can use content written using Org-mode which will be formatted into HTML and send through email:
-#+begin_src emacs-lisp :results none :tangle yes
+#+begin_src emacs-lisp :results none
   (use-package org-mime
-  :ensure t)
+    :ensure t)  
+  ;; End - Mail --------------------------------------------------------  
 #+end_src
 
 - Once installed we can use =M-x org-mime-htmlize= inside of a mail composition buffer to convert the content into HTML.
@@ -1461,7 +1501,7 @@ We can use content written using Org-mode which will be formatted into HTML and 
 
   Then run the function =org-mime-org-subtree-htmlize= to send the subtree as email message.
 
-**** Automatically converting mail to HTML [Optional]
+*** Automatically converting mail to HTML [Optional]
 We can automate the process of converting to HTML without explicitly evoking the =org-mime-htmlize= function:
 #+begin_src emacs-lisp :results none :tangle no
   (add-hook 'message-send-hook 'org-mime-htmlize)
@@ -1472,7 +1512,7 @@ Or we can ask the user whether or not to convert to HTML:
   (add-hook 'message-send-hook 'org-mime-confirm-when-no-multipart)
 #+end_src
 
-**** Customizing HTML output [Optional]
+*** Customizing HTML output [Optional]
 The following prevent numbers in heading, author details and table of content from being exported:
 #+begin_src emacs-lisp :results none :tangle no
   (setq org-mime-export-options '(:section-numbers nil
