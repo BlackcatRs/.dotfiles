@@ -111,23 +111,62 @@ get () {
     wget $1 -O $filename
 }
 
-# Compress PDF files using ghostscript
+# Compress PDF files using 'ghostscript' 'poppler-utils' and
+# 'imagemagick'
 reduce () {
     # Return error if no args is provide 
     if [ -z "$1" ] || [ -z "$2" ]; then
-	echo Usage :
+	echo '[-] Usage :'
 	echo "reduce <input_file.pdf> <compressed.pdf>"
+	echo "-m, --more"
+	echo -e "\t Compress more"
 	return 1
     fi
 
-    /usr/bin/gs -sDEVICE=pdfwrite \
-		-dCompatibilityLevel=1.4 \
-		-dPDFSETTINGS=/prepress \
-		-dNOPAUSE \
-		-dQUIET \
-		-dBATCH \
-		-sOutputFile=$2 \
-		$1
+    POSITIONAL_ARGS=()
+    EXTRA_CMPR=false
+
+    while [[ $# -gt 0 ]]; do
+	case $1 in
+	    -m|--more)
+		EXTRA_CMPR=true
+		# shift without n positional arg, deletes the value of $1 and
+		# assigns the value of $2. As a result, the value $2 becomes the
+		# value of $3, and so on.
+		shift
+		;;
+	    -*|--*)
+		echo "Unknown option $1"
+		return 1
+		;;
+	    *)
+		POSITIONAL_ARGS+=("$1") # save positional arg
+		shift # past argument
+		;;
+	esac
+    done
+
+    # Set the value in the POSITIONAL_ARGS array as a positional
+    # parameter.  If POSITIONAL_ARGS=(a b c), then positional parameters
+    # become $1=a, $2=b, and $3=c.
+    set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+    if $EXTRA_CMPR ; then
+	# Convert the PDF to images
+	pdftoppm -jpeg $1 output # Name of images
+	# Convert images to PDF
+	convert output*.jpg $2 # Output file name
+	rm -f ./output*.jpg
+    else
+	/usr/bin/gs -sDEVICE=pdfwrite \
+		    -dCompatibilityLevel=1.4 \
+		    -dPDFSETTINGS=/prepress \
+		    -dNOPAUSE \
+		    -dQUIET \
+		    -dBATCH \
+		    -sOutputFile=$2 \
+		    $1
+    fi
 }
 
 # Extract pages from a PDF file
