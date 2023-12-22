@@ -55,7 +55,6 @@
   - [[#syncing-mails][Syncing Mails]]
   - [[#index-mailbox][Index mailbox]]
   - [[#email-client][Email Client]]
-  - [[#mu4e-custom-actions-for-capturing][Mu4e Custom Actions for Capturing]]
   - [[#links-and-queries-to-mu4e-mails-in-org-mode-optional][Links and Queries to Mu4e Mails in Org-mode [Optional]]]
   - [[#org-file-as-htlm-formatted-email][Org File as HTLM Formatted Email]]
   - [[#search-queries][Search queries]]
@@ -1331,6 +1330,22 @@ mu index
     (setq mu4e-compose-context-policy 'ask-if-none)
 
 
+    ;; We can set custom actions that allow to use org capture template
+    ;; without invoking the "org-capture" or
+    ;; "mu4e-org-store-and-capture" functions:
+    (defun voc/capture-mail-read-later (msg)
+      (interactive)
+      (call-interactively 'org-store-link)
+      (org-capture nil "mr"))
+
+    ;; Add custom actions for capture templates from the header and
+    ;; message views
+    (add-to-list 'mu4e-headers-actions
+                 '("read later" . voc/capture-mail-read-later) t)
+    (add-to-list 'mu4e-view-actions
+                 '("read later" . voc/capture-mail-read-later) t)
+
+
     ;; Ask user to select a key when signing/encrypting
     (setq mm-sign-option 'guided)
     (setq mm-encrypt-option 'guided)
@@ -1400,17 +1415,17 @@ mu index
                     ))
            ))
 
-  ;; Empty the initial bookmark list
-  (setq mu4e-bookmarks '())
+    ;; Empty the initial bookmark list
+    (setq mu4e-bookmarks '())
 
-  (setq mu4e-bookmarks
-        '((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox" :key ?i)
-          (:name "Sent Items" :query "m:/vithurshan@laposte.net/Sent\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Messages\\ envoy&AOk-s" :key ?s)
-          (:name "Deleted Mails" :query "m:/vithurshan@laposte.net/Deleted\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille" :key ?t)
-          (:name "Draft Mails" :query "m:/vithurshan@laposte.net/DRAFT OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons" :key ?d)
-          (:name "Today's messages" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox) AND date:today..now" :key ?n)
-          (:name "Last 7 days" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox) AND date:7d..now" :hide-unread t :key ?w)
-          (:name "Messages with images" :query "mime:image/*" :key ?p)))
+    (setq mu4e-bookmarks
+          '((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox" :key ?i)
+            (:name "Sent Items" :query "m:/vithurshan@laposte.net/Sent\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Messages\\ envoy&AOk-s" :key ?s)
+            (:name "Deleted Mails" :query "m:/vithurshan@laposte.net/Deleted\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille" :key ?t)
+            (:name "Draft Mails" :query "m:/vithurshan@laposte.net/DRAFT OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons" :key ?d)
+            (:name "Today's messages" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox) AND date:today..now" :key ?n)
+            (:name "Last 7 days" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox) AND date:7d..now" :hide-unread t :key ?w)
+            (:name "Messages with images" :query "mime:image/*" :key ?p)))
 
     ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
     (mu4e t))
@@ -1439,22 +1454,6 @@ Controlling the number of messages that will get displayed to user by =mu4e= by 
 - =mu4e-headers-full-search=: If =t=, shows all messages, ignoring limit.
 
 You can toggle =mu4e-headers-full-search= with =M-x mu4e-headers-toggle-full-search=!
-
-** Mu4e Custom Actions for Capturing
-We can set custom actions that allow to use org capture template without invoking the =org-capture= or =mu4e-org-store-and-capture= functions:
-#+begin_src emacs-lisp :results none
-  (defun voc/capture-mail-read-later (msg)
-    (interactive)
-    (call-interactively 'org-store-link)
-    (org-capture nil "mr"))
-
-  ;; Add custom actions for capture templates from the header and
-  ;; message views
-  (add-to-list 'mu4e-headers-actions
-               '("read later" . voc/capture-mail-read-later) t)
-  (add-to-list 'mu4e-view-actions
-               '("read later" . voc/capture-mail-read-later) t)
-#+end_src
 
 ** Links and Queries to Mu4e Mails in Org-mode [Optional]
 We can create links and queries from within org-mode to Mu4e mails using:
