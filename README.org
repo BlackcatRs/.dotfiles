@@ -41,8 +41,10 @@ run check-parens
 - The script [[file:.local/bin/shortcuts][shortcuts]] will generate a file =$HOME/.config/shell/shortcutrc= (sourced by =.bashrc=) with aliases based on [[file:.config/shell/bm-files][bm-files]] and [[file:.config/shell/bm-files][bm-dirs]] files. This allows to use only one or some letters to move between folder or open a file.
 
 * Program I Use
-=Pandoc= - A universal document converter.
-=pdftk= - Extract pages from PDF files
+- =Pandoc= - A universal document converter.
+- =pdftk= - Extract pages from PDF files
+- =zbarimg= - Scan and decode bar codes from image file.
+
 * Archive
 The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
