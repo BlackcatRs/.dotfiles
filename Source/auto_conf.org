@@ -6,12 +6,31 @@ sudo pacman -S intel-ucode # if AMD amd-ucode
 
 * Package need by .dotfiles
 #+begin_src shell
-  sudo pacman -S exa stow gpg emacs ranger rofi feh
+  sudo pacman -S less wget exa stow gpg emacs ranger rofi feh
 #+end_src
+
+- Using =exa= instead of =ls=.
 
 * Themes
 #+begin_src  shell
   sudo pacman gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct
+#+end_src
+
+* Polybar
+Install polybar:
+#+begin_src shell
+  sudo pacman -S polybar
+#+end_src
+
+* Yay
+[[https://github.com/Jguer/yay][Yet Another Yogurt]] (Yay) - An AUR Helper Written in Go
+
+The initial installation of Yay can be done by cloning the PKGBUILD and building with makepkg /(Before you begin, make sure you have the base-devel package group installed)/:
+#+begin_src shell
+  pacman -S --needed git base-devel
+  git clone https://aur.archlinux.org/yay.git
+  cd yay
+  makepkg -si
 #+end_src
 
 * TODO Firefox
@@ -202,8 +221,17 @@ EndSection
 
 By default the Bluetooth daemon will only give out =bnep0= devices to users that are a member of the =lp= group. Make sure to add your user to that group if you intend to connect to a Bluetooth tether. You can change the group that is required in the file =/usr/share/dbus-1/system.d/bluetooth.conf=: 
 #+begin_src shell
-sudo usermod -aG lp vts
+  sudo usermod -aG lp vts
 #+end_src
 
 ** Troubleshooting
 If blocked by =rfkill= then unlock it.
+
+* Notification
+[[https://wiki.archlinux.org/title/Dunst][Dunst]] is a lightweight replacement for the notification-daemons:
+#+begin_src shell
+  sudo pacman -S dunst libnotify
+#+end_src
+
+To use Dunst, the configuration file =.dotfiles/.config/dunst/dunstrc= must be placed or symlinked to =~/.config/dunst/dunstrc=.
+Next, the =/usr/bin/dunst= should be launched, so make sure your window manager or desktop environment starts it at startup/login.
