@@ -5,10 +5,14 @@ sudo pacman -S intel-ucode # if AMD amd-ucode
 #+end_src
 
 * Package need by .dotfiles
-sudo pacman -S exa stow gpg emacs ranger
+#+begin_src shell
+  sudo pacman -S exa stow gpg emacs ranger rofi feh
+#+end_src
 
 * Themes
-sudo pacman gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct
+#+begin_src  shell
+  sudo pacman gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct
+#+end_src
 
 * TODO Firefox
 Starting with Firefox 68, you can make all the Firefox interfaces and even other websites respect dark themes, irrespective of the system GTK theme and Firefox theme. To do this, set ui.systemUsesDarkTheme to 1 in about:config [13]. 
