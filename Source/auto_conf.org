@@ -111,7 +111,7 @@ Install  noto-fonts-emoji package:
 #+end_src
 
 #+begin_src shell
-  pacman -S powerline-fonts --needed
+  pacman -S powerline-fonts ttf-fira-code --needed
 #+end_src
 
 echo "Recommended system font: inconsolata regular (ttf-inconsolata or powerline-fonts)"
@@ -157,7 +157,7 @@ Add font config to /etc/fonts/conf.d/01-notosans.conf:
 
 Update font cache via fc-cache:
 #+begin_src shell
-  fc-cache
+  fc-cache -f
 #+end_src
 
 #+begin_src shell :tangle no
