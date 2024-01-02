@@ -6,7 +6,7 @@ sudo pacman -S intel-ucode # if AMD amd-ucode
 
 * Package need by .dotfiles
 #+begin_src shell
-  sudo pacman -S less wget exa stow gpg emacs ranger rofi feh man-db
+  sudo pacman -S less wget exa stow gpg emacs ranger rofi feh man-db unzip
 #+end_src
 
 - Using =exa= instead of =ls=.
