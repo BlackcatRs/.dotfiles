@@ -2,6 +2,7 @@
 
 # Count the number of pacman and AUR updates available (via yay).
 
+# Assaign 0, if pacman fails
 if ! updates_arch=$(sudo pacman -Syy 2>&1 > /dev/null && pacman -Sup 2> /dev/null | wc -l); then
     updates_arch=0
 fi
@@ -11,7 +12,6 @@ if ! updates_aur=$(yay -Qua 2> /dev/null | wc -l); then
 fi
 
 updates=$((updates_arch + updates_aur))
-
 if [ "$updates" -gt 0 ]; then
     echo "$updates"
 else
