@@ -13,7 +13,7 @@ picom &
 
 # feh is a lightweight and powerful image viewer that is used to
 # manage the desktop wallpaper
-# feh --no-fehbg --bg-fill "$HOME/.dotfiles/.config/wallpaper/2545282.jpg" &
+feh --no-fehbg --bg-fill "$HOME/.local/share/wallpaper/2545282.jpg" &
 
 # Run the status bar with dwm window manager and status bar can find
 # here - https://github.com/BlackcatRs/blackdwm/blob/main/scripts/bar
@@ -43,7 +43,7 @@ gpg-connect-agent updatestartuptty /bye &
 
 
 # Run notification daemon
-#exec /usr/bin/dunst &
+exec /usr/bin/dunst &
 
 
 # Run window manager dwm
