@@ -13,7 +13,7 @@ sudo pacman -S intel-ucode # if AMD amd-ucode
 
 * Themes
 #+begin_src  shell
-  sudo pacman gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct
+  sudo pacman gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct feh
 #+end_src
 
 * Polybar
@@ -111,10 +111,19 @@ Install  noto-fonts-emoji package:
 #+end_src
 
 #+begin_src shell
-  pacman -S powerline-fonts ttf-fira-code --needed
+  pacman -S powerline-fonts ttf-fira-code ttf-linux-libertine libertinus-font --needed
 #+end_src
+In my personel conf i use =ttf-linux-libertine= as "serif" family font.
+=ttf-linux-libertine= - Serif (Libertine) and Sans Serif (Biolinum) OpenType fonts with large Unicode coverage.
 
-echo "Recommended system font: inconsolata regular (ttf-inconsolata or powerline-fonts)"
+=libertinus-font= - Fonts based on Linux Libertine/Biolinum, with extended math support.
+=ttf-joypixels= - For emoji
+=otf-font-awesome=, =ttf-font-awesome= - Fontawesome
+
+
+#+begin_src shell
+  echo "Recommended system font: inconsolata regular (ttf-inconsolata or powerline-fonts)"
+#+end_src
 
 Add font config to /etc/fonts/conf.d/01-notosans.conf:
 #+begin_src shell :tangle no
