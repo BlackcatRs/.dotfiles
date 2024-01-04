@@ -51,8 +51,23 @@ tiling_drag modifier titlebar
 # start a terminal
 bindsym $mod+Return exec alacritty
 
-# lauch Ranger
-# bindsym $mod+r exec ranger
+# Press $mod+o followed by either f, t, Escape or Return to launch firefox,
+# thunderbird or return to the default mode, respectively.
+
+set $mode_launcher App:
+bindsym $mod+o mode "$mode_launcher"
+binding_mode_indicator no
+mode "$mode_launcher" {
+    bindsym f exec "/usr/bin/ranger"; mode "default"
+    bindsym c exec "/usr/bin/rofi -show calc -no-show-match -no-sort"; mode "default"
+    bindsym t exec "/usr/bin/emacsclient -c -a /usr/bin/emacs"; mode "default"
+    bindsym e exec "/usr/bin/rofi -show emoji -emoji-mode insert"; mode "default"
+    bindsym o exec "/usr/bin/passmenu"; mode "default"	
+
+    # Bindings for switching back to the default mode.
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+}
 
 # Move to the lastly selected workspace
 bindsym $mod+Tab workspace back_and_forth
@@ -60,13 +75,16 @@ bindsym $mod+Tab workspace back_and_forth
 # kill focused window
 bindsym $mod+Shift+c kill
 
-# start dmenu (a program launcher)
-bindsym $mod+p exec "rofi -modi drun,run -show drun"
+# Launch Rofi (a program launcher)
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+p exec "rofi -modi drun,run -show drun"
+
+# Lauch Powermenu
+bindsym $mod+Shift+s exec "~/.local/bin/powermenu"
 
 # change focus
 # bindsym $mod+j focus left
