@@ -5,7 +5,7 @@ sudo pacman -S intel-ucode # if AMD amd-ucode
 
 * Package need by .dotfiles
 #+begin_src shell
-  sudo pacman -S less wget exa stow gpg emacs ranger rofi rofi-emoji rofi-calc rofi-pass feh man-db unzip pass pass-otp xclip dmenu thunderbird
+  sudo pacman -S less wget exa stow gpg emacs ranger rofi rofi-emoji rofi-calc rofi-pass feh man-db unzip pass pass-otp xclip dmenu thunderbird aspell aspell-en aspell-fr
 #+end_src
 
 - Using =exa= instead of =ls=.
