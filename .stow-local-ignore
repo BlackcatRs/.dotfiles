@@ -33,3 +33,6 @@ shell-color-scripts
 
 # Application
 \.local/share/applications/internet.desktop
+
+# Autoconf script
+autoconf/*
