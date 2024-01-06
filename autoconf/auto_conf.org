@@ -5,12 +5,16 @@ sudo pacman -S intel-ucode # if AMD amd-ucode
 
 * Package need by .dotfiles
 #+begin_src shell
-  sudo pacman -S less wget exa stow gpg emacs ranger rofi rofi-emoji rofi-calc rofi-pass feh man-db unzip pass pass-otp xclip dmenu thunderbird aspell aspell-en aspell-fr
+  sudo pacman -S less wget exa stow gpg emacs ranger fzf rofi rofi-emoji rofi-calc rofi-pass feh man-db unzip pass pass-otp xclip dmenu thunderbird aspell aspell-en aspell-fr zathura
 #+end_src
 
 - Using =exa= instead of =ls=.
 - Password manager =pass= looks for passwords in ="$XDG_DATA_HOME"/pass= directory.
+- Ranger - =ranger=, =fzf=, =locate=
+- Password manager - =pass=, =pass-otp=, =xclip,= =dmenu=
+- PDF viewer - =zathura=, =poppler= (engine), =zathura-pdf-poppler=
 
+  
 * Themes
 #+begin_src  shell
   sudo pacman picom gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct feh
