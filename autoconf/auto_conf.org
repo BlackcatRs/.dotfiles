@@ -1,11 +1,15 @@
-* TODO Intel microcode
+* DONE Intel microcode
+CLOSED: [2024-01-07 Sun 19:15]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2024-01-07 Sun 19:15]
+:END:
 #+begin_src  bash
 sudo pacman -S intel-ucode # if AMD amd-ucode
 #+end_src
 
 * Package need by .dotfiles
 #+begin_src shell
-  sudo pacman -S less wget exa stow gpg emacs ranger fzf rofi rofi-emoji rofi-calc rofi-pass feh man-db unzip pass pass-otp xclip dmenu thunderbird aspell aspell-en aspell-fr zathura
+  sudo pacman -S git base-devel less wget exa stow man-db unzip thunderbird
 #+end_src
 
 - Using =exa= instead of =ls=.
@@ -13,9 +17,9 @@ sudo pacman -S intel-ucode # if AMD amd-ucode
 - Ranger - =ranger=, =fzf=, =locate=
 - Password manager - =pass=, =pass-otp=, =xclip,= =dmenu=
 - PDF viewer - =zathura=, =poppler= (engine), =zathura-pdf-poppler=
-
   
-* Themes
+* DONE Themes
+CLOSED: [2024-01-07 Sun 19:15]
 #+begin_src  shell
   sudo pacman picom gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct feh
 #+end_src
@@ -26,7 +30,8 @@ Install polybar:
   sudo pacman -S polybar
 #+end_src
 
-* Yay
+* DONE Yay
+CLOSED: [2024-01-07 Sun 19:32]
 [[https://github.com/Jguer/yay][Yet Another Yogurt]] (Yay) - An AUR Helper Written in Go
 
 The initial installation of Yay can be done by cloning the PKGBUILD and building with makepkg /(Before you begin, make sure you have the base-devel package group installed)/:
@@ -37,15 +42,27 @@ The initial installation of Yay can be done by cloning the PKGBUILD and building
   makepkg -si
 #+end_src
 
-* TODO Firefox
-Starting with Firefox 68, you can make all the Firefox interfaces and even other websites respect dark themes, irrespective of the system GTK theme and Firefox theme. To do this, set ui.systemUsesDarkTheme to 1 in about:config [13]. 
+* DONE Firefox
+CLOSED: [2024-01-07 Sun 19:34]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2024-01-07 Sun 19:34]
+:END:
+Starting with Firefox 68, you can make all the Firefox interfaces and even other websites respect dark themes, irrespective of the system GTK theme and Firefox theme.
 
-* TODO Remove file (if exist)
+To do this, set =ui.systemUsesDarkTheme= to =1= in =about:config=.
+
+Source - https://wiki.archlinux.org/title/firefox
+
+* DONE Remove file (if exist)
+CLOSED: [2024-01-07 Sun 19:39]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2024-01-07 Sun 19:39]
+:END:
 #+begin_src bash
   rm ~/.bash_profile ~/.bashrc
 #+end_src
 
-* Install color scirpts
+* Install color scripts
 #+begin_src bash
   cd ./shell-color-scripts && make clean install
 #+end_src
