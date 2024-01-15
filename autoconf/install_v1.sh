@@ -84,7 +84,10 @@ offline_mail() {
     # ExecStart=
     # ExecStart=/usr/bin/mbsync -V -c /path/to/config/file -a
     # Environment="PASSWORD_STORE_DIR=/path/to/password/pass"
+}
 
+mail_notif() {
+    $PACKAGE_MANAGER goimapnotify
 }
 
 initialCheck
