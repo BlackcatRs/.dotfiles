@@ -26,6 +26,7 @@ initialCheck() {
     isRoot
     checkOS
     [[ -f ~/.bash_profile || -f ~/.bashrc ]] && rm ~/.bash_profile ~/.bashrc
+    # TODO execute stow command
 }
 
 
@@ -56,7 +57,7 @@ password_manager() {
     $PACKAGE_MANAGER pass pass-otp xclip dmenu gpg
 }
 
-emacs() {
+text_editor() {
     $PACKAGE_MANAGER emacs aspell aspell-en aspell-fr
 }
 
@@ -76,6 +77,18 @@ aur_helper() {
     /usr/bin/makepkg -si
 }
 
-# initialCheck
-aur_helper
+offline_mail() {
+    $PACKAGE_MANAGER isync mu && /usr/bin/mbsync -a
+    # TODO Override mbsync service
+    # [Service]
+    # ExecStart=
+    # ExecStart=/usr/bin/mbsync -V -c /path/to/config/file -a
+    # Environment="PASSWORD_STORE_DIR=/path/to/password/pass"
 
+}
+
+initialCheck
+#aur_helper
+
+checkOS
+offline_mail
