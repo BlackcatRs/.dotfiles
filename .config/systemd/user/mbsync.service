@@ -1,12 +1,16 @@
 [Unit]
-Description=Mailbox synchronization service
+Description=Mailbox Synchronization Service
 
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/mbsync -V -c /path/to/mbsyncrc -a
-ExecStartPost=/usr/bin/bash /path/to/bin/mail-notif
 Environment="DISPLAY=:0"
-# Environment="XAUTHORITY=/path/to/.Xauthority"
+
+# Do not uncomment these options directly, instead override this
+# configuration with "systemd --user edit mbsync.service"
+## Environment="XAUTHORITY=/path/to/.Xauthority"
+## Environment="PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass"
+## ExecStartPost=/usr/bin/bash /path/to/bin/mail-notif
 
 [Install]
 WantedBy=default.target
