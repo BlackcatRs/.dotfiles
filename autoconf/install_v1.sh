@@ -66,7 +66,8 @@ pdf_viewer(){
 }
 
 file_explorer() {
-    $PACKAGE_MANAGER ranger fzf
+    $PACKAGE_MANAGER ranger fzf ueberzug
+    # TODO run shortcuts.sh script 
 }
 
 aur_helper() {
