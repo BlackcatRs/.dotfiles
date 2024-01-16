@@ -59,6 +59,8 @@ password_manager() {
 
 text_editor() {
     $PACKAGE_MANAGER emacs aspell aspell-en aspell-fr
+    # TODO The SMTP password will be retrieved from the file defined in the "auth-sources" variable
+
 }
 
 pdf_viewer(){
@@ -66,7 +68,7 @@ pdf_viewer(){
 }
 
 file_explorer() {
-    $PACKAGE_MANAGER ranger fzf ueberzug
+    $PACKAGE_MANAGER ranger fzf ueberzug imagemagick
     # TODO run shortcuts.sh script 
 }
 

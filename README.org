@@ -49,14 +49,17 @@ run check-parens
 The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
 
-* FIXME
+* FIXME [0/3]
 ** TODO Write a readme for Dotrice
 :LOGBOOK:
 - State "TODO"       from              [2023-10-29 dim. 22:41] \\
   Write a proper READEME as Luke Smith
 :END:
 
-** Shortcuts to Implement
+** TODO Shortcuts to Implement
+:LOGBOOK:
+- State "TODO"       from              [2024-01-16 Tue 21:06]
+:END:
 Super + m music player
 Super + i htop
 Super +r ranger
@@ -67,7 +70,10 @@ super  f3 select a multi screen
 super printsrc record screen
 super u dropdown tmux terminal
 
-** Create a script
+** TODO Create a script
+:LOGBOOK:
+- State "TODO"       from              [2024-01-16 Tue 21:06]
+:END:
 - It will create directory:
 ~/.config/shell
 ~/config/emacs
