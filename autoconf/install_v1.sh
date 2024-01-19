@@ -93,6 +93,11 @@ mail_notif() {
     $PACKAGE_MANAGER goimapnotify
 }
 
+shortcuts() {
+    mkdir -p ~/.config/shell
+    # TODO link bm-{file,dirs} to ~/.config/shell
+}
+
 initialCheck
 #aur_helper
 
