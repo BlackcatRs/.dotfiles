@@ -22,13 +22,17 @@ isRoot() {
     fi
 }
 
+common_tools() {    
+    $PACKAGE_MANAGER git base-devel less wget exa stow man-db unzip thunderbird
+}
+
 initialCheck() {
     isRoot
     checkOS
+    common_tools
     [[ -f ~/.bash_profile || -f ~/.bashrc ]] && rm ~/.bash_profile ~/.bashrc
-    # TODO execute stow command
+    stow .
 }
-
 
 microcode() {
     if grep --color -i 'model name' /proc/cpuinfo | grep -iqF 'Intel'; then
@@ -47,6 +51,11 @@ microcode() {
 
 themes() {
     $PACKAGE_MANAGER picom gnome-themes-extra kvantum lxappearance qt5ct feh
+}
+
+fonts(){
+    echo "[+] Installing fonts ..."
+    $PACKAGE_MANAGER powerline-fonts ttf-fira-code ttf-linux-libertine libertinus-font  
 }
 
 app_launcher() {
@@ -98,8 +107,23 @@ shortcuts() {
     # TODO link bm-{file,dirs} to ~/.config/shell
 }
 
-initialCheck
+term_color() {
+    make -C $(pwd)/source/shell-color-scripts install
+}
+
+starship() {
+    curl -sS https://starship.rs/install.sh | sh
+}
+
+i3() {
+    sudo pacman -S xorg-xinit xorg-server i3-wm i3status
+}
+
+polybar() {
+    $PACKAGE_MANAGER polybar
+}
+
+
+# initialCheck
 #aur_helper
 
-checkOS
-offline_mail

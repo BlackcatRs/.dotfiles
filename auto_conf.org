@@ -6,8 +6,9 @@ CLOSED: [2024-01-07 Sun 19:15]
 #+begin_src  bash
 sudo pacman -S intel-ucode # if AMD amd-ucode
 #+end_src
+* DONE Package need by .dotfiles
+CLOSED: [2024-02-07 Wed 12:20]
 
-* Package need by .dotfiles
 #+begin_src shell
   sudo pacman -S git base-devel less wget exa stow man-db unzip thunderbird
 #+end_src
@@ -24,7 +25,8 @@ CLOSED: [2024-01-07 Sun 19:15]
   sudo pacman picom gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct feh
 #+end_src
 
-* Polybar
+* DONE Polybar
+CLOSED: [2024-02-07 Wed 12:12]
 Install polybar:
 #+begin_src shell
   sudo pacman -S polybar
@@ -62,43 +64,27 @@ CLOSED: [2024-01-07 Sun 19:39]
   rm ~/.bash_profile ~/.bashrc
 #+end_src
 
-* Install color scripts
+* DONE Install color scripts
+CLOSED: [2024-02-07 Wed 11:55]
 #+begin_src bash
   cd ./shell-color-scripts && make clean install
 #+end_src
 
-* Install startship promt
+* DONE Install startship promt
+CLOSED: [2024-02-07 Wed 12:03]
 #+begin_src bash
   curl -sS https://starship.rs/install.sh | sh
 #+end_src
 
-* Package to install for i3 vm
+* DONE Package to install for i3 vm
+CLOSED: [2024-02-07 Wed 12:10]
 #+begin_src bash
 sudo pacman -S xorg-xinit xorg-server i3-wm i3status
 cp /etc/X11/xinit/xinitrc ~/.xinitrc
 #+end_src
 
-* TODO remote some lines at bottom
-#+begin_src bash
-  echo 'exec i3' >> ~/.xinitrc
-#+end_src
-
-* Show which comman has been executed
-#+begin_src bash
-  set -e
-#+end_src
-
-#+begin_src bash :tangle no
-function insall_stow() {
-    is_exist=`stow -V`
-    if [ $is_exist -ne 0 ]
-    then
-	pacman -S stow
-    fi
-}
-#+end_src
-
-* Check if script runs as root
+* DONE Check if script runs as root
+CLOSED: [2024-02-07 Wed 12:11]
 #+begin_src bash
 function isRoot() {
     if [[ $(id -u) -ne 0 ]]
@@ -107,92 +93,6 @@ function isRoot() {
 	exit 1
     fi
 }
-#+end_src
-
-* TODO Fonts
-:LOGBOOK:
-- State "TODO"       from              [2023-12-10 Sun 12:15]
-:END:
-
-On Arch, the noto fonts for "everything" are split into:
-
-noto-fonts for Roman, Greek, Cyrillic and probably some other alphabets, along with ASCII art nonsense and numbers and punctuation and stuff and I think some rudimentary Japanese and Chinese(?);
-noto-fonts-emoji for emoji;
-noto-fonts-cjk for Chinese, Japanese, and Korean characters (all of them); and
-noto-fonts-extra for god knows what, I haven't looked.
-With those four installed, you should always have an arbitrary character render properly. 
-
-#+begin_src bash
-  echo "Setting up Noto Emoji font..."
-#+end_src
-
-Install  noto-fonts-emoji package:
-#+begin_src  shell
-  pacman -S noto-fonts-emoji --needed
-#+end_src
-
-#+begin_src shell
-  pacman -S powerline-fonts ttf-fira-code ttf-linux-libertine libertinus-font --needed
-#+end_src
-In my personel conf i use =ttf-linux-libertine= as "serif" family font.
-=ttf-linux-libertine= - Serif (Libertine) and Sans Serif (Biolinum) OpenType fonts with large Unicode coverage.
-
-=libertinus-font= - Fonts based on Linux Libertine/Biolinum, with extended math support.
-=ttf-joypixels= - For emoji
-=otf-font-awesome=, =ttf-font-awesome= - Fontawesome
-
-
-#+begin_src shell
-  echo "Recommended system font: inconsolata regular (ttf-inconsolata or powerline-fonts)"
-#+end_src
-
-Add font config to /etc/fonts/conf.d/01-notosans.conf:
-#+begin_src shell :tangle no
-  echo "<?xml version="1.0"?>
-  <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-  <fontconfig>
-   <alias>
-     <family>sans-serif</family>
-     <prefer>
-       <family>Noto Sans</family>
-       <family>Noto Color Emoji</family>
-       <family>Noto Emoji</family>
-       <family>DejaVu Sans</family>
-     </prefer> 
-   </alias>
-
-   <alias>
-     <family>serif</family>
-     <prefer>
-       <family>Noto Serif</family>
-       <family>Noto Color Emoji</family>
-       <family>Noto Emoji</family>
-       <family>DejaVu Serif</family>
-     </prefer>
-   </alias>
-
-   <alias>
-    <family>monospace</family>
-    <prefer>
-      <family>Noto Mono</family>
-      <family>Noto Color Emoji</family>
-      <family>Noto Emoji</family>
-      <family>DejaVu Sans Mono</family>
-     </prefer>
-   </alias>
-  </fontconfig>
-
-  " > /etc/fonts/local.conf
-#+end_src
-
-Update font cache via fc-cache:
-#+begin_src shell
-  fc-cache -f
-#+end_src
-
-#+begin_src shell :tangle no
-  echo "Noto Emoji Font installed! You may need to restart applications like chrome. If chrome displays no symbols or no letters, your default font contains emojis."
-  echo "consider inconsolata regular"
 #+end_src
 
 * Touchpad and Keyboard Conf
