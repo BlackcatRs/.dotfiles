@@ -49,6 +49,47 @@ run check-parens
 The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
 
+* Bluetooth
+=Bluetooth= is a standard for the short-range wireless interconnection of cellular phones, computers, and other electronic devices. In Linux, the canonical implementation of the Bluetooth protocol stack is =BlueZ=.
+
+1. Install the =bluez= package, providing the Bluetooth protocol stack.
+2. Install the =bluez-utils= package, providing the bluetoothctl utility. Alternatively install =bluez-utils-compat=  (AUR Package) to additionally have the deprecated BlueZ tools.
+3. The generic Bluetooth driver is the =btusb= kernel module. Check whether that module is loaded. If it is not, then load the module.
+4. Start/enable =bluetooth.service=.
+
+#+begin_src shell
+  sudo pacman -S bluez bluez-utils
+#+end_src
+
+By default the Bluetooth daemon will only give out =bnep0= devices to users that are a member of the =lp= group. Make sure to add your user to that group if you intend to connect to a Bluetooth tether. You can change the group that is required in the file =/usr/share/dbus-1/system.d/bluetooth.conf=: 
+#+begin_src shell
+  usermod -aG lp $(whoami)
+#+end_src
+
+** Pair Bluetooth Devices
+Start the =bluetoothctl= interactive command:
+1. (optional) Select a default controller with ~select MAC_address~.
+2. (optional) Enter ~power on~ to turn on the controller on. It is on by default
+3. Enter ~devices~ to get the MAC address of the device with which to pair.
+   3.1. (optional) Enter device discovery mode with ~scan on~ command if device is not yet on the above list.
+   3.2. Turn the agent on with  ~agent on~ or choose a specific agent: if you press tab twice after agent you should see a list of available agents. 
+   A bluetooth agent is what manages the Bluetooth 'pairing code'. It can either respond to a 'pairing code' coming in, or can send one out. The default-agent should be appropriate in most cases.
+6. Enter ~pair MAC_address~ to do the pairing.
+7. If using a device without a PIN, one may need to manually trust the device before it can reconnect successfully. Enter ~trust MAC_address~ to do so.
+8. Enter ~connect MAC_address~ to establish a connection.
+
+** Troubleshooting
+If blocked by =rfkill= then unlock it.
+
+* Notification
+[[https://wiki.archlinux.org/title/Dunst][Dunst]] is a lightweight replacement for the notification-daemons:
+#+begin_src shell
+  sudo pacman -S dunst libnotify
+#+end_src
+
+To use Dunst, the configuration file =.dotfiles/.config/dunst/dunstrc= must be placed or symlinked to =~/.config/dunst/dunstrc=.
+Next, the =/usr/bin/dunst= should be launched, so make sure your window manager or desktop environment starts it at startup/login.
+
 * FIXME [0/3]
 ** TODO Write a readme for Dotrice
 :LOGBOOK:

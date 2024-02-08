@@ -123,7 +123,22 @@ polybar() {
     $PACKAGE_MANAGER polybar
 }
 
+setup_touchpad() {
+    ln -s $(pwd)/source/touchpad/touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
+}
 
+setup_keyboard() {
+    ln -s $(pwd)/source/keyboard/keyboard.conf /etc/X11/xorg.conf.d/90-custom-kbd.conf
+}
+
+bluetooth() {
+    $PACKAGE_MANAGER -S bluez bluez-utils
+    usermod -aG lp ${SUDO_USER:-$USER}
+}
+
+desktop_notif() {
+    $PACKAGE_MANAGER dunst libnotify
+}
 # initialCheck
 #aur_helper
 

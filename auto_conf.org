@@ -95,151 +95,51 @@ function isRoot() {
 }
 #+end_src
 
-* Touchpad and Keyboard Conf
-** Touchpad
-Arch supplies default configuration files in =/usr/share/X11/xorg.conf.d/=, and no extra configuration is necessary for most setups. But the =/etc/X11/xorg.conf.d/= directory stores host-specific configuration. 
-
-#+begin_quote
-Using .conf files
-
-The /etc/X11/xorg.conf.d/ directory stores host-specific configuration. You are free to add configuration files there, but they must have a .conf suffix: the files are read in ASCII order, and by convention their names start with XX- (two digits and a hyphen, so that for example 10 is read before 20). These files are parsed by the X server upon startup and are treated like part of the traditional xorg.conf configuration file. Note that on conflicting configuration, the file read last will be processed. For this reason, the most generic configuration files should be ordered first by name. The configuration entries in the xorg.conf file are processed at the end. 
-
-https://wiki.archlinux.org/title/Xorg
-#+end_quote
-
-xorg.conf is parsed by the X server at start-up. To apply changes, restart X.
-
-#+begin_src :tangle /etc/X11/xorg.conf.d/30-touchpad.conf
-Section "InputClass"
-    Identifier "SYNA7DB5:00 06CB:CD40 Touchpad"
-    Driver "libinput"
-    Option "Tapping" "1"
-    Option "NaturalScrolling" "1"
-EndSection
-#+end_src
-
-=SYNA7DB5:00 06CB:CD40 Touchpad= is the name of device obtained using following command provided by the =xorg-input= package:
-#+begin_src shell
-  xinput list
-#+end_src
-
-/We can also use =libinput list-devices= command to list all devices and their respective features supported by libinput./
-https://wiki.archlinux.org/title/Libinput
-
-** Keyboard Conf
-#+begin_src  :tangle /etc/X11/xorg.conf.d/90-custom-kbd.conf
-"Section "InputClass"
-    Identifier "keyboard defaults"
-    MatchIsKeyboard "on"
-
-    # Option "XKbOptions" "ctrl:swapcaps"
-    Option "XKbOptions" "ctrl:nocaps"
-EndSection
-#+end_src
-
-* Bluetooth
-=Bluetooth= is a standard for the short-range wireless interconnection of cellular phones, computers, and other electronic devices. In Linux, the canonical implementation of the Bluetooth protocol stack is =BlueZ=.
-
-1. Install the =bluez= package, providing the Bluetooth protocol stack.
-2. Install the =bluez-utils= package, providing the bluetoothctl utility. Alternatively install =bluez-utils-compat=  (AUR Package) to additionally have the deprecated BlueZ tools.
-3. The generic Bluetooth driver is the =btusb= kernel module. Check whether that module is loaded. If it is not, then load the module.
-4. Start/enable =bluetooth.service=.
-
-#+begin_src shell
-  sudo pacman -S bluez bluez-utils
-#+end_src
-
-By default the Bluetooth daemon will only give out =bnep0= devices to users that are a member of the =lp= group. Make sure to add your user to that group if you intend to connect to a Bluetooth tether. You can change the group that is required in the file =/usr/share/dbus-1/system.d/bluetooth.conf=: 
-#+begin_src shell
-  sudo usermod -aG lp vts
-#+end_src
-
-** Pair Bluetooth Devices
-Start the =bluetoothctl= interactive command:
-1. (optional) Select a default controller with ~select MAC_address~.
-2. (optional) Enter ~power on~ to turn on the controller on. It is on by default
-3. Enter ~devices~ to get the MAC address of the device with which to pair.
-   3.1. (optional) Enter device discovery mode with ~scan on~ command if device is not yet on the above list.
-   3.2. Turn the agent on with  ~agent on~ or choose a specific agent: if you press tab twice after agent you should see a list of available agents. 
-   A bluetooth agent is what manages the Bluetooth 'pairing code'. It can either respond to a 'pairing code' coming in, or can send one out. The default-agent should be appropriate in most cases.
-6. Enter ~pair MAC_address~ to do the pairing.
-7. If using a device without a PIN, one may need to manually trust the device before it can reconnect successfully. Enter ~trust MAC_address~ to do so.
-8. Enter ~connect MAC_address~ to establish a connection.
-
-** Troubleshooting
-If blocked by =rfkill= then unlock it.
-
-
-* Notification
-[[https://wiki.archlinux.org/title/Dunst][Dunst]] is a lightweight replacement for the notification-daemons:
-#+begin_src shell
-  sudo pacman -S dunst libnotify
-#+end_src
-
-To use Dunst, the configuration file =.dotfiles/.config/dunst/dunstrc= must be placed or symlinked to =~/.config/dunst/dunstrc=.
-Next, the =/usr/bin/dunst= should be launched, so make sure your window manager or desktop environment starts it at startup/login.
 
 * TODO Sound
 :LOGBOOK:
 - State "TODO"       from              [2024-01-01 Mon 11:29] \\
   Rephrase
 :END:
-The Arch sound system consists of several levels:
-1. Drivers and interface – hardware support and control
-2. Usermode API (libraries) – utilized and required by applications
-3. Usermode sound servers (optional) – best for the complex desktop, needed for multiple simultaneous audio applications, and vital for more advanced capabilities e.g. pro audio
-4. Sound frameworks (optional) – higher-level application environments not involving server processes
+
+The Arch sound system is organized into different layers:
+1. Drivers and interface – Hardware support and control, providing device drivers for audio hardware.
+2. Usermode API (libraries) – Applications interact with this layer using libraries that offer a way to access sound-related functions.
+3. Usermode sound servers (optional) – These servers, if used, enhance audio capabilities, especially in complex desktops with multiple simultaneous audio applications.
+4. Sound frameworks (optional) – Optional frameworks offer a more abstract interface for developers working on audio-related applications, without relying on server processes.
 
 A default Arch installation already includes the kernel sound system (ALSA).  ALSA — The default Linux kernel component providing device drivers and lowest-level support for audio hardware.
 Which means it allow to read and write from audio devices/sound cards.
 
+=amixer= - command-line mixer for ALSA soundcard driver.
+
 Source: https://wiki.archlinux.org/title/sound_system
 
-=amixer= - command-line mixer for ALSA soundcard driver
-
-Some application can record or output to directly to ALSA audio devices (sound card or microphone). This could be problematic because some audio devices not allow multiplexing so if a program is using the device others cannot use it at the same time. But some devices allow harware mixing which means two or many program transmet audio steam at the same time to audio device which will mix it into single output and send to for example speakers.
-
-So as a solution to multiplexing and many other limitation sound server is created. 
-
-PulseAudio is a abstracted layer above ALSA which act as server which takes audio from programs which are considerd as clients and gives to ALSA (driver) then ALSA to sound card.
-
-We also have [[https://wiki.archlinux.org/title/JACK_Audio_Connection_Kit][Jack]] -  a professional sound server daemon that provides real-time, low-latency connections for both audio and MIDI data between applications that implement its API.
-
-PipeWire is a replacement for PulseAudio and JACK.
-It aims to offer capture and playback for both audio and video with minimal latency and support for PulseAudio, JACK, ALSA and GStreamer-based applications. 
-
 ** PulseAudio
-PulseAudio is a general purpose sound server intended to run as a middleware between your applications and your hardware devices, either using ALSA or OSS.
+Certain applications have the capability to directly record from or output to ALSA audio devices, such as sound cards or microphones. However, this can pose issues because some audio devices don't support multiplexing, preventing multiple programs from using the device simultaneously. On the other hand, devices with hardware mixing can handle multiple audio streams concurrently, mixing them into a single output and send to devices like speakers.
 
-Note: Some confusion may occur between ALSA and PulseAudio. ALSA includes a Linux kernel component with sound card drivers, as well as a userspace component, libasound.[1] PulseAudio builds only on the kernel component, but offers compatibility with libasound through pulseaudio-alsa.[2]
+To address multiplexing and other limitations, sound servers are created. One such example is =PulseAudio=, which serves as an abstracted layer above ALSA. PulseAudio acts as a server, taking audio from programs considered as clients, delivering it to ALSA (driver), and from there to the sound card.
+
+Another noteworthy sound server is =Jack=, designed for professional use. Jack functions as a sound server daemon, providing real-time, low-latency connections for both audio and MIDI data between applications following its API.
+
+/Note: Some confusion may occur between ALSA and PulseAudio. ALSA includes a Linux kernel component with sound card drivers, as well as a userspace component, =libasound=. PulseAudio builds only on the kernel component, but offers compatibility with libasound through =pulseaudio-alsa=./
+
 #+begin_src shell
   sudo pacman -S pulseaudio pulseaudio-bluetooth 
 #+end_src
 - =pulseaudio-alsa= for PulseAudio to manage ALSA as well, see [[https://wiki.archlinux.org/title/PulseAudio#ALSA][#ALSA]].
 - =pulseaudio-bluetooth= for bluetooth support (Bluez), see [[https://wiki.archlinux.org/title/Bluetooth_headset][bluetooth headset]] page.
 
+The =pactl= command can control the running PulseAudio sound server, offering only a subset of operations; for the complete set, use =pacmd=
 
-- =pactl= - Control a running PulseAudio sound server
-  - pactl can be used to issue control commands to the PulseAudio sound server.
-  - pactl only exposes a subset of the available operations. For the full set use the =pacmd=.
+Various front-ends, including =pamixer= for console-based volume control and =pavucontrol= for graphical interface, are available for controlling the PulseAudio daemon on Arch Linux.
 
-There are a number of front-ends available for controlling the PulseAudio daemon:
-Console:
-#+begin_src shell
-  sudo pacman -S pamixer
-#+end_src
-Controls the volume levels of Pulseaudio sinks and sources.
-
-Graphical:
-#+begin_src shell
-  sudo pacman -S pavucontrol
-#+end_src
-Simple GTK volume control tool ("mixer") for PulseAudio.
-
-*** References
-- [[https://wiki.archlinux.org/title/PulseAudio][PulseAudio]]
+Source : https://wiki.archlinux.org/title/PulseAudio
 
 ** PipeWire
+PipeWire is introduced as a replacement for both PulseAudio and JACK. It aims to provide capture and playback for both audio and video with minimal latency. PipeWire supports PulseAudio, JACK, ALSA, and GStreamer-based applications, offering a comprehensive solution for various audio and video needs.
+
+
 PipeWire is a audio and video server that replaces PulseAudio, offer capture and playback for both audio and video with minimal latency and support for PulseAudio, JACK, ALSA and GStreamer-based applications:
 #+begin_src shell
   sudo pacman -S pipewire 
