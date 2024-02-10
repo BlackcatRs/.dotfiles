@@ -14,6 +14,9 @@ LAST_MU_SYNC=$(date +"%Y-%m-%dT%H:%M:%S")
 # Run only if no other mu is running
 pgrep -x mu >/dev/null || mu index 
 
+# Update Polybar mail counter
+[[ -f /usr/bin/polybar-msg ]] && polybar-msg action mail hook 0 > /dev/null
+
 # Runs only once 
 if [ ! -f /tmp/last_mail_check ]; then
     # LAST_MAIL_CHK=$(uptime -s | sed -r 's/ /T/g')
