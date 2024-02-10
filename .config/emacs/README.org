@@ -55,6 +55,7 @@
   - [[#syncing-mails][Syncing Mails]]
   - [[#index-mailbox][Index mailbox]]
   - [[#email-client][Email Client]]
+  - [[#update-polybar-mail-counter][Update Polybar Mail Counter]]
   - [[#links-and-queries-to-mu4e-mails-in-org-mode-optional][Links and Queries to Mu4e Mails in Org-mode [Optional]]]
   - [[#org-file-as-htlm-formatted-email][Org File as HTLM Formatted Email]]
   - [[#search-queries][Search queries]]
@@ -1430,6 +1431,7 @@ mu index
     ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
     ;; (mu4e t)
     )
+  ;; End - Mail --------------------------------------------------------  
 #+end_src
 
 *** SMTP Conf
@@ -1456,6 +1458,19 @@ Controlling the number of messages that will get displayed to user by =mu4e= by 
 
 You can toggle =mu4e-headers-full-search= with =M-x mu4e-headers-toggle-full-search=!
 
+** Update Polybar Mail Counter
+Press the =C-c q= key to quit Mu4e and update Polybar's mail counter:
+#+begin_src emacs-lisp :results none
+  (defun my-mu4e-quit-and-run-command ()
+    "Quit mu4e and run a custom shell command."
+    (interactive)
+    (mu4e-quit)
+    (shell-command "[[ -f /usr/bin/polybar-msg ]] && polybar-msg action mail hook 0"))
+
+  ;; Bind the custom command to a key combination, for example, "C-c q"
+  (global-set-key (kbd "C-c q") 'my-mu4e-quit-and-run-command)
+#+end_src
+
 ** Links and Queries to Mu4e Mails in Org-mode [Optional]
 We can create links and queries from within org-mode to Mu4e mails using:
 #+begin_src emacs-lisp :results none :tangle no
@@ -1477,7 +1492,6 @@ We can use content written using Org-mode which will be formatted into HTML and 
 #+begin_src emacs-lisp :results none
   (use-package org-mime
     :ensure t)  
-  ;; End - Mail --------------------------------------------------------  
 #+end_src
 
 - Once installed we can use =M-x org-mime-htmlize= inside of a mail composition buffer to convert the content into HTML.
