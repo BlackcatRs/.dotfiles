@@ -58,7 +58,7 @@ set $mode_launcher App:
 bindsym $mod+o mode "$mode_launcher"
 binding_mode_indicator no
 mode "$mode_launcher" {
-    bindsym f exec "/usr/bin/ranger"; mode "default"
+    bindsym f exec "/usr/bin/alacritty -e /usr/bin/ranger"; mode "default"
     bindsym c exec "/usr/bin/rofi -show calc -no-show-match -no-sort"; mode "default"
     bindsym t exec "/usr/bin/emacsclient -c -a /usr/bin/emacs"; mode "default"
     bindsym e exec "/usr/bin/rofi -show emoji -emoji-mode insert"; mode "default"
