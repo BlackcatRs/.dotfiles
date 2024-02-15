@@ -27,6 +27,7 @@ README.md
 \.config/shell/bm-files
 
 install.sh
+install_v1.sh
 .Xmodmap
 shell-color-scripts
 \.config/mutt/*
@@ -36,3 +37,5 @@ shell-color-scripts
 
 # Autoconf script
 autoconf/*
+
+source/*

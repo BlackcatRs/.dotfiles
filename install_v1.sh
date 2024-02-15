@@ -26,11 +26,19 @@ common_tools() {
     $PACKAGE_MANAGER git base-devel less wget exa stow man-db unzip thunderbird
 }
 
+base_dir() {
+    mkdir -p ~/.local/bin \
+	  ~/.config/systemd/user \
+	  ~/.config/emacs \
+	  ~/.config/shell
+}
+
 initialCheck() {
     isRoot
     checkOS
     common_tools
     [[ -f ~/.bash_profile || -f ~/.bashrc ]] && rm ~/.bash_profile ~/.bashrc
+    base_dir
     stow .
 }
 
