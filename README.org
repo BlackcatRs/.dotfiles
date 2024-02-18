@@ -1,55 +1,50 @@
-To find out the default app for a particular type of file
+#+TITLE: The Dotrice (VTS — [[https://www.atomicl.net][www.atomicl.net]]'s dotfiles)
+#+DESCRIPTION: The Dotrice repo contains configuration files for various programs
+#+AUTHOR: VTS
 
-> xdg-mime query filetype Documents/test.pdf
+** Configuration Files for Various Programs
+- Very useful scripts are in =~/.local/bin/=
+- Settings for:
+  - Emacs (text editor)
+  - Bash (shell)
+  - Ranger (file manager)
+  - Dunst (Notification daemon)
+  - other stuff like xdg default programs, inputrc and more, etc.
+- I tried to adopt [[https://wiki.archlinux.org/title/XDG_Base_Directory][XDG Base Directory specification]] to minimize what's directly in =~= so:
+  - All configs that can be in =~/.config/= are.
+  - Some environmental variables have been set in =~/.bashrc= move into =~/.config/shell/env=
 
-    application/pdf
+** Usage
+The files in this repository are utilized to configure various programs I use, and their deployment is automated through the =install.sh= script.
 
-To find out the mime for the extension
+*This script is write for Arch Linux to work with the Pacman package manager.*
 
-> xdg-mime query default application/pdf
+First of all, clone the Dotrice repository and move into the directory:
+#+begin_src shell
+  https://github.com/BlackcatRs/.dotfiles.git ~/.dotfiles
+  cd ~/.dotfiles
+#+end_src
 
-    okularApplication_pdf.desktop
+Then, make the =install.sh= script executable:
+#+begin_src shell
+  chmod +x install.sh
+#+end_src
 
-to set default app for an mimetype
+Finally, execute the script as root:
+#+begin_src shell
+  sudo ./install.sh
+#+end_src
 
-> xdg-mime default zathura.desktop application/pdf
-to test if applied successfully
-
-> xdg-open test.md
-
-
-
-Make zathura the default pdf viewer
-
-Ensures, for example, that xdg-open(1) will open pdf files with zathura.
-
-First, ensure a desktop entry for zathura exists at /usr/share/applications/org.pwmt.zathura.desktop. If it does not, download the desktop entry from from the zathura repo to /usr/share/applications/org.pwmt.zathura.desktop.
-
-Then, set zathura as default using xdg-mime(1)
-
-$ xdg-mime default org.pwmt.zathura.desktop application/pdf
-
-
-
-________________________________
-Emacs :
-To find unbalanced parenthesis
-run check-parens 
-
-* My addition to .bashrc
+** My Addition to .bashrc
 - ~extract~ command (defined in =.bashrc=) extracts pages from a given PDF files.
 - The script [[file:.local/bin/shortcuts][shortcuts]] will generate a file =$HOME/.config/shell/shortcutrc= (sourced by =.bashrc=) with aliases based on [[file:.config/shell/bm-files][bm-files]] and [[file:.config/shell/bm-files][bm-dirs]] files. This allows to use only one or some letters to move between folder or open a file.
 
-* Program I Use
+** Program I Utilize
 - =Pandoc= - A universal document converter.
 - =pdftk= - Extract pages from PDF files
 - =zbarimg= - Scan and decode bar codes from image file.
 
-* Archive
-The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
-- Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
-
-* Sound
+** Audio Configuration
 The Arch sound system is organized into different layers:
 1. Drivers and interface – Hardware support and control, providing device drivers for audio hardware.
 2. Usermode API (libraries) – Applications interact with this layer using libraries that offer a way to access sound-related functions.
@@ -63,7 +58,7 @@ Which means it allow to read and write from audio devices/sound cards.
 
 Source: https://wiki.archlinux.org/title/sound_system
 
-** PulseAudio
+*** PulseAudio
 Certain applications have the capability to directly record from or output to ALSA audio devices, such as sound cards or microphones. However, this can pose issues because some audio devices don't support multiplexing, preventing multiple programs from using the device simultaneously. On the other hand, devices with hardware mixing can handle multiple audio streams concurrently, mixing them into a single output and send to devices like speakers.
 
 To address multiplexing and other limitations, sound servers are created. One such example is =PulseAudio=, which serves as an abstracted layer above ALSA. PulseAudio acts as a server, taking audio from programs considered as clients, delivering it to ALSA (driver), and from there to the sound card.
@@ -84,7 +79,7 @@ Various front-ends, including =pamixer= for console-based volume control and =pa
 
 Source : https://wiki.archlinux.org/title/PulseAudio
 
-** PipeWire
+*** PipeWire
 PipeWire is introduced as a replacement for both PulseAudio and JACK, aiming to provide minimal-latency capture and playback for both audio and video. It is a audio and video server that support PulseAudio, JACK, ALSA and GStreamer-based applications, offering a versatile solution for a wide range of audio and video requirements.
 
 #+begin_src shell
@@ -106,23 +101,23 @@ To use PipeWire as an audio server, install the following packages:
   /To check the good fuction of the service run the command ~pactl info~ and check for string "Server Name: PulseAudio (on PipeWire x.y.z)" in the output./
 - The =pipewire-jack= for JACK support.
   /There is also =lib32-pipewire-jack= for multilib support./
-
-*** Bluetooth devices
+  
+**** Bluetooth devices
 PipeWire can also handle Bluetooth audio devices by installing the =pipewire-audio= package:
 #+begin_src shell
   sudo pacman -S pipewire-audio
 #+end_src
 
-*** Patchbay
+**** Patchbay
 To redirect an audio stream to an audio device or application using PipeWire, you can install the =pipewire-pulse= package, which includes the patchbay audio functionality:
 #+begin_src shell
   sudo pacman -S qpwgraph
 #+end_src
 
-*** References
+**** References
 - [[https://wiki.archlinux.org/title/PipeWire][PipeWire]]
 
-* Bluetooth
+** Bluetooth Configuration
 =Bluetooth= is a standard for the short-range wireless interconnection of cellular phones, computers, and other electronic devices. In Linux, the canonical implementation of the Bluetooth protocol stack is =BlueZ=.
 
 1. Install the =bluez= package, providing the Bluetooth protocol stack.
@@ -139,7 +134,7 @@ By default the Bluetooth daemon will only give out =bnep0= devices to users that
   usermod -aG lp $(whoami)
 #+end_src
 
-** Pair Bluetooth Devices
+*** Pair Bluetooth Devices
 Start the =bluetoothctl= interactive command:
 1. (optional) Select a default controller with ~select MAC_address~.
 2. (optional) Enter ~power on~ to turn on the controller on. It is on by default
@@ -151,10 +146,10 @@ Start the =bluetoothctl= interactive command:
 7. If using a device without a PIN, one may need to manually trust the device before it can reconnect successfully. Enter ~trust MAC_address~ to do so.
 8. Enter ~connect MAC_address~ to establish a connection.
 
-** Troubleshooting
+*** Troubleshooting
 If blocked by =rfkill= then unlock it.
 
-* Notification
+** Notification Configuration
 [[https://wiki.archlinux.org/title/Dunst][Dunst]] is a lightweight replacement for the notification-daemons:
 #+begin_src shell
   sudo pacman -S dunst libnotify
@@ -163,14 +158,64 @@ If blocked by =rfkill= then unlock it.
 To use Dunst, the configuration file =.dotfiles/.config/dunst/dunstrc= must be placed or symlinked to =~/.config/dunst/dunstrc=.
 Next, the =/usr/bin/dunst= should be launched, so make sure your window manager or desktop environment starts it at startup/login.
 
-* FIXME [0/3]
-** TODO Write a readme for Dotrice
+** Tips/Tricks
+*** Set Default applications
+Programs implement default application associations in different ways. While command-line programs traditionally use environment variables, graphical applications tend to use XDG MIME Applications through either the GIO API, the Qt API, or by executing ~/usr/bin/xdg-open~, which is part of =xdg-utils=. 
+
+Source: https://wiki.archlinux.org/title/default_applications
+
+Identifying the MIME type for the given file extension:
+#+begin_src shell
+  xdg-mime query filetype Documents/test.pdf
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+application/pdf
+:END:
+
+Discovering the default application for a specific file type:
+#+begin_src shell
+  xdg-mime query default application/pdf
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+okularApplication_pdf.desktop
+:END:
+
+Setting the default application for a MIME type:
+#+begin_src shell
+  xdg-mime default zathura.desktop application/pdf
+#+end_src
+
+Checking if the changes were successfully applied:
+#+begin_src shell
+  xdg-open test.pdf
+#+end_src
+
+**** Example
+Set =Zathura= as the default PDF viewer, or in other words, check whether ~xdg-open~ opens PDF files with Zathura.
+
+First, ensure that a desktop entry for Zathura exists at =/usr/share/applications/org.pwmt.zathura.desktop=. If it does not, create one.
+
+Then, set Zathura as the default using ~xdg-mime~:
+#+begin_src shell
+  xdg-mime default org.pwmt.zathura.desktop application/pdf
+#+end_src
+
+** Archive
+The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
+- Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
+
+** FIXME [0/3]
+*** TODO Write a readme for Dotrice
 :LOGBOOK:
 - State "TODO"       from              [2023-10-29 dim. 22:41] \\
   Write a proper READEME as Luke Smith
 :END:
 
-** TODO Shortcuts to Implement
+*** TODO Shortcuts to Implement
 :LOGBOOK:
 - State "TODO"       from              [2024-01-16 Tue 21:06]
 :END:
@@ -184,7 +229,7 @@ super  f3 select a multi screen
 super printsrc record screen
 super u dropdown tmux terminal
 
-** TODO Create a script
+*** TODO Create a script
 :LOGBOOK:
 - State "TODO"       from              [2024-01-16 Tue 21:06]
 :END:
