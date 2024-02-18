@@ -75,7 +75,7 @@ password_manager() {
 }
 
 text_editor() {
-    $PACKAGE_MANAGER emacs aspell aspell-en aspell-fr
+    $PACKAGE_MANAGER emacs aspell aspell-en aspell-fr the_silver_searcher ripgrep
     # TODO The SMTP password will be retrieved from the file defined in the "auth-sources" variable
 
 }
