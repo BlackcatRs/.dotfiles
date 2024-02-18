@@ -49,6 +49,79 @@ run check-parens
 The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
 
+* Sound
+The Arch sound system is organized into different layers:
+1. Drivers and interface – Hardware support and control, providing device drivers for audio hardware.
+2. Usermode API (libraries) – Applications interact with this layer using libraries that offer a way to access sound-related functions.
+3. Usermode sound servers (optional) – These servers, if used, enhance audio capabilities, especially in complex desktops with multiple simultaneous audio applications.
+4. Sound frameworks (optional) – Optional frameworks offer a more abstract interface for developers working on audio-related applications, without relying on server processes.
+
+A default Arch installation already includes the kernel sound system (ALSA).  ALSA — The default Linux kernel component providing device drivers and lowest-level support for audio hardware.
+Which means it allow to read and write from audio devices/sound cards.
+
+=amixer= - command-line mixer for ALSA soundcard driver.
+
+Source: https://wiki.archlinux.org/title/sound_system
+
+** PulseAudio
+Certain applications have the capability to directly record from or output to ALSA audio devices, such as sound cards or microphones. However, this can pose issues because some audio devices don't support multiplexing, preventing multiple programs from using the device simultaneously. On the other hand, devices with hardware mixing can handle multiple audio streams concurrently, mixing them into a single output and send to devices like speakers.
+
+To address multiplexing and other limitations, sound servers are created. One such example is =PulseAudio=, which serves as an abstracted layer above ALSA. PulseAudio acts as a server, taking audio from programs considered as clients, delivering it to ALSA (driver), and from there to the sound card.
+
+Another noteworthy sound server is =Jack=, designed for professional use. Jack functions as a sound server daemon, providing real-time, low-latency connections for both audio and MIDI data between applications following its API.
+
+/Note: Some confusion may occur between ALSA and PulseAudio. ALSA includes a Linux kernel component with sound card drivers, as well as a userspace component, =libasound=. PulseAudio builds only on the kernel component, but offers compatibility with libasound through =pulseaudio-alsa=./
+
+#+begin_src shell
+  sudo pacman -S pulseaudio pulseaudio-bluetooth 
+#+end_src
+- =pulseaudio-alsa= for PulseAudio to manage ALSA as well, see [[https://wiki.archlinux.org/title/PulseAudio#ALSA][#ALSA]].
+- =pulseaudio-bluetooth= for bluetooth support (Bluez), see [[https://wiki.archlinux.org/title/Bluetooth_headset][bluetooth headset]] page.
+
+The =pactl= command can control the running PulseAudio sound server, offering only a subset of operations; for the complete set, use =pacmd=
+
+Various front-ends, including =pamixer= for console-based volume control and =pavucontrol= for graphical interface, are available for controlling the PulseAudio daemon on Arch Linux.
+
+Source : https://wiki.archlinux.org/title/PulseAudio
+
+** PipeWire
+PipeWire is introduced as a replacement for both PulseAudio and JACK, aiming to provide minimal-latency capture and playback for both audio and video. It is a audio and video server that support PulseAudio, JACK, ALSA and GStreamer-based applications, offering a versatile solution for a wide range of audio and video requirements.
+
+#+begin_src shell
+  sudo pacman -S pipewire 
+#+end_src
+- Install =lib32-pipewire= [fn:1] for multilib support. 
+
+Like JACK, PipeWire implements no connection logic internally. The burden of watching for new streams and connect them to the appropriate output device or application is left to an external component known as a session manager:
+#+begin_src shell
+  sudo pacman -S wireplumber
+#+end_src
+
+To use PipeWire as an audio server, install the following packages:
+#+begin_src shell
+  sudo pacman -S pipewire-alsa pipewire-pulse pipewire-jack 
+#+end_src
+- =pipewire-alsa= (and remove =pulseaudio-alsa= if it was installed) routes all applications using the ALSA API through PipeWire. 
+- =pipewire-pulse= replaces the =pulseaudio= and =pulseaudio-bluetooth=. Reboot, re-login or stop =pulseaudio.service= and start the =pipewire-pulse.service= user unit to see the effect.
+  /To check the good fuction of the service run the command ~pactl info~ and check for string "Server Name: PulseAudio (on PipeWire x.y.z)" in the output./
+- The =pipewire-jack= for JACK support.
+  /There is also =lib32-pipewire-jack= for multilib support./
+
+*** Bluetooth devices
+PipeWire can also handle Bluetooth audio devices by installing the =pipewire-audio= package:
+#+begin_src shell
+  sudo pacman -S pipewire-audio
+#+end_src
+
+*** Patchbay
+To redirect an audio stream to an audio device or application using PipeWire, you can install the =pipewire-pulse= package, which includes the patchbay audio functionality:
+#+begin_src shell
+  sudo pacman -S qpwgraph
+#+end_src
+
+*** References
+- [[https://wiki.archlinux.org/title/PipeWire][PipeWire]]
+
 * Bluetooth
 =Bluetooth= is a standard for the short-range wireless interconnection of cellular phones, computers, and other electronic devices. In Linux, the canonical implementation of the Bluetooth protocol stack is =BlueZ=.
 
