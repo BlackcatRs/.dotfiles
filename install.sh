@@ -1,132 +1,152 @@
-#!/usr/bin/env bash
+#! /usr/bin/env bash
 
-#####################################################################################################
-# TODO Intel microcode
-sudo pacman -S intel-ucode # if AMD amd-ucode
+PACKAGE_MANAGER=""
+OS=""
 
-#####################################################################################################
-# Package need by .dotfiles
-sudo pacman -S exa stow gpg emacs ranger
-
-#####################################################################################################
-# Themes
-sudo pacman gnome-themes-extra kvantum papirus-icon-theme lxappearance qt5ct
-
-#####################################################################################################
-# TODO Fonts
-# On Arch, the noto fonts for "everything" are split into:
-
-# noto-fonts for Roman, Greek, Cyrillic and probably some other alphabets, along with ASCII art nonsense and numbers and punctuation and stuff and I think some rudimentary Japanese and Chinese(?);
-# noto-fonts-emoji for emoji;
-# noto-fonts-cjk for Chinese, Japanese, and Korean characters (all of them); and
-# noto-fonts-extra for god knows what, I haven't looked.
-# With those four installed, you should always have an arbitrary character render properly. 
-
-#####################################################################################################
-# TODO Firfox
-# Starting with Firefox 68, you can make all the Firefox interfaces and even other websites respect dark themes, irrespective of the system GTK theme and Firefox theme. To do this, set ui.systemUsesDarkTheme to 1 in about:config [13]. 
-
-#####################################################################################################
-# Keyboard Conf
-echo "Section "InputClass"
-    Identifier "keyboard defaults"
-    MatchIsKeyboard "on"
-
-    # Option "XKbOptions" "ctrl:swapcaps"
-    Option "XKbOptions" "ctrl:nocaps"
-EndSection
-" > /etc/X11/xorg.conf.d/90-custom-kbd.conf
-
-#####################################################################################################
-# TODO Remove file (if exist)
-rm ~/.bash_profile ~/.bashrc
-
-#####################################################################################################
-# Install color scirpts
-cd ./shell-color-scripts && make clean install
-
-# Install startship promt
-curl -sS https://starship.rs/install.sh | sh
-
-#####################################################################################################
-# Package to install for i3 vm
-sudo pacman -S xorg-xinit xorg-server i3-wm i3status
-cp /etc/X11/xinit/xinitrc ~/.xinitrc
-
-# TODO remote some lines at bottom
-echo 'exec i3' >> ~/.xinitrc
-
-#####################################################################################################
-### Show which comman has been executed
-set -e
-
-function insall_stow() {
-    is_exist=`stow -V`
-    if [ $is_exist -ne 0 ]
-    then
-	pacman -S stow
-    fi
-}
-
-#####################################################################################################
-function isRoot() {
-    if [[ $(id -u) -ne 0 ]]
-    then
-	echo "Please run as root"
+checkOS() {
+    if [[ -e /etc/arch-release ]]; then
+	/usr/bin/pacman -Syy
+	#PACKAGE_MANAGER="/usr/bin/pacman --noconfirm -S "
+	PACKAGE_MANAGER="/usr/bin/pacman -S"
+	OS="arch"
+    else
+	echo "[-] Your OS is not supported by $0 ..."
 	exit 1
     fi
 }
 
-#####################################################################################################
-echo "Setting up Noto Emoji font..."
+isRoot() {
+    if [ "${EUID}" -ne 0 ]; then
+	echo "You need to run this script as root"
+	exit 1
+    fi
+}
 
-# 1 - install  noto-fonts-emoji package
-pacman -S noto-fonts-emoji --needed
+common_tools() {    
+    $PACKAGE_MANAGER git base-devel less wget exa stow man-db unzip thunderbird
+}
 
-# pacman -S powerline-fonts --needed
-echo "Recommended system font: inconsolata regular (ttf-inconsolata or powerline-fonts)"
+base_dir() {
+    mkdir -p ~/.local/bin \
+	  ~/.config/systemd/user \
+	  ~/.config/emacs \
+	  ~/.config/shell
+}
 
-# # 2 - add font config to /etc/fonts/conf.d/01-notosans.conf
-# echo "<?xml version="1.0"?>
-# <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-# <fontconfig>
-#  <alias>
-#    <family>sans-serif</family>
-#    <prefer>
-#      <family>Noto Sans</family>
-#      <family>Noto Color Emoji</family>
-#      <family>Noto Emoji</family>
-#      <family>DejaVu Sans</family>
-#    </prefer> 
-#  </alias>
+initialCheck() {
+    isRoot
+    checkOS
+    common_tools
+    [[ -f ~/.bash_profile || -f ~/.bashrc ]] && rm ~/.bash_profile ~/.bashrc
+    base_dir
+    stow .
+}
 
-#  <alias>
-#    <family>serif</family>
-#    <prefer>
-#      <family>Noto Serif</family>
-#      <family>Noto Color Emoji</family>
-#      <family>Noto Emoji</family>
-#      <family>DejaVu Serif</family>
-#    </prefer>
-#  </alias>
+microcode() {
+    if grep --color -i 'model name' /proc/cpuinfo | grep -iqF 'Intel'; then
+	echo "[+] Intel CPU is detected"
+	echo "Downloading microcode for Intel CPU ..."
+	$PACKAGE_MANAGER intel-ucode
+    elif grep --color -i 'model name' /proc/cpuinfo | grep -iqF 'amd'; then
+	echo "[+] AMD CPU is detected"
+	echo "Downloading microcode for AMD CPU ..."
+	$PACKAGE_MANAGER amd-ucode
+    else
+	echo "[-] Unable to detect the CPU"
+	return 1
+    fi
+}
 
-#  <alias>
-#   <family>monospace</family>
-#   <prefer>
-#     <family>Noto Mono</family>
-#     <family>Noto Color Emoji</family>
-#     <family>Noto Emoji</family>
-#     <family>DejaVu Sans Mono</family>
-#    </prefer>
-#  </alias>
-# </fontconfig>
+themes() {
+    $PACKAGE_MANAGER picom gnome-themes-extra kvantum lxappearance qt5ct feh
+}
 
-# " > /etc/fonts/local.conf
+fonts(){
+    echo "[+] Installing fonts ..."
+    $PACKAGE_MANAGER powerline-fonts ttf-fira-code ttf-linux-libertine libertinus-font  
+}
 
-# # 3 - update font cache via fc-cache
-# fc-cache
+app_launcher() {
+    $PACKAGE_MANAGER rofi rofi-emoji rofi-calc rofi-pass papirus-icon-theme
+}
 
-# echo "Noto Emoji Font installed! You may need to restart applications like chrome. If chrome displays no symbols or no letters, your default font contains emojis."
+password_manager() {
+    $PACKAGE_MANAGER pass pass-otp xclip dmenu gpg
+}
 
-# echo "consider inconsolata regular"
+text_editor() {
+    $PACKAGE_MANAGER emacs aspell aspell-en aspell-fr
+    # TODO The SMTP password will be retrieved from the file defined in the "auth-sources" variable
+
+}
+
+pdf_viewer(){
+    $PACKAGE_MANAGER zathura poppler zathura-pdf-poppler
+}
+
+file_explorer() {
+    $PACKAGE_MANAGER ranger fzf ueberzug imagemagick
+    # TODO run shortcuts.sh script 
+}
+
+aur_helper() {
+    DST="$HOME/git/yay"
+    [ ! -d $DST ] && mkdir -p $DST
+    git clone https://aur.archlinux.org/yay.git $DST
+    cd $DST
+    /usr/bin/makepkg -si
+}
+
+offline_mail() {
+    $PACKAGE_MANAGER isync mu && /usr/bin/mbsync -a
+    # TODO Override mbsync service
+    # [Service]
+    # ExecStart=
+    # ExecStart=/usr/bin/mbsync -V -c /path/to/config/file -a
+    # Environment="PASSWORD_STORE_DIR=/path/to/password/pass"
+}
+
+mail_notif() {
+    $PACKAGE_MANAGER goimapnotify
+}
+
+shortcuts() {
+    mkdir -p ~/.config/shell
+    # TODO link bm-{file,dirs} to ~/.config/shell
+}
+
+term_color() {
+    make -C $(pwd)/source/shell-color-scripts install
+}
+
+starship() {
+    curl -sS https://starship.rs/install.sh | sh
+}
+
+i3() {
+    sudo pacman -S xorg-xinit xorg-server i3-wm i3status
+}
+
+polybar() {
+    $PACKAGE_MANAGER polybar
+}
+
+setup_touchpad() {
+    ln -s $(pwd)/source/touchpad/touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
+}
+
+setup_keyboard() {
+    ln -s $(pwd)/source/keyboard/keyboard.conf /etc/X11/xorg.conf.d/90-custom-kbd.conf
+}
+
+bluetooth() {
+    $PACKAGE_MANAGER -S bluez bluez-utils
+    usermod -aG lp ${SUDO_USER:-$USER}
+}
+
+desktop_notif() {
+    $PACKAGE_MANAGER dunst libnotify
+}
+# initialCheck
+#aur_helper
 
