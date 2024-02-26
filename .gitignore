@@ -66,3 +66,6 @@ flycheck_*.el
 
 # Ranger related file
 .config/ranger/shortcuts.conf
+
+# Polybar module
+.config/polybar/modules/currency.ini
