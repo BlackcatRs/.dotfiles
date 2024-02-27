@@ -51,6 +51,12 @@ tiling_drag modifier titlebar
 # start a terminal
 bindsym $mod+Return exec alacritty
 
+# Use the fzfopen.sh script in toggle mode
+# bindsym $mod+m exec "alacritty -e bash -c 'cd ~/ && xdg-open $(fzf) & disown'"
+# bindsym $mod+plus move scratchpad
+# bindsym $mod+minus scratchpad show
+
+
 # Press $mod+o followed by either f, t, Escape or Return to launch firefox,
 # thunderbird or return to the default mode, respectively.
 
