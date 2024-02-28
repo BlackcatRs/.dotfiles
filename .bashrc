@@ -43,6 +43,11 @@ if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Python2.7 to path
+if [ -d "/opt/python/2.7.18/bin" ]; then
+    PATH="/opt/python/2.7.18/bin/:$PATH"
+fi
+
 
 ### ALIASES ###
 # navigation
