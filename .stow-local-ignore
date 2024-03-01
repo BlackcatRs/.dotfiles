@@ -15,6 +15,7 @@ README.md
 
 # Scripts
 \.local/bin/rofi-wifi-menu.sh
+\.local/bin/archive/*
 
 # Xmodmap
 \.config/Xmodmap

@@ -207,10 +207,13 @@ Then, set Zathura as the default using ~xdg-mime~:
 ** Archive
 The files mentioned below can be deleted without any side effects, they are only perserved as referened for future use: 
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
+- The script =mail-notif= notifies the user every time a new email is received. However, this can become annoying when a user receives a large number of emails. Therefore, the script has been archived into the =.local/bin/archive/= folder and replaced with a script that executes every X minutes."
 
-** FIXME [0/3]
-*** TODO Write a readme for Dotrice
+** FIXME [1/4]
+*** DONE Write a readme for Dotrice
+CLOSED: [2024-03-01 Fri 21:11]
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2024-03-01 Fri 21:11]
 - State "TODO"       from              [2023-10-29 dim. 22:41] \\
   Write a proper READEME as Luke Smith
 :END:
@@ -229,8 +232,9 @@ super  f3 select a multi screen
 super printsrc record screen
 super u dropdown tmux terminal
 
-*** TODO Create a script
+*** ONGOING Create a script
 :LOGBOOK:
+- State "ONGOING"    from "TODO"       [2024-03-01 Fri 21:16]
 - State "TODO"       from              [2024-01-16 Tue 21:06]
 :END:
 - It will create directory:
@@ -239,3 +243,8 @@ super u dropdown tmux terminal
 
 - Which link var.el to ~/config/emacs if exists.
 - Install =imagemagick= for Ranger to rotate an image
+
+*** TODO [#A] Work on mail-notify Script
+:LOGBOOK:
+- State "TODO"       from              [2024-03-01 Fri 21:16]
+:END:

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Wait until another instance of this script to complete
+PIDFILE=/var/run/user/1000/mail-notif.pid
+until [ ! -f $PIDFILE ]; do sleep 1; echo "Other process is running"; done
+echo $$ > "$PIDFILE"
+
+# Remove PID file on exit.
+trap "rm -f -- '$PIDFILE'" EXIT
+
+# Save the last execution time
+LAST_MU_SYNC=$(date +"%Y-%m-%dT%H:%M:%S")
+
+# Run only if no other mu is running
+pgrep -x mu >/dev/null || mu index 
+
+# Update Polybar mail counter
+[[ -f /usr/bin/polybar-msg ]] && polybar-msg action mail hook 0 > /dev/null
+
+# Runs only once 
+if [ ! -f /tmp/last_mail_check ]; then
+    # LAST_MAIL_CHK=$(uptime -s | sed -r 's/ /T/g')
+    echo $LAST_MU_SYNC > /tmp/last_mail_check
+    NB_NEW_MAILS=$(mu find --skip-dups \(maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox\) and flag:new 2>/dev/null | wc -l)
+    /usr/bin/dunstify -u normal "Received $NB_NEW_MAILS new mails"
+    exit
+fi
+
+# Check for recently received mails
+read -r LAST_MAIL_CHK < /tmp/last_mail_check
+NEW_MAILS=$(mu find flag:new -f "f|s|d" --skip-dups date:$LAST_MAIL_CHK..now 2>/dev/null)
+
+# Alert user
+NB_NEW_MAILS=$([ -z "$NEW_MAILS" ] && echo "0" || echo "$(echo "$NEW_MAILS" | wc -l)")
+if [ $NB_NEW_MAILS -gt 0 ]; then
+    echo "$LAST_MU_SYNC" > /tmp/last_mail_check
+
+    while IFS= read -r mail
+    do
+	# SENDER_MAIL=$(echo "$mail" | cut -d "|" -f 1 | grep -o -P '(?<=\<).*(?=\>)')
+	SENDER=$(echo "$mail" | cut -d "|" -f 1)
+	SUBJ=$(echo "$mail" | cut -d "|" -f 2)
+	DATE=$(echo "$mail" | cut -d "|" -f 3)
+
+	/usr/bin/dunstify -u normal "$SENDER" "$SUBJ"
+	
+    done < <(printf '%s\n' "$NEW_MAILS")
+fi
