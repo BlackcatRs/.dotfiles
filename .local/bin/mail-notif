@@ -1,3 +1,17 @@
 #!/usr/bin/env bash
 
-NEW_MAILS=$(mu find flag:new -f "f|s|d" --skip-dups date:5M.. 2> /dev/null)
+NEW_MAILS=""
+
+while read -r MAIL; do
+    MAIL_FROM=$(echo $MAIL |cut -d '|' -f1 | grep -oP '(?<=<).*(?=>)')
+    MAIL_SUBJ=$(echo $MAIL |cut -d '|' -f2)
+
+    # NEW_MAILS+="<span color='#74c7ec' font='20px'>$MAIL_FROM</span> <span color='#cba6f7' font='20px'>$MAIL_SUBJ</span>\n"
+    NEW_MAILS+="<span color='#74c7ec'>$MAIL_FROM</span> <span color='#cba6f7'>$MAIL_SUBJ</span>\n"
+
+done < <(mu find flag:new -f "f|s" --skip-dups date:5M..now)
+
+
+echo -en $NEW_MAILS
+/usr/bin/dunstify -a "Mail-notif" "Mail" "$NEW_MAILS" >/dev/null 2>&1
+
