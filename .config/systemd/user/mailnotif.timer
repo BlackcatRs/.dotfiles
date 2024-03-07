@@ -1,0 +1,9 @@
+[Unit]
+Description=Mail notification timer
+
+[Timer]
+OnUnitActiveSec=3m
+Unit=mbsync.service
+
+[Install]
+WantedBy=timers.target
