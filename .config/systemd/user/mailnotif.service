@@ -1,11 +1,10 @@
 [Unit]
 Description=Mail notification
-Requires=mbsync.service
 After=mbsync.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/bash ~/.local/bin/mail-notif
+ExecStart=-/usr/bin/bash /home/vts/.local/bin/mail-notif
 Environment="DISPLAY=:0"
 
 [Install]
