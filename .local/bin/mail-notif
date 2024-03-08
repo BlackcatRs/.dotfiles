@@ -9,7 +9,7 @@ while read -r MAIL; do
     # NEW_MAILS+="<span color='#74c7ec' font='20px'>$MAIL_FROM</span> <span color='#cba6f7' font='20px'>$MAIL_SUBJ</span>\n"
     NEW_MAILS+="<span color='#74c7ec'>$MAIL_FROM</span> <span color='#cba6f7'>$MAIL_SUBJ</span>\n\n"
 
-done < <(mu find flag:new -f "f|s" --skip-dups date:3M..now)
+done < <(mu index && mu find flag:new -f "f|s" --skip-dups date:3M..now)
 
 
 # echo -en $NEW_MAILS
