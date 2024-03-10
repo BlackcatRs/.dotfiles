@@ -149,7 +149,7 @@ Start the =bluetoothctl= interactive command:
 *** Troubleshooting
 If blocked by =rfkill= then unlock it.
 
-** Notification Configuration
+** Notification Daemon
 [[https://wiki.archlinux.org/title/Dunst][Dunst]] is a lightweight replacement for the notification-daemons:
 #+begin_src shell
   sudo pacman -S dunst libnotify
