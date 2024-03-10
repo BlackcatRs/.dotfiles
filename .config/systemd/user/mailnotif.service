@@ -4,8 +4,10 @@ Description=Mail notification
 [Service]
 Type=idle
 ExecStart=%h/.local/share/virtualenv/bin/python %h/.local/bin/mail-notif
+Restart=always
+RestartSec=10
 Environment="DISPLAY=:0"
-# Environment="XAUTHORITY=/path/to/.Xauthority"
+Environment="XAUTHORITY=%h/.Xauthority"
 Environment="INBOX=~/.local/share/mail/vithurshan@laposte.net/Inbox/new;~/.local/share/mail/vithurshanselvarajah@gmail.com/Inbox/new"
 
 [Install]

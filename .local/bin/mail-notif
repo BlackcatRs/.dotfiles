@@ -18,6 +18,7 @@ import gi
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify
 import email.header
+import sys
 
 # Set up desktop notification
 Notify.init("Mail Notification")
@@ -54,7 +55,8 @@ def text_decode(text, encoding):
 class EventHandler(pyinotify.ProcessEvent):
     def process_IN_MOVED_TO(self, event):
         # Parse sender and subject from the email file
-        print("New mail: ", event.pathname)
+        print("mail-notif: ", event.pathname)
+        sys.stdout.flush()
         with open(event.pathname, 'r') as file:
             email_content = file.read()
             mail = Parser().parsestr(email_content)
