@@ -1,9 +1,0 @@
-[Unit]
-Description=Mail notification timer
-
-[Timer]
-OnUnitActiveSec=1m
-Unit=mailnotif.service
-
-[Install]
-WantedBy=timers.target
