@@ -1,16 +1,81 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 
-NEW_MAILS=""
+# Author: VTS
+# Website: www.atomicl.net
+# This script is a Biff-like script that monitors my local maildir for
+# incoming new mails, automatically downloaded by Goimapnotify (for
+# more details, see ../../.config/imapnotify/README.org). It then
+# sends a desktop notification using the default notification daemon
+# (for more details, see ../../README.org). This script requires
+# certain dependencies to function, which can be downloaded using the
+# following command:
+# pip install PyGObject pyinotify
 
-while read -r MAIL; do
-    MAIL_FROM=$(echo $MAIL |cut -d '|' -f1 | grep -oP '(?<=<).*(?=>)')
-    MAIL_SUBJ=$(echo $MAIL |cut -d '|' -f2)
+import os
+import pyinotify
+from email.parser import Parser
+import gi
+gi.require_version('Notify', '0.7')
+from gi.repository import Notify
+import email.header
 
-    # NEW_MAILS+="<span color='#74c7ec' font='20px'>$MAIL_FROM</span> <span color='#cba6f7' font='20px'>$MAIL_SUBJ</span>\n"
-    NEW_MAILS+="<span color='#74c7ec'>$MAIL_FROM</span> <span color='#cba6f7'>$MAIL_SUBJ</span>\n\n"
+# Set up desktop notification
+Notify.init("Mail Notification")
 
-done < <(mu index && mu find flag:new -f "f|s" --skip-dups date:3M..now)
+# Specify the mail directory to watch
+# MAILDIRS = [os.path.expanduser("~/Documents/Lab/Mail/new"),
+#            os.path.expanduser("~/Documents/Lab/Mail/tac")]
+
+# Retreive mail directory to watch from  env variable 'INBOX'
+INBOX = os.environ["INBOX"]
+MAILDIRS = []
+
+for directory in INBOX.split(";"):
+    MAILDIRS.append(os.path.expanduser(directory))
 
 
-# echo -en $NEW_MAILS
-[[ ! -z $NEW_MAILS ]] && /usr/bin/dunstify -a "Mail-notif" "Mail" "$NEW_MAILS" >/dev/null 2>&1
+# Function to send desktop notification
+def send_notification(sender, subject):
+    notification = Notify.Notification.new(f"{sender}", f"{subject}")
+    notification.show()
+
+def text_decode(text, encoding):
+    if ((type(text) == str) and (encoding == None)):
+        return text
+
+    if ((type(text) == bytes) and (encoding == None)):
+        return text.decode()
+
+    return text.decode(encoding)
+    #return text
+
+
+# Define the EventHandler class for handling file events
+class EventHandler(pyinotify.ProcessEvent):
+    def process_IN_MOVED_TO(self, event):
+        # Parse sender and subject from the email file
+        print("New mail: ", event.pathname)
+        with open(event.pathname, 'r') as file:
+            email_content = file.read()
+            mail = Parser().parsestr(email_content)
+            sender = mail['From']
+            subject = mail['Subject']
+            encoding = None
+
+            if mail['Subject'] != None:
+                subject, encoding = email.header.decode_header(subject)[0]
+
+            send_notification(sender, text_decode(subject, encoding))
+
+
+# Set up the watch manager and notifier
+wm = pyinotify.WatchManager()
+handler = EventHandler()
+notifier = pyinotify.Notifier(wm, handler)
+
+# Add the directories to watch for creation events
+for maildir in MAILDIRS:
+    wm.add_watch(maildir, pyinotify.IN_MOVED_TO)
+
+# Start the notifier loop
+notifier.loop()

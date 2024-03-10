@@ -1,11 +1,12 @@
 [Unit]
 Description=Mail notification
-After=mbsync.service
 
 [Service]
-Type=oneshot
-ExecStart=-/usr/bin/bash /home/vts/.local/bin/mail-notif
+Type=idle
+ExecStart=%h/.local/share/virtualenv/bin/python %h/.local/bin/mail-notif
 Environment="DISPLAY=:0"
+# Environment="XAUTHORITY=/path/to/.Xauthority"
+Environment="INBOX=~/.local/share/mail/vithurshan@laposte.net/Inbox/new;~/.local/share/mail/vithurshanselvarajah@gmail.com/Inbox/new"
 
 [Install]
 WantedBy=default.target
