@@ -3,14 +3,10 @@ Description=Mailbox Synchronization Service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/mbsync -V -c /path/to/mbsyncrc -a
+Environment="PASSWORD_STORE_DIR=%h/.local/share/pass"
 Environment="DISPLAY=:0"
-
-# Do not uncomment these options directly, instead override this
-# configuration with "systemd --user edit mbsync.service"
-## Environment="XAUTHORITY=/path/to/.Xauthority"
-## Environment="PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass"
-## ExecStartPost=/usr/bin/bash /path/to/bin/mail-notif
+ExecStart=/usr/bin/mbsync -V -c %h/.config/isync/mbsyncrc -a
+ExecStartPost=/usr/bin/bash -c '/usr/bin/dunstify -u normal "$$(/usr/bin/date +"%%H:%%M" ) — Syncing mail" "Received $(find "${XDG_DATA_HOME:-$HOME/.local/share}"/mail/*/[Ii][Nn][Bb][Oo][Xx]/new/* -type f | wc -l 2>/dev/null) new mails"'
 
 [Install]
 WantedBy=default.target
