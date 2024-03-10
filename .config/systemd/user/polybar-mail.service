@@ -1,0 +1,9 @@
+[Unit]
+Description=Polybar mail count
+
+[Service]
+Type=idle
+ExecStart=%h/.local/bin/polybar/mail-count
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+MAILDIR="${XDG_DATA_HOME:-$HOME/.local/share}/mail/*/[Ii][Nn][Bb][Oo][Xx]/new"
+
+while inotifywait -q -e moved_to,moved_from $MAILDIR > /dev/null; do
+    echo "Updating Polybar mail count..."
+    sleep 3
+    [[ -f /usr/bin/polybar-msg ]] && polybar-msg action mail hook 0 > /dev/null 2>&1
+done
+
+
