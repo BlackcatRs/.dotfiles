@@ -1,7 +1,31 @@
 * Goimapnotify
-** FIXME [0/1]
-*** TODO Run Script on Receiving Mails
+#+begin_src
+{
+  "host": "imap.laposte.net",
+  "port": 993,
+  "tls": true,
+  "tlsOptions": {
+    "rejectUnauthorized": false
+  },
+  "username": "vithurshan@laposte.net",
+  "password": "",
+    "passwordCmd": "/usr/bin/pass mail/laposte | head -n1",
+  "onNewMail": "/usr/bin/mbsync -c ~/.config/isync/mbsyncrc laposte",
+  "boxes": [ "Inbox" ]
+}
+#+end_src
+
+Adjust the following fields based on your IMAP server: =host=, =port=, =username=.
+
+The =password= field can be utilized to provide a plain text password, or the =passwordCmd= field can be used to retrieve the password from the Pass password manager.
+
+The =boxes= field is used to specify the mailbox to watch. In this case, it watches the Inbox. A comma-separated list of mailboxes can be specified, for example: ="Inbox", "AnotherMailbox"=.
+
+** FIXME [1/1]
+*** DONE Run Script on Receiving Mails
+CLOSED: [2024-03-10 Sun 10:16]
 :LOGBOOK:
+- State "DONE"       from "TODO"       [2024-03-10 Sun 10:16]
 - State "TODO"       from              [2023-11-11 sam. 16:13]
 :END:
 Run this script on receiving new mails instead on running a command inside Goimapnotify conf:
