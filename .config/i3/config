@@ -183,5 +183,13 @@ mode "resize" {
 
 bindsym $mod+p mode "resize"
 
+# Fuzzy finder
+set $launch_fzf 'fzf --layout=reverse --bind "enter:execute-silent(nohup ~/git/dotrice/.local/bin/i3/fzf-output-handler.py {} >> /tmp/nohup.out)+abort"'
+# Keybinding to launch fzf (choose any keybinding you like)
+bindsym $mod+f exec --no-startup-id alacritty --class FZF -e bash -c $launch_fzf
+# Make the resulting terminal window float
+for_window [class="FZF"] floating enable
+
+
 # Start the Polybar
 exec_always ~/.config/polybar/launch.sh &
