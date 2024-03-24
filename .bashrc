@@ -17,6 +17,7 @@
 [ ! -d "$HOME/.config" ] && /usr/bin/mkdir -p "$HOME/.config"
 [ ! -d "$HOME/.local/state" ] && /usr/bin/mkdir -p "$HOME/.local/state"
 [ ! -d "$HOME/.local/share" ] && /usr/bin/mkdir -p "$HOME/.local/share"
+[ ! -d "$HOME/.local/bin" ] && /usr/bin/mkdir -p "$HOME/.local/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -40,7 +41,6 @@ export WORKON_HOME="$XDG_DATA_HOME/virtualenvs"
 
 # PATH
 if [ -d "$HOME/.local/bin" ]; then
-    /usr/bin/mkdir -p "$HOME/.local/bin"
     PATH="$HOME/.local/bin:$PATH"
 fi
 
