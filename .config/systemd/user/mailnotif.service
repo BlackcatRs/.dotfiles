@@ -5,7 +5,7 @@ Requires=mbsync.service
 
 [Service]
 Type=idle
-ExecStart=%h/.local/share/virtualenv/bin/python %h/.local/bin/mail-notif
+ExecStart=%h/.local/share/virtualenvs/mail-notif/bin/python %h/.local/bin/mail-notif
 Restart=always
 Environment="DISPLAY=:0"
 Environment="XAUTHORITY=%h/.Xauthority"
