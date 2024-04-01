@@ -84,6 +84,10 @@ pdf_viewer(){
     $PACKAGE_MANAGER zathura poppler zathura-pdf-poppler
 }
 
+pdf_extractor(){
+    $PACKAGE_MANAGER pdftk
+}
+
 file_explorer() {
     $PACKAGE_MANAGER ranger fzf ueberzug imagemagick
     # TODO run shortcuts.sh script 
