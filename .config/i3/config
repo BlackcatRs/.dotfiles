@@ -187,7 +187,7 @@ bindsym $mod+p mode "resize"
 bindsym $mod+Tab workspace back_and_forth
 
 # Fuzzy finder
-set $launch_fzf 'fzf --layout=reverse --bind "enter:execute-silent(nohup ~/git/dotrice/.local/bin/i3/fzf-output-handler.py {} >> /tmp/nohup.out)+abort"'
+set $launch_fzf 'fzf --layout=reverse --bind "enter:execute-silent(nohup ~/.dotfiles/.local/bin/i3/fzf-output-handler.py {} >> /tmp/nohup.out)+abort"'
 # bindsym $mod+f exec --no-startup-id alacritty --class FZF -e bash -c $launch_fzf
 # Make the resulting terminal window float
 for_window [class="FZF"] floating enable
@@ -208,6 +208,9 @@ mode "$fav_app" {
      bindsym Escape mode "default"
      bindsym Return mode "default"
 }
+
+# Lauch Powermenu
+bindsym $mod+Shift+e exec "~/.local/bin/powermenu"
 
 # Start the Polybar
 exec_always ~/.config/polybar/launch.sh &
