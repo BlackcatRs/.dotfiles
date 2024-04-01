@@ -183,13 +183,31 @@ mode "resize" {
 
 bindsym $mod+p mode "resize"
 
+# Move to the lastly selected workspace
+bindsym $mod+Tab workspace back_and_forth
+
 # Fuzzy finder
 set $launch_fzf 'fzf --layout=reverse --bind "enter:execute-silent(nohup ~/git/dotrice/.local/bin/i3/fzf-output-handler.py {} >> /tmp/nohup.out)+abort"'
-# Keybinding to launch fzf (choose any keybinding you like)
-bindsym $mod+f exec --no-startup-id alacritty --class FZF -e bash -c $launch_fzf
+# bindsym $mod+f exec --no-startup-id alacritty --class FZF -e bash -c $launch_fzf
 # Make the resulting terminal window float
 for_window [class="FZF"] floating enable
 
+# Press $mod+l followed by either f, t, Escape or Return to launch firefox,
+# thunderbird or return to the default mode, respectively
+set $mode_launcher App:
+bindsym $mod+l mode "$fav_app"
+binding_mode_indicator no
+mode "$fav_app" {
+     bindsym f exec --no-startup-id alacritty --class FZF -e bash -c $launch_fzf; mode "default"
+     bindsym c exec "/usr/bin/rofi -show calc -no-show-match -no-sort"; mode "default"
+     bindsym t exec "/usr/bin/emacsclient -c -a /usr/bin/emacs"; mode "default"
+     bindsym e exec "/usr/bin/rofi -show emoji -emoji-mode insert"; mode "default"
+     bindsym p exec "/usr/bin/passmenu"; mode "default"
+
+     # Bindings for switching back to the default mode.
+     bindsym Escape mode "default"
+     bindsym Return mode "default"
+}
 
 # Start the Polybar
 exec_always ~/.config/polybar/launch.sh &
