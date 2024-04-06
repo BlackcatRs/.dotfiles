@@ -1286,7 +1286,7 @@ Refer to the [[file:../isync/README.org][isync/README.org]] file for a more deta
 ** Index mailbox
 Once mails have been synced to local Maildir, run a initial indexing process by providing you e-mail address to =mu= program:
 #+begin_src shell :tangle no
-mu init --maildir=~/Mail --my-address=vithurshanselvarajah@gmail.com
+mu init --maildir=~/.local/share/mail --my-address=vithurshanselvarajah@gmail.com
 mu index
 #+end_src
 
