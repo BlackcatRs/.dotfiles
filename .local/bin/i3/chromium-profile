@@ -3,6 +3,6 @@
 CHROMIUM_CONF_DIR="$HOME/.config/vhromium/"
 PROFILES=$(find $CHROMIUM_CONF_DIR -type d -name "Account_*")
 
-USER_SELECTION=$(echo "$PROFILES" | cut -d "/" -f6 | /usr/bin/rofi -dmenu -i -theme-str '@import "power.rasi"' -p "Profile :")
+USER_SELECTION=$(echo "$PROFILES" | cut -d "/" -f6 | /usr/bin/rofi -dmenu -i -theme-str '@import "chromium_profile.rasi"' -p "Profile :")
 
 [ ! -z "${USER_SELECTION}" ] && /usr/bin/chromium --user-data-dir=$CHROMIUM_CONF_DIR/$USER_SELECTION
