@@ -1436,7 +1436,7 @@ mu index
 
 *** SMTP Conf
 Now we need to set SMTP credentials in =~/.local/share/emacs/authinfo.gpg= file as defined earlier for Mu4e to send mails. Whenever we save a file with ".gpg" extension, Emacs uses the =epa (Easy PGP Assistant)= library to encrypt the password using GnuPG:
-#+begin_src
+#+begin_src :results none :tangle no
   machine smtp.gmail.com login vithurshanselvarajah@gmail.com password <your-password> port 465
 #+end_src
 
