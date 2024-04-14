@@ -1,0 +1,15 @@
+[Unit]
+Description=Syncthing permission setup
+After=network.target home-syncthing.mount
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/syncthing-perm
+CPUWeight=20
+CPUQuota=60%
+IOWeight=20
+MemorySwapMax=0
+Restart=always
+
+[Install]
+WantedBy=default.target

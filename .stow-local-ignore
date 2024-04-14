@@ -39,4 +39,8 @@ shell-color-scripts
 # Autoconf script
 autoconf/*
 
+# Source files
 source/*
+
+# README files
+\.config/systemd/user/README.org

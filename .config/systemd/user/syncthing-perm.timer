@@ -1,0 +1,10 @@
+[Unit]
+Description=Syncthing permission setup timer
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=1h
+Unit=syncthing-perm
+
+[Install]
+WantedBy=timers.target
