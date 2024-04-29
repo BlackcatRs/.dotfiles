@@ -29,7 +29,7 @@ SyncState *
 IMAPAccount gmail
 Host imap.gmail.com
 User vithurshanselvarajah@gmail.com
-PassCmd "/usr/bin/pass gmail/vithurshanselvarajah | head -n 1"
+PassCmd "/usr/bin/pass gmail/vithurshanselvarajah | tail -n1 | cut -d ' ' -f 2"
 SSLType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 
