@@ -50,6 +50,7 @@
   - [[#key-bindings-1][Key bindings]]
   - [[#references][References]]
 - [[#cancelled-run-shell-command][CANCELLED Run Shell Command]]
+- [[#compile-latex-file][Compile LaTex File]]
 - [[#mail][Mail]]
   - [[#prerequisite][Prerequisite]]
   - [[#syncing-mails][Syncing Mails]]
@@ -1255,6 +1256,20 @@ CLOSED: [2023-12-01 ven. 10:19]
 
   (add-hook 'after-save-hook 'my/cmd-after-saved-file)
   (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
+#+end_src
+
+* Compile LaTex File
+#+begin_src emacs-lisp :results none :tangle no
+(defun my-run-pdflatex-on-save ()
+  "Run pdflatex on the current TeX file when it's saved."
+  (when (and (string= (file-name-extension (buffer-file-name)) "tex")
+             (executable-find "pdflatex"))
+    (let ((tex-file (buffer-file-name)))
+      (message "Running pdflatex on %s..." tex-file)
+      (shell-command (format "pdflatex %s" (shell-quote-argument tex-file))))))
+
+;; Add a hook to run `my-run-pdflatex-on-save` function when saving .tex files
+(add-hook 'after-save-hook 'my-run-pdflatex-on-save)
 #+end_src
 
 * Mail
