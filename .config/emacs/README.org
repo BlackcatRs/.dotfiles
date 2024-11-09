@@ -668,8 +668,8 @@ Change default Org heading style:
 Refiling or moving unwanted item usually finished tasks to different place for archiving purpose:
 #+begin_src emacs-lisp :results none
   (setq org-refile-targets
-        '(("Archive.org" :maxlevel . 1)
-          ("Tasks.org" :maxlevel . 1)))
+        '((voc/archive :maxlevel . 1)
+          (voc/todo :maxlevel . 1)))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
