@@ -17,6 +17,7 @@
   - [[#helpful][Helpful]]
   - [[#visual-fill-column][Visual-fill-column]]
   - [[#rainbow-mode][Rainbow-mode]]
+- [[#close-all-open-buffers][Close All Open Buffers]]
 - [[#key-bindings][Key bindings]]
   - [[#command-log-mode][Command-log-mode]]
   - [[#custom-key-bindings][Custom key bindings]]
@@ -311,6 +312,14 @@ Text alignment in the buffer:
 #+begin_src emacs-lisp :results none
   ;; Visualizing Color Codes
   (use-package rainbow-mode)
+#+end_src
+
+* Close All Open Buffers
+#+begin_src emacs-lisp :results none
+(defun close-all-buffers ()
+  "Close all open buffers except the current one."
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 #+end_src
 
 * Key bindings
