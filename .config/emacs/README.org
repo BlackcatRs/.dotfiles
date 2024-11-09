@@ -819,7 +819,13 @@ Defining shortcuts to view Org Agenda and to capture tasks:
 
   (setq org-agenda-custom-commands
         `(("a" "Daily agenda and top priority tasks"
-           ,voc-org-custom-daily-agenda)
+           ,voc-org-custom-daily-agenda
+           ((org-agenda-files org-agenda-core-files)))
+
+          ("f" "Daily agenda and top priority tasks"
+           ,voc-org-custom-daily-agenda
+           ((org-agenda-files voc/org-agenda-all-files)))
+
           ("P" "Plain text daily agenda and top priorities"
            ,voc-org-custom-daily-agenda
            ((org-agenda-with-colors nil)
@@ -827,7 +833,7 @@ Defining shortcuts to view Org Agenda and to capture tasks:
             (org-agenda-current-time-string ,(car (last org-agenda-time-grid)))
             (org-agenda-fontify-priorities nil)
             (org-agenda-remove-tags t))
-           ("agenda.txt"))))
+           "agenda.txt")))
 
 
   ;; Global keyboard shortcuts
