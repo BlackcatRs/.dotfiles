@@ -57,3 +57,11 @@ set recolor-darkcolor "#E0E0E0" #06
 set recolor-reverse-video "true"
 set recolor-keephue "true"
 
+# Keymap for dvorak keyboard layout
+map h scroll left
+map t scroll down
+map n scroll up
+map s scroll right
+
+map l search forward
+map L search backward

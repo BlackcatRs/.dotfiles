@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Author: VTS
+# Website: www.atomicl.net
+# This script is used to set the ownership and permission of
+# /home/syncthing/ directory in order to allow syncthing to sync files
+
+chown -R syncthing:syncthing /home/syncthing/
+find /home/syncthing/ -type d -exec chmod 770 {} \;
+find /home/syncthing/ -type f -exec chmod 660 {} \;
