@@ -1,0 +1,15 @@
+configurations:
+    -
+        host: 'imap.gmail.com'
+        port: 993
+        tls: true
+        tlsOptions:
+            rejectUnauthorized: false
+        username: 'vithurshanselvarajah@gmail.com'
+        passwordCmd: '/usr/bin/pass gmail/vithurshanselvarajah | tail -n 1 | cut -d " " -f2'
+        xoAuth2: false
+        boxes:
+            -
+                mailbox: INBOX
+                onNewMail: '/usr/bin/mbsync -c ~/.config/isync/mbsyncrc gmail'
+                onNewMailPost: SKIP
