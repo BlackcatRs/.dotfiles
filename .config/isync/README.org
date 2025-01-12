@@ -118,7 +118,7 @@ SyncState *
 #+end_src
 
 *** Additional Mail Account [Optional]
-We can download emails from as many remote locations as we want, here is a full Isync config of another IMAP server to download mails from:
+We can download emails from as many remote locations as we want, here is a full Isync config for Gmail IMAP server to download mails from:
 #+begin_src org :tangle ./mbsyncrc
 ## Gmail - vithurshanselvarajah@gmail.com
 IMAPAccount gmail
@@ -143,9 +143,35 @@ Patterns * ![Gmail]* "![Gmail]/Messages envoy&AOk-s" "[Gmail]/Suivis" "[Gmail]/T
 Create Both
 SyncState *
 #+end_src
+
+Isync config for Atomicl IMAP server:
+#+begin_src org :tangle ./mbsyncrc
+## Atomicl - vselvarajah@atomcil.net
+IMAPAccount gmail
+Host noradrenaline.atomicl.net
+User vselvarajah@atomcil.net
+PassCmd "/usr/bin/pass mail/ | head -n 1"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore atomicl-remote
+Account atomicl
+
+MaildirStore atomicl-local
+Subfolders Verbatim
+Path ~/.local/share/mail/vselvarajah@atomcil.net/
+Inbox ~/.local/share/mail/vselvarajah@atomcil.net/Inbox
+
+Channel gmail
+Far :atomicl-remote:
+Near :atomicl-local:
+Patterns * 
+Create Both
+SyncState *
+#+end_src
 *NOTE: Be careful of how you manage whitespace between lines in this file, the spaces define groupings!*
 
-*NOTE: mbsync won’t create the base maildir for you, you’ll have to create it: ~/.local/share/mail/vithurshanselvarajah@gmail.com/*
+*NOTE: mbsync won’t create the base maildir for you, you’ll have to create it: ~/.local/share/mail/vithurshanselvarajah@gmail.com/ and ~/.local/share/mail/vselvarajah@atomicl.net/*
 
 ** Start synchronization
 Once we have put all the configuration in =mbsyncrc= file and created the folder =~/.local/share/mail/vithurshan@laposte.net/= to store the remote maildir locally, we are ready to download:

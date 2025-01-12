@@ -47,3 +47,26 @@ Near :gmail-local:
 Patterns * ![Gmail]* "![Gmail]/Messages envoy&AOk-s" "[Gmail]/Suivis" "[Gmail]/Tous les messages" "[Gmail]/Corbeille" "[Gmail]/Brouillons"
 Create Both
 SyncState *
+
+## Atomicl - vselvarajah@atomcil.net
+IMAPAccount atomicl
+Host noradrenaline.atomicl.net
+User vselvarajah@atomcil.net
+PassCmd "/usr/bin/pass mail/atomicl-vselvarajah | head -n1"
+TLSType IMAPS
+# CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore atomicl-remote
+Account atomicl
+
+MaildirStore atomicl-local
+Subfolders Verbatim
+Path ~/.local/share/mail/vselvarajah@atomcil.net/
+Inbox ~/.local/share/mail/vselvarajah@atomcil.net/Inbox
+
+Channel atomicl
+Far :atomicl-remote:
+Near :atomicl-local:
+Patterns * 
+Create Both
+SyncState *
