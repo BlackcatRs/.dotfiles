@@ -48,7 +48,7 @@ Patterns * ![Gmail]* "![Gmail]/Messages envoy&AOk-s" "[Gmail]/Suivis" "[Gmail]/T
 Create Both
 SyncState *
 
-## Atomicl - vselvarajah@atomcil.net
+## Atomicl - vselvarajah@atomicl.net
 IMAPAccount imap-prim
 Host noradrenaline.atomicl.net
 User vselvarajah@atomicl.net
@@ -65,12 +65,12 @@ CertificateFile /etc/ssl/certs/ca-certificates.crt
 
 IMAPStore atomicl-remote-prim
 Account imap-prim
-Account imap-sec
+# Account imap-sec
 
 MaildirStore atomicl-local
 Subfolders Verbatim
-Path ~/.local/share/mail/vselvarajah@atomcil.net/
-Inbox ~/.local/share/mail/vselvarajah@atomcil.net/Inbox
+Path ~/.local/share/mail/vselvarajah@atomicl.net/
+Inbox ~/.local/share/mail/vselvarajah@atomicl.net/Inbox
 
 Channel atomicl
 Far :atomicl-remote-prim:

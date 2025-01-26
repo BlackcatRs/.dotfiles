@@ -146,7 +146,7 @@ SyncState *
 
 Isync config for Atomicl IMAP server:
 #+begin_src org :tangle ./mbsyncrc
-## Atomicl - vselvarajah@atomcil.net
+## Atomicl - vselvarajah@atomicl.net
 IMAPAccount imap-prim
 Host noradrenaline.atomicl.net
 User vselvarajah@atomicl.net
@@ -167,8 +167,8 @@ Account imap-sec
 
 MaildirStore atomicl-local
 Subfolders Verbatim
-Path ~/.local/share/mail/vselvarajah@atomcil.net/
-Inbox ~/.local/share/mail/vselvarajah@atomcil.net/Inbox
+Path ~/.local/share/mail/vselvarajah@atomicl.net/
+Inbox ~/.local/share/mail/vselvarajah@atomicl.net/Inbox
 
 Channel atomicl
 Far :atomicl-remote-prim:
