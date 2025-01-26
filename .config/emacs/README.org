@@ -1354,6 +1354,9 @@ Let's first set up Mu4e with the local Maildir location to read emails and confi
 
 Configuration for the Gmail mail provider:
 #+begin_src emacs-lisp :results none :tangle ./mails/mu4e-context-gmail.el
+  ;;  If your Gmail is set up with a different lanugage you also need
+  ;;  to translate the names of these folders. For Norwegian
+  ;;  "[Gmail]/Corbeille" would be "[Gmail]/Papirkurv".
   (defvar context-gmail
     (make-mu4e-context
      :name "Gmail"
@@ -1405,37 +1408,89 @@ Configuration for the Atomicl mail provider:
 
 Finally, set some general Mu4e configuration and load the above mail provider configurations:
 #+begin_src emacs-lisp :results none
+  ;; Start - Mail ------------------------------------------------------
   (use-package mu4e
+    ;; Install mu4e using the distro's package manager to stay compatible with mbsync
     :ensure nil
+    ;; :defer 15 ; Wait until 15 sec after startup
+    ;; Path where the package manager is installed mu4e files
     :load-path "/usr/share/emacs/site-lisp/mu4e/"
+
     :config
-    (setq mu4e-change-filenames-when-moving t
-          message-send-mail-function 'smtpmail-send-it
-          mu4e-update-interval (* 10 60)
-          mu4e-get-mail-command "/usr/bin/mbsync -Va -c ~/.config/isync/mbsyncrc"
-          mu4e-maildir "~/.local/share/mail"
-          mu4e-context-policy 'pick-first
-          mu4e-compose-context-policy 'ask-if-none
-          mu4e-compose-format-flowed t
-          shr-use-colors nil
-          mu4e-search-include-related nil
-          user-full-name "Vithurshan SELVARJAH")
+    ;; Avoid mail syncing issues when using "mbsync"
+    (setq mu4e-change-filenames-when-moving t)
+
+
+    ;; Configure the function to use for sending mail
+    (setq message-send-mail-function 'smtpmail-send-it)
+
+
+    ;; Shortcut to Mu4e dashboard
+    (global-set-key (kbd "C-c m") 'mu4e)
+    ;; Distroy message buffers on exit
+    (setq message-kill-buffer-on-exit t)
+    ;; Disable prompt when quitting
+    (setq mu4e-confirm-quit nil)
+
+
+    ;; Refresh mail using isync every 10 minutes
+    (setq mu4e-update-interval (* 10 60))
+    (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c ~/.config/isync/mbsyncrc")
+    (setq mu4e-maildir "~/.local/share/mail")
+
+    ;; Set first context ("Laposte") as default
+    (setq mu4e-context-policy 'pick-first)
+    ;; Prompt for context when composing mail if a context hasn't been previously picked
+    (setq mu4e-compose-context-policy 'ask-if-none)
+
+
+    ;; We can set custom actions that allow to use org capture template
+    ;; without invoking the "org-capture" or
+    ;; "mu4e-org-store-and-capture" functions:
+    (defun voc/capture-mail-read-later (msg)
+      (interactive)
+      (call-interactively 'org-store-link)
+      (org-capture nil "mr"))
+
+    ;; Add custom actions for capture templates from the header and
+    ;; message views
+    (add-to-list 'mu4e-headers-actions
+                 '("read later" . voc/capture-mail-read-later) t)
+    (add-to-list 'mu4e-view-actions
+                 '("read later" . voc/capture-mail-read-later) t)
+
+
+    ;; Ask user to select a key when signing/encrypting
+    (setq mm-sign-option 'guided)
+    (setq mm-encrypt-option 'guided)
+
+
+    ;; Common setting for all mail accounts
+    ;; Use "flowed" format to display mails to recipient
+    (setq mu4e-compose-format-flowed t)
+    ;; Disable colors for HTML mails.
+    (setq shr-use-colors nil)
+    ;; Enable spell checking
+    (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
+    ;; Don't include related messages in queries
+    (setq mu4e-search-include-related nil)
+    (setq user-full-name  "Vithurshan SELVARJAH")
 
 
     ;; Load mu4e context
     (load "~/.config/emacs/mails/mu4e-context-laposte.el")
     (load "~/.config/emacs/mails/mu4e-context-gmail.el")
     (load "~/.config/emacs/mails/mu4e-context-atomicl.el")
-    
+
     (setq mu4e-contexts
           (list
            context-laposte
            context-gmail
            context-atomicl))
 
-    (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
-    ;; Keybinding
-    (global-set-key (kbd "C-c m") 'mu4e)
+    ;; Empty the initial bookmark list
+    (setq mu4e-bookmarks '())
+
     ;; Bookmarks
     (setq mu4e-bookmarks
           '((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox" :key ?i)
@@ -1444,7 +1499,12 @@ Finally, set some general Mu4e configuration and load the above mail provider co
             (:name "Draft Mails" :query "m:/vithurshan@laposte.net/DRAFT OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons" :key ?d)
             (:name "Today's messages" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox) AND date:today..now" :key ?n)
             (:name "Last 7 days" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox) AND date:7d..now" :hide-unread t :key ?w)
-            (:name "Messages with images" :query "mime:image/*" :key ?p))))
+            (:name "Messages with images" :query "mime:image/*" :key ?p)))
+
+    ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
+    ;; (mu4e t)
+    )
+  ;; End - Mail --------------------------------------------------------  
 #+end_src
 
 *** SMTP Conf
