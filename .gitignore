@@ -7,6 +7,9 @@ auto-save-list
 tramp
 .\#*
 
+# Emacs - Mu4e
+.config/emacs/mails/**
+
 # Org-mode
 .org-id-locations
 *_archive
