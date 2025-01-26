@@ -1377,6 +1377,32 @@ Configuration for the Gmail mail provider:
              )))
 #+end_src
 
+Configuration for the Atomicl mail provider:
+#+begin_src emacs-lisp :results none :tangle ./mails/mu4e-context-atomicl.el
+  (defvar context-atomicl
+    (make-mu4e-context
+     :name "Atomicl"
+     :match-func
+     (lambda (msg)
+       (when msg
+         (string-prefix-p "/vselvarajah@atomicl.net" (mu4e-message-field msg :maildir))))
+     :vars '((user-mail-address   . "vselvarajah@atomicl.net")
+             (mu4e-compose-signature . "Vithurshan SELVARAJAH\n* Mon site web – www.atomicl.net\n* LinkedIn – www.linkedin.com/in/vithurshan-selvarajah\n* RSS Feed - www.atomicl.net/index.xml")
+             ;; The SMTP password will be retrieved from the file
+             ;; defined in the "auth-sources" variable
+             (smtpmail-smtp-server  . "noradrenaline.atomicl.net")
+             (smtpmail-smtp-service . 587)
+             (smtpmail-stream-type  . ssl)
+             (mu4e-drafts-folder  . "/vselvarajah@atomicl.net/Draft")
+             (mu4e-sent-folder    . "/vselvarajah@atomicl.net/Sent")
+             (mu4e-trash-folder   . "/vselvarajah@atomicl.net/Trash")
+             (mu4e-maildir-shortcuts . (("/vselvarajah@atomicl.net/Inbox"         . ?i)
+                                        ("/vselvarajah@atomicl.net/Sent"          . ?s)
+                                        ("/vselvarajah@atomicl.net/Trash"         . ?t)
+                                        ("/vselvarajah@atomicl.net/Draft"         . ?d)))
+             )))
+#+end_src
+
 Finally, set some general Mu4e configuration and load the above mail provider configurations:
 #+begin_src emacs-lisp :results none
   (use-package mu4e
@@ -1399,12 +1425,14 @@ Finally, set some general Mu4e configuration and load the above mail provider co
     ;; Load mu4e context
     (load "~/.config/emacs/mails/mu4e-context-laposte.el")
     (load "~/.config/emacs/mails/mu4e-context-gmail.el")
-
+    (load "~/.config/emacs/mails/mu4e-context-atomicl.el")
+    
     (setq mu4e-contexts
           (list
            context-laposte
-           context-gmail))
-    
+           context-gmail
+           context-atomicl))
+
     (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
     ;; Keybinding
     (global-set-key (kbd "C-c m") 'mu4e)
