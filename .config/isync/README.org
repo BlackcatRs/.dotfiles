@@ -147,26 +147,34 @@ SyncState *
 Isync config for Atomicl IMAP server:
 #+begin_src org :tangle ./mbsyncrc
 ## Atomicl - vselvarajah@atomcil.net
-IMAPAccount gmail
+IMAPAccount imap-prim
 Host noradrenaline.atomicl.net
-User vselvarajah@atomcil.net
-PassCmd "/usr/bin/pass mail/ | head -n 1"
+User vselvarajah@atomicl.net
+PassCmd "/usr/bin/pass mail/atomicl-vselvarajah"
 TLSType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 
-IMAPStore atomicl-remote
-Account atomicl
+IMAPAccount imap-sec
+Host serotonin.atomicl.net
+User vselvarajah@atomicl.net
+PassCmd "/usr/bin/pass mail/atomicl-vselvarajah"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore atomicl-remote-prim
+Account imap-prim
+Account imap-sec
 
 MaildirStore atomicl-local
 Subfolders Verbatim
 Path ~/.local/share/mail/vselvarajah@atomcil.net/
 Inbox ~/.local/share/mail/vselvarajah@atomcil.net/Inbox
 
-Channel gmail
-Far :atomicl-remote:
+Channel atomicl
+Far :atomicl-remote-prim:
 Near :atomicl-local:
-Patterns * 
-Create Both
+Patterns *
+Create Near
 SyncState *
 #+end_src
 *NOTE: Be careful of how you manage whitespace between lines in this file, the spaces define groupings!*
