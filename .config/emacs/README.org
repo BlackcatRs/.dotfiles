@@ -1388,7 +1388,7 @@ Configuration for the Atomicl mail provider:
      :match-func
      (lambda (msg)
        (when msg
-         (string-prefix-p "/vselvarajah@atomicl.net" (mu4e-message-field msg :maildir))))
+         (string-prefix-p "/atomicl.net/primary/vselvarajah@atomicl.net" (mu4e-message-field msg :maildir))))
      :vars '((user-mail-address   . "vselvarajah@atomicl.net")
              (mu4e-compose-signature . "Vithurshan SELVARAJAH\n* Mon site web – www.atomicl.net\n* LinkedIn – www.linkedin.com/in/vithurshan-selvarajah\n* RSS Feed - www.atomicl.net/index.xml")
              ;; The SMTP password will be retrieved from the file
@@ -1396,13 +1396,13 @@ Configuration for the Atomicl mail provider:
              (smtpmail-smtp-server  . "noradrenaline.atomicl.net")
              (smtpmail-smtp-service . 587)
              (smtpmail-stream-type  . ssl)
-             (mu4e-drafts-folder  . "/vselvarajah@atomicl.net/Draft")
-             (mu4e-sent-folder    . "/vselvarajah@atomicl.net/Sent")
-             (mu4e-trash-folder   . "/vselvarajah@atomicl.net/Trash")
-             (mu4e-maildir-shortcuts . (("/vselvarajah@atomicl.net/Inbox"         . ?i)
-                                        ("/vselvarajah@atomicl.net/Sent"          . ?s)
-                                        ("/vselvarajah@atomicl.net/Trash"         . ?t)
-                                        ("/vselvarajah@atomicl.net/Draft"         . ?d)))
+             (mu4e-drafts-folder  . "/atomicl.net/primary/vselvarajah@atomicl.net/Draft")
+             (mu4e-sent-folder    . "/atomicl.net/primary/vselvarajah@atomicl.net/Sent")
+             (mu4e-trash-folder   . "/atomicl.net/primary/vselvarajah@atomicl.net/Trash")
+             (mu4e-maildir-shortcuts . (("/atomicl.net/primary/vselvarajah@atomicl.net/Inbox"         . ?i)
+                                        ("/atomicl.net/primary/vselvarajah@atomicl.net/Sent"          . ?s)
+                                        ("/atomicl.net/primary/vselvarajah@atomicl.net/Trash"         . ?t)
+                                        ("/atomicl.net/primary/vselvarajah@atomicl.net/Draft"         . ?d)))
              )))
 #+end_src
 
@@ -1493,7 +1493,7 @@ Finally, set some general Mu4e configuration and load the above mail provider co
 
     ;; Bookmarks
     (setq mu4e-bookmarks
-          '((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR m:/vselvarajah@atomicl.net/Inbox" :key ?i)
+          '((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox OR m:/atomicl.net/secondary/vselvarajah@atomicl.net/Inbox" :key ?i)
             (:name "Sent Items" :query "m:/vithurshan@laposte.net/Sent\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Messages\\ envoy&AOk-s OR m:/vselvarajah@atomicl.net/Sent" :key ?s)
             (:name "Deleted Mails" :query "m:/vithurshan@laposte.net/Deleted\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille OR m:/vselvarajah@atomicl.net/Trash" :key ?t)
             (:name "Draft Mails" :query "m:/vithurshan@laposte.net/DRAFT OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons OR m:/vselvarajah@atomicl.net/Draft" :key ?d)
