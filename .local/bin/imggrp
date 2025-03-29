@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+readonly ACTION="$(dirname $0)/findimagedupes/action.sh"
+readonly IMG_DIR="${1}"
+
+# Help Menu
+usage() {
+    cat <<EOF
+Usage: $0 <directory>
+
+This script organizes image files in the specified directory by date and hour,
+and then removes extremely similar duplicate images using findimagedupes.
+
+Options:
+  -h, --help      Display this help message and exit.
+
+Supported image formats: JPG, JPEG, PNG
+
+After execution, a log of duplicate image removal actions will be saved in:
+  /tmp/dupelogs
+EOF
+}
+
+# Check if help flag is provided
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    usage
+    exit 0
+fi
+
+# Check if directory is provided
+if [[ -z "$IMG_DIR" ]]; then
+    echo "Error: No directory provided."
+    usage
+    exit 1
+fi
+
+exiftool -d %Y-%m-%d_%H%M%S%%c.%%e "-FileName<CreateDate" ${IMG_DIR} -r
+
+# Find all image files (modify extensions as needed)
+find "$IMG_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) | while read file; do
+    # Extract date and hour from filename (assumes format YYYY-MM-DD_HHMMSS.ext)
+    filename=$(basename "$file")
+    date_part="${filename:0:10}"   # Extract YYYY-MM-DD
+    hour_part="${filename:11:2}"   # Extract HH
+
+    # Create target directory structure: YYYY-MM-DD/HH/
+    target_dir="$IMG_DIR/$date_part/"
+    # target_dir="$IMG_DIR/$date_part/hour_part"
+    mkdir -p "$target_dir"
+
+    # Move the file into the appropriate folder
+    mv "$file" "$target_dir/"
+    
+    echo "Moved: $file -> $target_dir/"
+done
+
+echo "Organizing complete!"
+
+# Delete extremely similar images
+findimagedupes --recurse --fingerprints=/tmp/fingerprints \
+               --no-compare ${IMG_DIR}
+
+# Decrease the threshold value if you do not want precise matching
+findimagedupes --recurse --fingerprints=/tmp/fingerprints --prune \
+               --threshold=100% \
+               --include-file=${ACTION} ${IMG_DIR} > /tmp/dupelogs
