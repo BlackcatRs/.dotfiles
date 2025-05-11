@@ -212,7 +212,7 @@ md2org () {
 
 # Convert PDF file to img
 # pdftoppm 20250503093216231_P17.pdf cr -png
-v-pdftoimg() {
+pdftoimg() {
     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
 	echo Usage :
 	echo "v-pdftoimg <file.pdf> <output_file> -png"

@@ -44,6 +44,40 @@ Finally, execute the script as root:
 - =pdftk= - Extract pages from PDF files
 - =zbarimg= - Scan and decode bar codes from image file.
 
+*** TODO Convert text img to pdf
+#+begin_src shell
+  sudo pacman -S tesseract tesseract-data-eng imagemagick poppler
+#+end_src
+
+**** Method 1: Best and Easiest – Using ocrmypdf
+If your image is a JPG, PNG, or even an image-only PDF, run:
+#+begin_src shell
+  ocrmypdf input.jpg output.pdf
+#+end_src
+
+This:
+Converts the image to PDF
+Runs OCR on it
+Embeds the text layer into the PDF (searchable/selectable)
+
+Add ~-l~ lang (like ~-l eng~ for English or ~-l ita~ for Italian) to specify language.
+
+**** Method 2: Manual Tesseract + Image2PDF (More Control)
+If you prefer doing it manually:
+
+Run OCR and produce a PDF:
+#+begin_src shell
+tesseract input.jpg output pdf
+#+end_src
+
+The output will be output.pdf with selectable text.
+
+You can also generate just the text with:
+#+begin_src shell
+  tesseract input.jpg stdout
+#+end_src
+
+
 ** Audio Configuration
 The Arch sound system is organized into different layers:
 1. Drivers and interface – Hardware support and control, providing device drivers for audio hardware.
