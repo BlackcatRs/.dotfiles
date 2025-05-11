@@ -49,6 +49,7 @@
   - [[#prerequisites][Prerequisites]]
   - [[#org-roam-config][Org-roam config]]
   - [[#key-bindings-1][Key bindings]]
+  - [[#org-roam-ui][Org-roam-ui]]
   - [[#references][References]]
 - [[#cancelled-run-shell-command][CANCELLED Run Shell Command]]
 - [[#compile-latex-file][Compile LaTex File]]
@@ -1244,6 +1245,23 @@ We can also add one or more journal capture templates like the org capture templ
 - =C-c n d c= OR =org-roam-dailies-goto-date= View a note of a specific data.
 - =C-c n d b= OR =org-roam-dailies-goto-back-note= Go back to one existing note from the actual note.
 - =C-c n d f= OR =org-roam-dailies-goto-next-note= Go forward to one existing note from the actual note.
+
+** Org-roam-ui
+Org-Roam-UI is a frontend for exploring and interacting with your org-roam notes.
+
+#+begin_src emacs-lisp :results none
+  (use-package org-roam-ui
+    :after org-roam
+    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+    ;;         a hookable mode anymore, you're advised to pick something yourself
+    ;;         if you don't care about startup time, use
+    ;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
 
 ** References
 This section is inspired by these [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oN3x3XaZQ-AXFKv52LZzjqD][videos]].
