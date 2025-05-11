@@ -210,6 +210,16 @@ md2org () {
     /usr/bin/pandoc -f markdown -t org -o ${2} ${1};
 }
 
+# Convert PDF file to img
+# pdftoppm 20250503093216231_P17.pdf cr -png
+v-pdftoimg() {
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+	echo Usage :
+	echo "v-pdftoimg <file.pdf> <output_file> -png"
+	\pdftoppm "${1}" "${2}" "-${3}"
+	return 1
+    fi    
+}
 
 # STARSHIP PROMPT
 eval "$(starship init bash)"
