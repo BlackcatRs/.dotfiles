@@ -216,9 +216,10 @@ v-pdftoimg() {
     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
 	echo Usage :
 	echo "v-pdftoimg <file.pdf> <output_file> -png"
-	\pdftoppm "${1}" "${2}" "-${3}"
 	return 1
-    fi    
+    fi
+    
+    \pdftoppm "${1}" "${2}" "-${3}"
 }
 
 # STARSHIP PROMPT
