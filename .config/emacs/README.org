@@ -42,6 +42,7 @@
   - [[#push-notification][Push notification]]
   - [[#org-file-to-markdown][Org file to Markdown]]
   - [[#org-mode-for-hugo][Org-mode for Hugo]]
+  - [[#code-blocks-evaluation][Code Blocks Evaluation]]
 - [[#spell-check-and-correction][Spell check and correction]]
 - [[#eshell][Eshell]]
   - [[#keybinding-to-clear-eshell-buffer][Keybinding to clear eshell buffer]]
@@ -1045,6 +1046,17 @@ The standard image syntax in Org mode works fine and Hugo will parse the usual m
   #+attr_html: alt: Alternative text title: Image Title :width 800
   #+caption: Caption text.
   [[/images/file-path.png]]
+#+end_src
+
+** Code Blocks Evaluation
+By default, Emacs enables only the evaluation of Emacs-lisp code blocks, but many other languages ​​are supported. To enable (or disable) other languages, you can customize the =org-babel-load-languages= variable.
+
+Here is an example to enable calc and the Python language:
+#+begin_src emacs-lisp :results none
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((calc . t)
+     (python . t)))
 #+end_src
 
 * Spell check and correction
