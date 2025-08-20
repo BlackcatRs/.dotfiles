@@ -39,11 +39,10 @@ Finally, execute the script as root:
 - ~extract~ command (defined in =.bashrc=) extracts pages from a given PDF files.
 - The script [[file:.local/bin/shortcuts][shortcuts]] will generate a file =$HOME/.config/shell/shortcutrc= (sourced by =.bashrc=) with aliases based on [[file:.config/shell/bm-files][bm-files]] and [[file:.config/shell/bm-files][bm-dirs]] files. This allows to use only one or some letters to move between folder or open a file.
 
-** Program I Utilize
+** Program I Utilize [0/1]
 - =Pandoc= - A universal document converter.
 - =pdftk= - Extract pages from PDF files
 - =zbarimg= - Scan and decode bar codes from image file.
-
 *** TODO Convert text img to pdf
 #+begin_src shell
   sudo pacman -S tesseract tesseract-data-eng imagemagick poppler
