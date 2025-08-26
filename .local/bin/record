@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Screen + Audio Recording Script for Arch Linux (i3, ffmpeg)
+# Records: Screen + System Audio (Google Meet) + Microphone
+# Output: ~/video_<timestamp>.mkv
+#
+
+### 1. Check which audio server is running (PipeWire or PulseAudio)
+# pactl info | grep "Server Name"
+
+### 2. List all audio sources (system audio + mic)
+# pactl list sources short
+# Example output:
+# 57  alsa_output.pci-0000_00_1f.3.analog-stereo.monitor   PipeWire ...
+# 58  alsa_input.pci-0000_00_1f.3.analog-stereo            PipeWire ...
+
+### 3. Test microphone (5 seconds)
+# ffmpeg -f pulse -i alsa_input.pci-0000_00_1f.3.analog-stereo -t 5 test-mic.wav
+# aplay test-mic.wav
+
+### 4. Test system audio (5 seconds)
+# ffmpeg -f pulse -i alsa_output.pci-0000_00_1f.3.analog-stereo.monitor -t 5 test-sound.wav
+# aplay test-sound.wav
+
+### 5. Full recording command
+# Captures:
+# - Full screen with x11grab
+# - System audio (monitor)
+# - Microphone input
+# - Applies noise reduction only to mic
+# - Merges mic + system audio into one track
+# - Saves as H.264 video + AAC audio
+
+# Generic command to record at your screen dimensions
+# ffmpeg -f x11grab -s "$(xdpyinfo | awk '/dimensions/{print $2}')" -i :0.0 \
+    # 	   -f alsa -i default \
+    # 	   ${_OUTPUT}
+
+[ ! -f ~/.local/etc/record/config ] && {
+    echo "File ~/local/etc/record/config not exist" ; exit 1; }
+source ~/.local/etc/record/config
+
+set -o errexit   # exit on first error (optional)
+set -o errtrace  # make trap inherit inside functions
+
+record() {
+    _OUTPUT="$HOME/video_$(date '+%Y-%m-%d_%H-%M-%S').mkv"
+
+    ffmpeg \
+	-f x11grab -s "$(xdpyinfo | awk '/dimensions/{print $2}')" -r 30 -i ${SCREEN} \
+	-f pulse -i ${OUTPUT_AUDIO} \
+	-f pulse -i ${INPUT_AUDIO} \
+	-filter_complex "[1:a]afftdn=nf=-75,aformat=channel_layouts=stereo[mon]; \
+                   [2:a]afftdn=nf=-75,aformat=channel_layouts=mono[mic]; \
+                   [mon][mic]amix=inputs=2:normalize=1[aout]" \
+	-map 0:v -c:v h264 -qp 0 \
+	-map "[aout]" -c:a aac \
+	"${_OUTPUT}"
+
+    echo $! > /tmp/recpid
+    notify-send "🔴 Recording" "Start screen recording"
+    polybar-msg hook recorder 1 >/dev/null
+}
+
+end() {
+    kill -15 "$(cat /tmp/recpid)" "$(cat /tmp/audpid)" && rm -f /tmp/recpid /tmp/audpid
+    notify-send "🔴 Recording" "Stop screen recording"
+    polybar-msg hook recorder 0 >/dev/null
+}
+
+# If the recording pid exists, end recording. If not, start recording
+trap 'echo "Error detected at line $LINENO"; ([[ -f /tmp/recpid ]] && end && exit 1)' ERR
+([[ -f /tmp/recpid ]] && end && exit 0) || record
