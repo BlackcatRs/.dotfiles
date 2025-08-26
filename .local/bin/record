@@ -45,6 +45,7 @@ set -o errtrace  # make trap inherit inside functions
 
 record() {
     _OUTPUT="$HOME/video_$(date '+%Y-%m-%d_%H-%M-%S').mkv"
+    _LOG_FILE="/tmp/recorder.log"
 
     ffmpeg \
 	-f x11grab -s "$(xdpyinfo | awk '/dimensions/{print $2}')" -r 30 -i ${SCREEN} \
@@ -55,17 +56,18 @@ record() {
                    [mon][mic]amix=inputs=2:normalize=1[aout]" \
 	-map 0:v -c:v h264 -qp 0 \
 	-map "[aout]" -c:a aac \
-	"${_OUTPUT}"
+	"${_OUTPUT}" > ${_LOG_FILE} 2>&1 &
 
     echo $! > /tmp/recpid
     notify-send "🔴 Recording" "Start screen recording"
-    polybar-msg hook recorder 1 >/dev/null
+    polybar-msg  action recorder hook 1 >/dev/null
 }
 
 end() {
-    kill -15 "$(cat /tmp/recpid)" "$(cat /tmp/audpid)" && rm -f /tmp/recpid /tmp/audpid
+    kill -15 "$(cat /tmp/recpid)" && rm -f /tmp/recpid
+    # kill -15 "$(cat /tmp/audpid)" && rm -f /tmp/audpid
     notify-send "🔴 Recording" "Stop screen recording"
-    polybar-msg hook recorder 0 >/dev/null
+    polybar-msg  action recorder hook 0 >/dev/null
 }
 
 # If the recording pid exists, end recording. If not, start recording
