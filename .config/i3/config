@@ -216,5 +216,8 @@ mode "$VAPPS" {
 # Lauch Powermenu
 bindsym $mod+Shift+d exec "~/.local/bin/powermenu"
 
+# Screen lock
+bindsym $mod+x exec "/usr/bin/i3lock -i /home/vts/.dotfiles/.local/share/wallpaper/lock.png"
+
 # Start the Polybar
 exec_always ~/.config/polybar/launch.sh &
