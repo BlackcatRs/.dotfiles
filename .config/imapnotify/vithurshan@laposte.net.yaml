@@ -1,16 +1,14 @@
 configurations:
-    -
-        host: imap.laposte.net
-        port: 993
-        tls: true
-        tlsOptions:
-            rejectUnauthorized: false
-            starttls: true
-        username: 'vithurshan@laposte.net'
-        passwordCmd: '/usr/bin/pass mail/laposte | head -n1'
-        xoAuth2: false
-        boxes:
-            -
-                mailbox: INBOX
-                onNewMail: '/usr/bin/mbsync -c ~/.config/isync/mbsyncrc laposte'
-                onNewMailPost: SKIP
+  - host: imap.laposte.net
+    port: 993
+    tls: true
+    tlsOptions:
+      starttls: false
+      rejectUnauthorized: true
+    username: 'vithurshan@laposte.net'
+    passwordCmd: '/usr/bin/pass mail/laposte | head -n1'
+    xoAuth2: false
+    boxes:
+      - mailbox: INBOX
+        onNewMail: '/usr/bin/mbsync -c ~/.config/isync/mbsyncrc laposte'
+        onNewMailPost: SKIP
