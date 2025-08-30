@@ -1191,7 +1191,13 @@ Org Roam v2 package uses a customized build of SQLite database, so Org Roam need
           :config
           (require 'org-roam-dailies) ;; Ensure the keymap is available
           (org-roam-db-autosync-mode)
-          (setq org-roam-dailies-directory "Journal/"))))
+          (setq org-roam-dailies-directory "Journal/")
+
+  	;; Ignore Org roam dalies from Org roam UI
+  	(setq org-roam-db-node-include-function
+  	      (lambda ()
+  		(not (string-match-p "Journal/" (buffer-file-name)))))
+  	)))
 #+end_src
 
 *** Org Roam Capture Template
