@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Author: VTS
 # Website: www.atomicl.net
 # This script is a Biff-like script that monitors my local maildir for
@@ -9,75 +7,88 @@
 # (for more details, see ../../README.org). This script requires
 # certain dependencies to function, which can be downloaded using the
 # following command:
-# pip install PyGObject pyinotify
+# pip install PyGObject watchdog
+
+# Author: VTS
+# Website: www.atomicl.net
+# A Biff-like script that monitors local maildir for incoming new mails.
+# Dependencies:
+#   pip install PyGObject watchdog
 
 import os
-import pyinotify
+import sys
 from email.parser import Parser
+import email.header
 import gi
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import time
+
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify
-import email.header
-import sys
 
-# Set up desktop notification
+# Initialize desktop notifications
 Notify.init("Mail Notification")
 
+# Get mail directories from env variable "INBOX"
+# INBOX = os.environ["INBOX"]
+# MAILDIRS = [os.path.expanduser(d) for d in INBOX.split(";")]
 # Specify the mail directory to watch
-# MAILDIRS = [os.path.expanduser("~/Documents/Lab/Mail/new"),
-#            os.path.expanduser("~/Documents/Lab/Mail/tac")]
-
-# Retreive mail directory to watch from  env variable 'INBOX'
-INBOX = os.environ["INBOX"]
-MAILDIRS = []
-
-for directory in INBOX.split(";"):
-    MAILDIRS.append(os.path.expanduser(directory))
+MAILDIRS = [
+    os.path.expanduser("~/.local/share/mail/vithurshan@laposte.net/Inbox/new"),
+    os.path.expanduser("~/.local/share/mail/vithurshanselvarajah@gmail.com/Inbox/new"),
+]
 
 
-# Function to send desktop notification
 def send_notification(sender, subject):
     notification = Notify.Notification.new(f"{sender}", f"{subject}")
     notification.show()
 
 def text_decode(text, encoding):
-    if ((type(text) == str) and (encoding == None)):
+    if isinstance(text, str) and encoding is None:
         return text
-
-    if ((type(text) == bytes) and (encoding == None)):
+    if isinstance(text, bytes) and encoding is None:
         return text.decode()
-
     return text.decode(encoding)
-    #return text
 
+class MailHandler(FileSystemEventHandler):
+    def on_created(self, event):
+        if not event.is_directory:
+            print("[DEBUG] Created:", event.src_path)
+            process_email(event.src_path)
 
-# Define the EventHandler class for handling file events
-class EventHandler(pyinotify.ProcessEvent):
-    def process_IN_MOVED_TO(self, event):
-        # Parse sender and subject from the email file
-        print("mail-notif: ", event.pathname)
-        sys.stdout.flush()
-        with open(event.pathname, 'r') as file:
+    def on_moved(self, event):
+        if not event.is_directory:
+            print("[DEBUG] Moved:", event.dest_path)
+            process_email(event.dest_path)
+
+def process_email(path):
+    try:
+        with open(path, 'r') as file:
             email_content = file.read()
-            mail = Parser().parsestr(email_content)
-            sender = mail['From']
-            subject = mail['Subject']
-            encoding = None
+        mail = Parser().parsestr(email_content)
+        sender = mail['From']
+        subject = mail['Subject']
+        encoding = None
+        if subject is not None:
+            subject, encoding = email.header.decode_header(subject)[0]
+        send_notification(sender, text_decode(subject, encoding))
+    except Exception as e:
+        print("[ERROR] Failed to process mail:", e)
 
-            if mail['Subject'] != None:
-                subject, encoding = email.header.decode_header(subject)[0]
+# Set up observer
+observer = Observer()
+handler = MailHandler()
 
-            send_notification(sender, text_decode(subject, encoding))
-
-
-# Set up the watch manager and notifier
-wm = pyinotify.WatchManager()
-handler = EventHandler()
-notifier = pyinotify.Notifier(wm, handler)
-
-# Add the directories to watch for creation events
 for maildir in MAILDIRS:
-    wm.add_watch(maildir, pyinotify.IN_MOVED_TO)
+    observer.schedule(handler, path=maildir, recursive=False)
 
-# Start the notifier loop
-notifier.loop()
+observer.start()
+
+try:
+    while True:
+        time.sleep(3)  # sleep 3 second
+except KeyboardInterrupt:
+    observer.stop()
+
+observer.join()
