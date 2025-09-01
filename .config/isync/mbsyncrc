@@ -72,24 +72,24 @@ Create Near
 SyncState *
 
 ## 2nd Atomicl - vselvarajah@atomicl.net
-IMAPAccount imap-sec
-Host serotonin.atomicl.net
-User vselvarajah@atomicl.net
-PassCmd "/usr/bin/pass mail/atomicl-vselvarajah"
-TLSType IMAPS
-CertificateFile /etc/ssl/certs/ca-certificates.crt
+# IMAPAccount imap-sec
+# Host serotonin.atomicl.net
+# User vselvarajah@atomicl.net
+# PassCmd "/usr/bin/pass mail/atomicl-vselvarajah"
+# TLSType IMAPS
+# CertificateFile /etc/ssl/certs/ca-certificates.crt
 
-IMAPStore atomicl-sec-remote
-Account imap-sec
+# IMAPStore atomicl-sec-remote
+# Account imap-sec
 
-MaildirStore atomicl-sec-local
-Subfolders Verbatim
-Path ~/.local/share/mail/atomicl.net/secondary/vselvarajah@atomicl.net/
-Inbox ~/.local/share/mail/atomicl.net/secondary/vselvarajah@atomicl.net/Inbox
+# MaildirStore atomicl-sec-local
+# Subfolders Verbatim
+# Path ~/.local/share/mail/atomicl.net/secondary/vselvarajah@atomicl.net/
+# Inbox ~/.local/share/mail/atomicl.net/secondary/vselvarajah@atomicl.net/Inbox
 
-Channel atomicl-sec
-Far :atomicl-sec-remote:
-Near :atomicl-sec-local:
-Patterns *
-Create Near
-SyncState *
+# Channel atomicl-sec
+# Far :atomicl-sec-remote:
+# Near :atomicl-sec-local:
+# Patterns *
+# Create Near
+# SyncState *
