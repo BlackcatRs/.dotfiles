@@ -1431,7 +1431,7 @@ Configuration for the Atomicl mail provider:
              ;; defined in the "auth-sources" variable
              (smtpmail-smtp-server  . "noradrenaline.atomicl.net")
              (smtpmail-smtp-service . 587)
-             (smtpmail-stream-type  . ssl)
+  	   (smtpmail-stream-type  . starttls)
              (mu4e-drafts-folder  . "/atomicl.net/primary/vselvarajah@atomicl.net/Draft")
              (mu4e-sent-folder    . "/atomicl.net/primary/vselvarajah@atomicl.net/Sent")
              (mu4e-trash-folder   . "/atomicl.net/primary/vselvarajah@atomicl.net/Trash")
