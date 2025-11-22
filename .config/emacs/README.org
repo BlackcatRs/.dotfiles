@@ -1432,13 +1432,13 @@ Configuration for the Atomicl mail provider:
              (smtpmail-smtp-server  . "noradrenaline.atomicl.net")
              (smtpmail-smtp-service . 587)
   	   (smtpmail-stream-type  . starttls)
-             (mu4e-drafts-folder  . "/atomicl.net/primary/vselvarajah@atomicl.net/Draft")
+             (mu4e-drafts-folder  . "/atomicl.net/primary/vselvarajah@atomicl.net/Drafts")
              (mu4e-sent-folder    . "/atomicl.net/primary/vselvarajah@atomicl.net/Sent")
              (mu4e-trash-folder   . "/atomicl.net/primary/vselvarajah@atomicl.net/Trash")
              (mu4e-maildir-shortcuts . (("/atomicl.net/primary/vselvarajah@atomicl.net/Inbox"         . ?i)
                                         ("/atomicl.net/primary/vselvarajah@atomicl.net/Sent"          . ?s)
                                         ("/atomicl.net/primary/vselvarajah@atomicl.net/Trash"         . ?t)
-                                        ("/atomicl.net/primary/vselvarajah@atomicl.net/Draft"         . ?d)))
+                                        ("/atomicl.net/primary/vselvarajah@atomicl.net/Drafts"         . ?d)))
              )))
 #+end_src
 
@@ -1529,12 +1529,12 @@ Finally, set some general Mu4e configuration and load the above mail provider co
 
     ;; Bookmarks
     (setq mu4e-bookmarks
-          '((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox OR m:/atomicl.net/secondary/vselvarajah@atomicl.net/Inbox" :key ?i)
-            (:name "Sent Items" :query "m:/vithurshan@laposte.net/Sent\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Messages\\ envoy&AOk-s OR m:/vselvarajah@atomicl.net/Sent" :key ?s)
-            (:name "Deleted Mails" :query "m:/vithurshan@laposte.net/Deleted\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille OR m:/vselvarajah@atomicl.net/Trash" :key ?t)
-            (:name "Draft Mails" :query "m:/vithurshan@laposte.net/DRAFT OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons OR m:/vselvarajah@atomicl.net/Draft" :key ?d)
-            (:name "Today's messages" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR OR m:/vselvarajah@atomicl.net/Inbox) AND date:today..now" :key ?n)
-            (:name "Last 7 days" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR OR m:/vselvarajah@atomicl.net/Inbox) AND date:7d..now" :hide-unread t :key ?w)
+  	'((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox OR m:/atomicl.net/secondary/vselvarajah@atomicl.net/Inbox" :key ?i)
+            (:name "Sent Items" :query "m:/vithurshan@laposte.net/Sent\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Messages\\ envoy&AOk-s OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Sent" :key ?s)
+            (:name "Deleted Mails" :query "m:/vithurshan@laposte.net/Deleted\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Trash" :key ?t)
+            (:name "Draft Mails" :query "m:/vithurshan@laposte.net/DRAFT OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Drafts" :key ?d)
+            (:name "Today's messages" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox) AND date:today..now" :key ?n)
+            (:name "Last 7 days" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox) AND date:7d..now" :hide-unread t :key ?w)
             (:name "Messages with images" :query "mime:image/*" :key ?p)))
 
     ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
