@@ -67,7 +67,7 @@ Inbox ~/.local/share/mail/atomicl.net/primary/vselvarajah@atomicl.net/Inbox
 Channel atomicl-prim
 Far :atomicl-prim-remote:
 Near :atomicl-prim-local:
-Patterns *
+Patterns * "!Trash"
 Create Near
 SyncState *
 
