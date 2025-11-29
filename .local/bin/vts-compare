@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+import os
+import argparse
+
+def compare_folders(folder1, folder2):
+    missing = []
+
+    for root, dirs, files in os.walk(folder1):
+        # Build relative path inside folder1
+        rel_path = os.path.relpath(root, folder1)
+
+        # Compare directories
+        for d in dirs:
+            path2 = os.path.join(folder2, rel_path, d)
+            if not os.path.exists(path2):
+                missing.append(os.path.join(rel_path, d) + "/")
+
+        # Compare files
+        for f in files:
+            path2 = os.path.join(folder2, rel_path, f)
+            if not os.path.exists(path2):
+                missing.append(os.path.join(rel_path, f))
+
+    return missing
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Compare two folders and list files/folders missing in folder2"
+    )
+    parser.add_argument("folder1", help="Path to the up-to-date folder (source)")
+    parser.add_argument("folder2", help="Path to the folder to check (target)")
+
+    args = parser.parse_args()
+    folder1 = args.folder1
+    folder2 = args.folder2
+
+    missing_items = compare_folders(folder1, folder2)
+
+    print("\n=== Missing files/folders in folder2 ===")
+    if missing_items:
+        for item in missing_items:
+            print(item)
+    else:
+        print("Nothing missing. Folders match!")
