@@ -71,7 +71,7 @@ up () {
 }
 
 # Create Bootable USB Drive Linux
-rufus () {
+vts-rufus () {
     # Return error if no args is provide 
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo Usage :
@@ -87,7 +87,7 @@ rufus () {
 }
 
 # Start already installed virtualbox vm
-vm () {
+vts-vm () {
     vm_name="$1"
     vboxmanage startvm $vm_name --type headless
 }
@@ -101,13 +101,13 @@ else
 fi
 
 # Backup a file
-bak () {
+vts-bak () {
     file_name="$1"
     cp "$file_name" "$1.bak"
 }
 
 # Replace spaces in filename when downloading with wget
-get () {
+vts-get () {
     # Return error if no args is provide 
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo "Usage :"
@@ -121,7 +121,7 @@ get () {
 
 # Compress PDF files using 'ghostscript' 'poppler-utils' and
 # 'imagemagick'
-reduce () {
+vts-reduce () {
     # Return error if no args is provide 
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo '[-] Usage :'
@@ -178,7 +178,7 @@ reduce () {
 }
 
 # Extract pages from a PDF file
-extract () {
+vts-extract () {
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo Usage :
 	echo "[-] extract <full_file.pdf> <page_number>"
@@ -200,7 +200,7 @@ extract () {
 }
 
 # Convert MD to ORG file
-md2org () {
+vts-md2org () {
     if [ -z "$1" ] || [ -z "$2" ]; then
 	echo Usage :
 	echo "md2org <input_file.md> <output_file.org>"
@@ -212,7 +212,7 @@ md2org () {
 
 # Convert PDF file to img
 # pdftoppm 20250503093216231_P17.pdf cr -png
-pdftoimg() {
+vts-pdftoimg() {
     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
 	echo Usage :
 	echo "v-pdftoimg <file.pdf> <output_file> -png"
