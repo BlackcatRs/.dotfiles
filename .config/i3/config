@@ -205,7 +205,7 @@ mode "$VAPPS" {
      bindsym c exec "/usr/bin/rofi -show calc -no-show-match -no-sort"; mode "default"
      bindsym t exec "/usr/bin/emacsclient -c -a /usr/bin/emacs"; mode "default"
      bindsym e exec "/usr/bin/rofi -show emoji -emoji-mode insert"; mode "default"
-     bindsym p exec "/usr/bin/passmenu"; mode "default"
+     bindsym p exec "/usr/bin/passmenu -i"; mode "default"
      bindsym m exec "~/.local/bin/i3/chromium-profile"; mode "default"
 
      # Bindings for switching back to the default mode.
