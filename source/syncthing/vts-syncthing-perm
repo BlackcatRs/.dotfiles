@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Author       : VTS
+# Email        : vselvarajah@atomicl.net
+# Date         : 2025-12-20
+# Version      : 1.0
+# Description  : Monitors a directory in real-time and automatically
+# sets ownership and permissions for new or modified files and
+# directories.
+# Dependencies : inotify-tools
+
+USER="syncthing"
+GROUP="syncthing"
+DIR_TO_WATCH="/home/syncthing"
+# DIR_TO_WATCH="/tmp/syncthing"
+
+while IFS= read -r path; do
+    echo "$path"
+    chown "${USER}:${GROUP}" "$path"
+    [[ -d "$path" ]] && chmod 770 "$path" || chmod 660 "$path"
+done < <(
+    inotifywait -m -r \
+		-e close_write -e moved_to -e create \
+		--format '%w%f' \
+		"${DIR_TO_WATCH}"
+)

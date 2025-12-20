@@ -1,0 +1,12 @@
+[Unit]
+Description=Syncthing permission setup
+After=network.target home-syncthing.mount
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/vts-syncthing-perm
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
