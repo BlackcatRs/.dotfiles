@@ -21,7 +21,7 @@ After execution, a log of duplicate image removal actions will be saved in:
 EOF
 }
 
-# Check if help flag is provided
+# Help menu
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     usage
     exit 0
@@ -34,9 +34,11 @@ if [[ -z "$IMG_DIR" ]]; then
     exit 1
 fi
 
+# Rename image based on creation date stored in metadata
 exiftool -d %Y-%m-%d_%H%M%S%%c.%%e "-FileName<CreateDate" ${IMG_DIR} -r
 
-# Find all image files (modify extensions as needed)
+
+# Move images into dedicated folder based on image creation date
 find "$IMG_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) | while read file; do
     # Extract date and hour from filename (assumes format YYYY-MM-DD_HHMMSS.ext)
     filename=$(basename "$file")
@@ -45,16 +47,14 @@ find "$IMG_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \
 
     # Create target directory structure: YYYY-MM-DD/HH/
     target_dir="$IMG_DIR/$date_part/"
-    # target_dir="$IMG_DIR/$date_part/hour_part"
     mkdir -p "$target_dir"
 
     # Move the file into the appropriate folder
     mv "$file" "$target_dir/"
-    
     echo "Moved: $file -> $target_dir/"
 done
-
 echo "Organizing complete!"
+
 
 # Delete extremely similar images
 findimagedupes --recurse --fingerprints=/tmp/fingerprints \
