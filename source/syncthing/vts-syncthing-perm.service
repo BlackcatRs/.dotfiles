@@ -7,6 +7,9 @@ Type=simple
 ExecStart=/usr/local/bin/vts-syncthing-perm
 Restart=on-failure
 RestartSec=5s
+CPUWeight=20
+CPUQuota=60%
+IOWeight=20
 
 [Install]
 WantedBy=multi-user.target
