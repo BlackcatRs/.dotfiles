@@ -84,7 +84,7 @@ Deactivating default Emacs interface option:
   (tooltip-mode -1)           ; Disable tooltips
   (set-fringe-mode 10)        ; Give some breathing room
   (menu-bar-mode -1)          ; Disable the menu bar
-  (hl-line-mode)              ; Highlight cursor pointing line
+  (hl-line-mode -1)           ; Highlight cursor pointing line
   (show-paren-mode)	       ; Highlight opening and closing paren
 #+end_src
 
@@ -591,6 +591,20 @@ The =efs/all-mode-setup= function is inspired by the DRY principle which aims to
     ;; (forward-page) ;; Goto the bottom of the page
     ) 
 
+  ;; Sort by property in numeric asc order
+  (defun vts/org-sort-by-property ()
+    (interactive)
+    (setq property
+  	(completing-read "Property: "
+  			 (mapcar #'list (org-buffer-property-keys t))
+  			 nil t))
+    (org-sort-entries nil ?f
+                      (lambda ()
+                        (string-to-number (or (org-entry-get nil property) "0"))
+  		      ))
+    )
+
+
   (use-package org
     :hook ((org-mode . efs/org-mode-setup)
            (org-mode . efs/all-mode-setup))
@@ -601,7 +615,10 @@ The =efs/all-mode-setup= function is inspired by the DRY principle which aims to
           org-hide-emphasis-markers t)
     (efs/org-font-setup)
     
-    :bind (("C-c l" . org-store-link)))
+    :bind (
+  	   ("C-c l" . org-store-link)
+  	   ("C-c s" . vts/org-sort-by-property)
+  	   ))
 #+end_src
 
 Custom state that representing the flow order.
