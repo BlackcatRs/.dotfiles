@@ -58,6 +58,7 @@
   - [[#prerequisite][Prerequisite]]
   - [[#syncing-mails][Syncing Mails]]
   - [[#index-mailbox][Index mailbox]]
+  - [[#helper-functions][Helper Functions]]
   - [[#email-client][Email Client]]
   - [[#update-polybar-mail-counter][Update Polybar Mail Counter]]
   - [[#links-and-queries-to-mu4e-mails-in-org-mode-optional][Links and Queries to Mu4e Mails in Org-mode [Optional]]]
@@ -1375,6 +1376,37 @@ mu index
 
 *NOTE: You will need to use --my-address for every e-mail address you use in a multiple account setup.*
 
+** Helper Functions
+This is custom helper function to save all attachments in a mail : 
+#+begin_src emacs-lisp :results none
+  (defun vts/save-all-attachments ()
+    "Save ALL attachments of current message to `mu4e-attachment-dir'
+ without any prompt."
+    (interactive)
+    (let* ((parts (mu4e-view-mime-parts))
+           (attachments
+            (seq-filter (lambda (p) (plist-get p :attachment-like)) parts))
+           (dir (expand-file-name mu4e-attachment-dir)))
+
+      (unless attachments
+        (user-error "No attachments in this message"))
+
+      (unless (file-directory-p dir)
+        (make-directory dir t))
+
+      (seq-do
+       (lambda (part)
+         (let* ((fname (plist-get part :filename))
+                (handle (plist-get part :handle))
+                (target
+                 (funcall mu4e-uniquify-save-file-name-function
+                          (mu4e-join-paths dir fname))))
+           (when handle
+             (mm-save-part-to-file handle target)
+             (message "Saved: %s" target))))
+       attachments)))
+#+end_src
+
 ** Email Client
 =Mu4e= is an email client for Emacs, and it's considered the Emacs interface for the =mu= mail indexer. Here, I use the mail syncing program — ~isync~, which downloads emails from a remote Maildir folder to a local Maildir folder. Then, the =mu= indexer is used to index the emails. Finally, an Emacs mail client can read those emails.
 
@@ -1546,7 +1578,7 @@ Finally, set some general Mu4e configuration and load the above mail provider co
 
     ;; Bookmarks
     (setq mu4e-bookmarks
-  	'((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox OR m:/atomicl.net/secondary/vselvarajah@atomicl.net/Inbox" :key ?i)
+    	'((:name "All Inboxes" :query "maildir:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox OR m:/atomicl.net/secondary/vselvarajah@atomicl.net/Inbox" :key ?i)
             (:name "Sent Items" :query "m:/vithurshan@laposte.net/Sent\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Messages\\ envoy&AOk-s OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Sent" :key ?s)
             (:name "Deleted Mails" :query "m:/vithurshan@laposte.net/Deleted\\ Items OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Corbeille OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Trash" :key ?t)
             (:name "Draft Mails" :query "m:/vithurshan@laposte.net/DRAFT OR m:/vithurshanselvarajah@gmail.com/[Gmail]/Brouillons OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Drafts" :key ?d)
@@ -1554,6 +1586,11 @@ Finally, set some general Mu4e configuration and load the above mail provider co
             (:name "Last 7 days" :query "(m:/vithurshan@laposte.net/Inbox OR m:/vithurshanselvarajah@gmail.com/Inbox OR OR m:/atomicl.net/primary/vselvarajah@atomicl.net/Inbox) AND date:7d..now" :hide-unread t :key ?w)
             (:name "Messages with images" :query "mime:image/*" :key ?p)))
 
+
+    ;; Keybinding for saving attachments in message view
+    (with-eval-after-load 'mu4e-view
+      (define-key mu4e-view-mode-map (kbd "C-c e") #'vts/save-all-attachments))
+    
     ;; Start mu4e in the background when Emacs starts and periodically sync mail at the interval defined above
     ;; (mu4e t)
     )
