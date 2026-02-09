@@ -177,6 +177,32 @@ vts-reduce () {
     fi
 }
 
+vts-merge () {
+    if [ -z "${1}" ] || [ -z "${2}" ]; then
+	echo Usage :
+	echo "[-] ${FUNCNAME} <file1.pdf> <file2.pdf> [...] \
+<full_file.pdf>"
+	return 1
+    fi
+
+    local _F_INPUTS=("${@:1:$#-1}")  # all except last
+    local _F_OUTPUT="${!#}"          # last argument
+
+    pdftk "${_F_INPUTS[@]}" cat output "${_F_OUTPUT}"
+}
+
+# Split a PDF file into multiple files
+vts-split () {
+    if [ -z "${1}" ]; then
+	echo Usage :
+	echo "[-] ${FUNCNAME} <full_file.pdf>"
+	return 1
+    fi
+
+    local _FILE_TO_SPLIT="${1}"
+    pdftk "${_FILE_TO_SPLIT}" burst
+}
+
 # Extract pages from a PDF file
 vts-extract () {
     if [ -z "$1" ] || [ -z "$2" ]; then
