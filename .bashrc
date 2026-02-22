@@ -1,3 +1,4 @@
+
 #
 # ~/.bashrc is sourced when running interactive shell
 #
@@ -319,6 +320,7 @@ shopt -s histappend
 if [[ "$(tty)" = "/dev/tty1" ]]; then
     pgrep startx || startx 
 fi
+
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - bash)"
