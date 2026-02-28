@@ -1093,7 +1093,7 @@ Here is an example to enable calc and the Python language:
 (setq ispell-program-name "/usr/bin/aspell")
 
 ;; Set default language to spell 
-(setq ispell-local-dictionary "english")
+(setq ispell-local-dictionary "francais")
 
 ;; Quickly switch language by pressing F10 key.
 ;; Adapted from DiogoRamos' snippet on https://www.emacswiki.org/emacs/FlySpell#h5o-5
