@@ -103,8 +103,20 @@ fi
 
 # Backup a file
 vts-bak () {
-    file_name="$1"
-    cp "$file_name" "$1.bak"
+    local _FILE_NAME="$(readlink -f -- "$1")"
+    
+    if [[ -z "${_FILE_NAME}" ]]; then
+	echo "Usage :"
+	echo -e "\r ${FUNCNAME} <FILENAME>"
+	return 1
+    fi
+
+    local _DST_DIR="/.backup"
+    local _DST_FILE_NAME=$(basename "${_FILE_NAME}")
+    
+    sudo mkdir -p "${_DST_DIR}"
+    sudo cp "${_FILE_NAME}" \
+	 "${_DST_DIR}/$(date +%Y%m%d%H%M%S)_${_DST_FILE_NAME}"
 }
 
 # Replace spaces in filename when downloading with wget
@@ -247,6 +259,36 @@ vts-pdftoimg() {
     fi
     
     \pdftoppm "${1}" "${2}" "-${3}"
+}
+
+# Add watermark to sensitive documents
+# TODO - not finised yet
+vts-watermark() {
+    F_PDF="${1}"
+    WATERMARK="${2}"
+    CLEANED_PDF_FILE_NAME="clean.pdf"
+    WATERMARK_FONT_SIZE=72
+    WATERMARK_FONT_COLOR=gray
+    WATERMARK_FONT_ANGLE=60
+
+    exiftool -all= "${CLEANED_PDF_FILE_NAME}"
+    pdftoppm -png "${CLEANED_PDF_FILE_NAME}" page
+
+    for f in page-*.png; do
+	magick "${f}" \
+	       \( -size 1200x1600 xc:none \
+	       -gravity center \
+	       -pointsize ${WATERMARK_FONT_SIZE} \
+	       -fill ${WATERMARK_FONT_COLOR} \
+	       -annotate ${WATERMARK_FONT_ANGLE} "${WATERMARK}" \) \
+	       -compose dissolve -define compose:args=${WATERMARK_FONT_OPACITY} \
+	       -composite "wm-$f"
+    done
+
+    magick wm-page-*.png output.pdf
+
+    rm -f page-* wm-page-*
+
 }
 
 # STARSHIP PROMPT

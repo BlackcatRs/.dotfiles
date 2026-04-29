@@ -242,7 +242,7 @@ The files mentioned below can be deleted without any side effects, they are only
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
 - The script =mail-notif= notifies the user every time a new email is received. However, this can become annoying when a user receives a large number of emails. Therefore, the script has been archived into the =.local/bin/archive/= folder and replaced with a script that executes every X minutes."
 
-** FIXME [2/4]
+** FIXME [2/5]
 *** DONE Write a readme for Dotrice
 CLOSED: [2024-03-01 Fri 21:11]
 :LOGBOOK:
@@ -283,3 +283,5 @@ CLOSED: [2024-03-10 Sun 10:38]
 - State "DONE"       from "TODO"       [2024-03-10 Sun 10:38]
 - State "TODO"       from              [2024-03-01 Fri 21:16]
 :END:
+
+*** TODO Finish vts-watermark function
