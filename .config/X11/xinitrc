@@ -45,7 +45,18 @@ gpg-connect-agent updatestartuptty /bye &
 # Run notification daemon
 exec /usr/bin/dunst &
 
+export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_STYLE_OVERRIDE=kvantum
 
 # Run window manager dwm
-exec i3
+# exec i3
 
+# DISPLAY tells programs which X server (graphical display) to use
+export DISPLAY=:0
+# It tells programs where the X11 authentication file is.
+export XAUTHORITY=$HOME/.Xauthority
+# It takes your current shell variables: DISPLAY, XAUTHORITY
+# and injects them into your:
+systemctl --user import-environment DISPLAY XAUTHORITY
+
+exec dbus-run-session i3
