@@ -37,6 +37,7 @@ Notify.init("Mail Notification")
 MAILDIRS = [
     os.path.expanduser("~/.local/share/mail/vithurshan@laposte.net/Inbox/new"),
     os.path.expanduser("~/.local/share/mail/vithurshanselvarajah@gmail.com/Inbox/new"),
+    os.path.expanduser("~/.local/share/mail/atomicl.net/primary/vselvarajah@atomicl.net/Inbox/new")
 ]
 
 
