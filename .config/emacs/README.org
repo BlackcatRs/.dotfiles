@@ -1519,7 +1519,9 @@ Finally, set some general Mu4e configuration and load the above mail provider co
 
 
     ;; Refresh mail using isync every 10 minutes
-    (setq mu4e-update-interval (* 10 60))
+    ;; (setq mu4e-update-interval (* 10 60))
+    ;; I donn't want to sync remote maildir because it's delegate mbsync
+    (setq mu4e-update-interval nil)
     (setq mu4e-get-mail-command "/usr/bin/mbsync -Va -c ~/.config/isync/mbsyncrc")
     (setq mu4e-maildir "~/.local/share/mail")
 
