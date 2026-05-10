@@ -1,11 +1,29 @@
 #!/usr/bin/env bash
 
-MAILDIR="${XDG_DATA_HOME:-$HOME/.local/share}/mail/*/[Ii][Nn][Bb][Oo][Xx]/new"
+MAILBASE="${XDG_DATA_HOME:-$HOME/.local/share}/mail"
 
-while inotifywait -q -e moved_to,moved_from $MAILDIR > /dev/null; do
+# mapfile -d '' MAILDIRS = Split on null byte (\0) instead of
+# splitting on newline (\n) and store each lines as an array element
+# in array MAILDIRS because path may contain spaces. Ex :
+# '/home/vts/mail/my inbox/new'
+mapfile -d '' MAILDIRS < <(
+#                      ^ ^
+#                      | └─ <(...) runs command, exposes output as a virtual file
+#                      └─ < redirects that virtual file to stdin    
+    find "${MAILBASE}" -type d -iname inbox -exec test -d {}/new \; \
+	 -print0 | sed -z 's|$|/new|'
+    # test -d {}/new \; = check whether the '{}/new' exist and is a
+    # dir
+
+    # -print0 = Print the matched path, but terminated with a null
+    # byte \0 instead of a newline. Ex:
+    # /path/to/Inbox\0/path/to/Inbox\0
+
+    # Pipe the result of find to sed in order to appends '/new'
+)
+
+while inotifywait -q -e moved_to,moved_from "${MAILDIRS[@]}" > /dev/null; do
     echo "Updating Polybar mail count..."
     sleep 3
     [[ -f /usr/bin/polybar-msg ]] && polybar-msg action mail hook 0 > /dev/null 2>&1
 done
-
-
