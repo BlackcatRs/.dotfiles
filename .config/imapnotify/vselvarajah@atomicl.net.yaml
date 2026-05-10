@@ -1,0 +1,14 @@
+configurations:
+  - host: noradrenaline.atomicl.net
+    port: 993
+    tls: true
+    tlsOptions:
+      starttls: false
+      rejectUnauthorized: true
+    username: 'vselvarajah@atomicl.net'
+    passwordCmd: '/usr/bin/pass mail/atomicl-vselvarajah | head -n1'
+    xoAuth2: false
+    boxes:
+      - mailbox: INBOX
+        onNewMail: '/usr/bin/mbsync -c ~/.config/isync/mbsyncrc atomicl-prim'
+        onNewMailPost: SKIP
