@@ -1,5 +1,8 @@
-* Ranger
-** Basic Ranger shortcuts
+#+TITLE: Ranger
+#+DESCRIPTION: Ranger customization
+#+AUTHOR: VTS
+
+* Basic Ranger shortcuts
 These are the basic key binds in ranger, even outside of my configs. Note that they are mostly vim-based:
 -  =h/j/k/l=  -- Move left/down/up/right (where left moves up in the
   directory structure, right moves into a folder)
@@ -15,7 +18,7 @@ These are the basic key binds in ranger, even outside of my configs. Note that t
   -  =aa=  -- rename file appending before the extension
   -  =I=  -- rename file adding at the beginning
 
-** Shortcuts
+* Shortcuts
 As I say in the main [[file:~/.dotfiles/README.org][README]], there are automatically generated shortcuts using the script  [[file:~/.dotfiles/.local/bin/shortcuts][~/.local/bin/shortcuts]] for various programs, including ranger. The script uses the directories and files bookmarked in [[file:~/.dotfiles/.config/shell/bm-dirs][~/.config/shell/bm-dirs]] and [[file:~/.dotfiles/.config/shell/bm-files][~/.config/shell/bm-files]].
 
 For directory shortcuts, here are the "verbs":
@@ -32,7 +35,7 @@ These "verbs" take "nouns" or "arguments," like these:
 
 Press any "verb" followed by any "argument" to perform a folder operation. "gd" will cd to ~/Documents, for example. "mD" will move the selected file(s) to ~/Downloads. "tcf" will create a new tab in ~/.config, etc. etc.
 
-** TODO [Unknown binary 'atool'] - Many little additions!
+* TODO [Unknown binary 'atool'] - Many little additions!
 :LOGBOOK:
 - State "TODO"       from              [2023-10-21 sam. 11:11] \\
   Key =X= - Unable to extract ZIP file because of unknown binary ~atool~
@@ -86,3 +89,6 @@ Press any "verb" followed by any "argument" to perform a folder operation. "gd" 
 - Downloading:
   -  =ytv=  -- Download online video (paste in url) (requires youtube-dl)
   -  =yta=  -- Download audio of online video (paste in url) (requires youtube-dl)
+
+- Calculate file hash:
+  - Select the files, then press =:= and type =calculate_hash=

@@ -8,6 +8,13 @@
 from ranger.api.commands import *
 from ranger.core.loader import CommandLoader
 
+# Provides all hash algorithms (sha256, blake2b, etc.)
+import hashlib       
+# Creates temporary files safely
+import tempfile
+# a dict that auto-creates missing keys
+from collections import defaultdict
+
 # A simple command for demonstration purposes follows.
 #------------------------------------------------------------------------------
 
@@ -75,12 +82,17 @@ class fzf_select(Command):
         import subprocess
         if self.quantifier:
             # match only directories
-            command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
-            -o -type d -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
+            command = (
+                r"find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune"
+                r" -o -type d -print 2> /dev/null"
+                r" | sed 1d"
+                r" | cut -b3-"
+                r" | fzf +m"
+            )
         else:
             # match files and directories
-            command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
-            -o -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
+            command=r"find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune -o -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
+
         fzf = self.fm.execute_command(command, stdout=subprocess.PIPE)
         stdout, stderr = fzf.communicate()
         if fzf.returncode == 0:
@@ -131,11 +143,11 @@ class fzf_bring(Command):
         import shutil
         if self.quantifier:
             # match only directories
-            command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
+            command=r"find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
             -o -type d -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
         else:
             # match files and directories
-            command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
+            command=r"find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
             -o -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
         fzf = self.fm.execute_command(command, stdout=subprocess.PIPE)
         stdout, stderr = fzf.communicate()
@@ -206,3 +218,123 @@ class extracthere(Command):
         obj.signal_bind('after', refresh)
         self.fm.loader.add(obj)
 
+
+# The class name becomes the ranger command — you type :hash_selected
+# in ranger or bind it to a key
+class calculate_hash(Command):
+    """:hash_selected
+    Hash all selected files, show duplicates, and optionally delete them via fzf.
+    """
+
+    def execute(self):
+        # self.fm — the ranger file manager instance, gives access to
+        # everything
+        # self.fm.thistab — the currently active tab
+        # get_selection() — returns marked files, or just the file
+        # under cursor if nothing is marked
+        # if f.is_file — skips directories
+        # result is a plain list of file path strings
+        files = [f.path for f in self.fm.thistab.get_selection()
+                 if f.is_file]
+
+        # notify() shows a message in ranger's bottom bar
+        # bad=True makes it red
+        if not files:
+            self.fm.notify("No files selected!", bad=True)
+            return
+
+        # defaultdict(list) — a dict where every new key automatically starts
+        # as an empty list, so .append() never fails on a missing key
+        # after the loop, hashes looks like:
+        # {
+        #   "abc123...": ["file1.txt"],
+        #   "fff999...": ["file2.jpg", "file3.jpg"],  # duplicates share the same hash
+        # }
+        hashes = defaultdict(list)
+        for path in files:
+            digest = self._hash_file(path)
+            hashes[digest].append(path)
+
+
+        # Exit if no duplicate files
+        duplicates = {h: p for h, p in hashes.items() if len(p) > 1}
+        if not duplicates:
+            self.fm.notify("✓ No duplicates found.", bad=False)
+            return
+
+        # Build fzf input: only duplicate files, annotated with their
+        # hash
+        # lines = [
+        #     "[abc123def4]  /foo/a.txt",
+        #     "[abc123def4]  /bar/a.txt",
+        #     "[ghi789jkl0]  /a.jpg",
+        #     "[ghi789jkl0]  /b.jpg"
+        # ]
+        lines = []
+        for digest, paths in duplicates.items():
+            for p in paths:
+                short_hash = digest[:12]
+                lines.append(f"[{short_hash}]  {p}")
+
+        self._pick_and_delete(lines)
+        self.fm.reload_cwd()  # refresh ranger after deletion
+
+    def _hash_file(self, path, algo="sha256"):
+        h = hashlib.new(algo)
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(65536), b""):
+                h.update(chunk)
+        return h.hexdigest()
+
+    def _pick_and_delete(self, lines):
+        # join → list to string :
+        # "\n".join(["a", "b", "c"])  # "a\nb\nc"
+        input_text = "\n".join(lines)
+
+        with tempfile.NamedTemporaryFile("w", suffix=".txt",
+                                         delete=False) as tmp:
+            tmp.write(input_text)
+            tmp_path = tmp.name
+
+        # Path to file that contain selected files for deletion
+        out_path = tmp_path + ".selected"
+
+        # fzf: multi-select with Tab, header instructions, preview the path
+        fzf_cmd = (
+            f"cat {tmp_path} | fzf --multi "
+            f"--header='TAB to select duplicates to DELETE — ENTER to confirm — ESC to cancel' "
+            f"--prompt='Delete > ' "
+            f"> {out_path}"
+        )
+
+        self.fm.run(fzf_cmd)
+
+        # Read selected files and delete
+        if os.path.exists(out_path):
+            with open(out_path) as f:
+                selected = [line.strip() for line in f if line.strip()]
+
+            deleted = 0
+            for line in selected:
+                # Extract path after the "[hash]  " prefix
+                # Ex:
+                # line = "[abc123def4]  /foo/a.txt"
+
+                # split on "] " and the , 1 means split only once, so
+                # paths containing "] " won't break.
+                # line.split("]  ", 1)
+                # → ["[abc123def4", "/foo/a.txt"]
+
+                # line.split("]  ", 1)[-1]  # take the last element
+                # → "/foo/a.txt"
+                path = line.split("]  ", 1)[-1]
+                
+                if os.path.isfile(path):
+                    os.remove(path)
+                    deleted += 1
+
+            self.fm.notify(f"🗑 Deleted {deleted} file(s)." if deleted else "Nothing deleted.")
+
+        os.unlink(tmp_path)
+        if os.path.exists(out_path):
+            os.unlink(out_path)
