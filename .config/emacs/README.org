@@ -1530,6 +1530,8 @@ Finally, set some general Mu4e configuration and load the above mail provider co
     ;; Prompt for context when composing mail if a context hasn't been previously picked
     (setq mu4e-compose-context-policy 'ask-if-none)
 
+    ;; Disable thread view
+    (setq mu4e-headers-show-threads nil)
 
     ;; We can set custom actions that allow to use org capture template
     ;; without invoking the "org-capture" or
