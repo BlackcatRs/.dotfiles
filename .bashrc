@@ -1,4 +1,3 @@
-
 #
 # ~/.bashrc is sourced when running interactive shell
 #
@@ -271,7 +270,7 @@ vts-watermark() {
     WATERMARK_FONT_COLOR=gray
     WATERMARK_FONT_ANGLE=60
 
-    exiftool -all= "${CLEANED_PDF_FILE_NAME}"
+    exiftool -all= "${F_PDF}" "${CLEANED_PDF_FILE_NAME}"
     pdftoppm -png "${CLEANED_PDF_FILE_NAME}" page
 
     for f in page-*.png; do
@@ -334,7 +333,8 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 # The X keyboard extension, or XKB, defines the way keyboards codes are handled in X, and provides access to internal translation tables. It is the basic mechanism that allows using multiple keyboard layouts in X.
 # Keyboard key mapping is done by setting XKB layout using rules in file /etc/X11/xorg.conf.d/90-custom-kbd.conf
 
-# The bash_history file is used by recursive search when you press ctrl+r to search for commands entered in the past.
+# The bash_history file is used by recursive search when you press
+# ctrl+r to search for commands entered in the past.
 # ignore duplicate commands, ignore commands starting with a space in bash_history file
 # ignoreboth is doing ignorespace:ignoredups and that along with erasedups.
 export HISTCONTROL=ignoreboth:erasedups
@@ -356,12 +356,6 @@ HISTFILESIZE=2000
 # instead of overwriting (good for multiple connections) if
 # HISTFILESIZE value permits.
 shopt -s histappend
-
-
-# Start graphical server on user's current tty if not already running.
-if [[ "$(tty)" = "/dev/tty1" ]]; then
-    pgrep startx || startx 
-fi
 
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
