@@ -17,6 +17,7 @@
   - [[#helpful][Helpful]]
   - [[#visual-fill-column][Visual-fill-column]]
   - [[#rainbow-mode][Rainbow-mode]]
+  - [[#electric-pair-mode][Electric-pair-mode]]
 - [[#close-all-open-buffers][Close All Open Buffers]]
 - [[#key-bindings][Key bindings]]
   - [[#command-log-mode][Command-log-mode]]
@@ -315,6 +316,13 @@ Text alignment in the buffer:
 #+begin_src emacs-lisp :results none
   ;; Visualizing Color Codes
   (use-package rainbow-mode)
+#+end_src
+
+** Electric-pair-mode
+Add automatically closing parenthesis, brackets etc:
+#+begin_src emacs-lisp :results non
+  ;; Enable electric-pair-mode
+  (electric-pair-mode)
 #+end_src
 
 * Close All Open Buffers
