@@ -706,7 +706,8 @@ Refiling or moving unwanted item usually finished tasks to different place for a
 #+begin_src emacs-lisp :results none
   (setq org-refile-targets
         '((voc/archive :maxlevel . 1)
-          (voc/todo :maxlevel . 1)))
+          ;; (voc/todo :maxlevel . 1)
+  	))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -745,10 +746,10 @@ Last block of code will collect information from our various Org files where we 
         '(("c" "Unschedule Task" entry (file+headline voc/todo "Unscheduled Tasks")
            "* HOLD %?\nEntered on <%<%Y-%m-%d %H:%M>>\n" :empty-lines 1)
 
-          ("s" "Schedule Task" entry (file+headline voc/events "Scheduled Tasks")
+          ("s" "Schedule Task" entry (file voc/events)
            "* TODO %?\nSCHEDULED: %^T\n%U" :empty-lines 1)
 
-          ("d" "Deadline" entry (file+headline voc/events "Recursive Tasks")
+          ("d" "Deadline" entry (file+headline voc/events)
            "* TODO %? %(org-set-tags-command) \nDEADLINE: %^T" :empty-lines 1)
 
           ("l" "Unschedule Task + Reference" entry (file+headline voc/todo "Unscheduled Tasks")
