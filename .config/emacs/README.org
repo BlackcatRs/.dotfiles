@@ -3,6 +3,7 @@
 * Table of Contents :toc:
 - [[#requirements][Requirements]]
   - [[#fonts][Fonts]]
+- [[#emacs-lisp-file-local-variable-declaration][Emacs Lisp file-local variable declaration]]
 - [[#basic-ui-customization][Basic UI Customization]]
 - [[#font-configuration][Font Configuration]]
 - [[#package-configuration][Package Configuration]]
@@ -75,6 +76,12 @@
 First make sure that the =contrib= (for Debian) repository is enabled (see Debian [[https://wiki.debian.org/SourcesList#Component][docs]]) and then install ~fonts-firacode~ package  by executing:
 #+begin_src shell :tangle no
 sudo apt install fonts-firacode 
+#+end_src
+
+* Emacs Lisp file-local variable declaration
+Tell Emacs to use lexical binding when evaluating the code in that file, rather than the default dynamic binding (unless changed by other configuration).
+#+begin_src emacs-lisp :results none
+  ;;; -*- lexical-binding: t; -*-
 #+end_src
 
 * Basic UI Customization
@@ -209,7 +216,12 @@ A status bar at bottom:
 ** Doom-themes
 #+begin_src emacs-lisp :results none
   ;; Download doom themes
-  (use-package doom-themes)
+  ;; (use-package doom-themes)
+  ;; (load-theme 'doom-one t)
+  (use-package doom-themes :ensure t :defer t
+  :config
+  (setcdr (assoc 'gnus-group-news-low-empty doom-themes-base-faces)
+          '(:inherit 'gnus-group-mail-1-empty :weight 'normal)))
   (load-theme 'doom-one t)
 #+end_src
 
@@ -749,7 +761,7 @@ Last block of code will collect information from our various Org files where we 
           ("s" "Schedule Task" entry (file voc/events)
            "* TODO %?\nSCHEDULED: %^T\n%U" :empty-lines 1)
 
-          ("d" "Deadline" entry (file+headline voc/events)
+          ("d" "Deadline" entry (file voc/events)
            "* TODO %? %(org-set-tags-command) \nDEADLINE: %^T" :empty-lines 1)
 
           ("l" "Unschedule Task + Reference" entry (file+headline voc/todo "Unscheduled Tasks")
@@ -1421,6 +1433,7 @@ This is custom helper function to save all attachments in a mail :
 
 Let's first set up Mu4e with the local Maildir location to read emails and configure the remote SMTP server(s) to send emails. Here is the Mu4e configuration for the Laposte mail provider:
 #+begin_src emacs-lisp :results none :tangle ./mails/mu4e-context-laposte.el
+;;; -*- lexical-binding: t; -*-
 (defvar context-laposte
   (make-mu4e-context
    :name "Laposte"
@@ -1448,6 +1461,7 @@ Let's first set up Mu4e with the local Maildir location to read emails and confi
 
 Configuration for the Gmail mail provider:
 #+begin_src emacs-lisp :results none :tangle ./mails/mu4e-context-gmail.el
+;;; -*- lexical-binding: t; -*-
   ;;  If your Gmail is set up with a different lanugage you also need
   ;;  to translate the names of these folders. For Norwegian
   ;;  "[Gmail]/Corbeille" would be "[Gmail]/Papirkurv".
@@ -1476,6 +1490,7 @@ Configuration for the Gmail mail provider:
 
 Configuration for the Atomicl mail provider:
 #+begin_src emacs-lisp :results none :tangle ./mails/mu4e-context-atomicl.el
+;;; -*- lexical-binding: t; -*-
   (defvar context-atomicl
     (make-mu4e-context
      :name "Atomicl"
