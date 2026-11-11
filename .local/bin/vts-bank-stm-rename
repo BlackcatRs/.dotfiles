@@ -1,0 +1,297 @@
+#!/usr/bin/env bash
+
+# --------------------------------------------------
+# Logging
+# --------------------------------------------------
+
+log() {
+    local LEVEL="$1"
+    shift
+
+    if [[ "$LEVEL" == "ERROR" ]]; then
+        printf '[%s] %s\n' "$LEVEL" "$*" >&2
+    else
+        printf '[%s] %s\n' "$LEVEL" "$*"
+    fi
+}
+
+# --------------------------------------------------
+# Argument parsing
+# --------------------------------------------------
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d|--dir)
+            if [[ -z "$2" || "$2" == -* ]]; then
+                log ERROR "Option $1 requires a directory."
+                exit 1
+            fi
+            DIR="$2"
+            shift 2
+            ;;
+
+        -t|--type)
+            if [[ -z "$2" || "$2" == -* ]]; then
+                log ERROR "Option $1 requires a document type."
+                exit 1
+            fi
+            TYPE="$2"
+            shift 2
+            ;;
+
+        -h|--help)
+            echo "Usage: $0 --dir DIRECTORY --type TYPE"
+            echo "Supported types:"
+            echo "  releve_compte"
+            echo "  avis_operes"
+            echo "  releve_especes"
+            echo "  releve_titres"
+            exit 0
+            ;;
+
+        *)
+            log ERROR "Unknown argument: $1"
+            log INFO "Usage: $0 --dir DIRECTORY --type TYPE"
+            exit 1
+            ;;
+    esac
+done
+
+# --------------------------------------------------
+# Argument validation
+# --------------------------------------------------
+
+if [[ -z "$DIR" || -z "$TYPE" ]]; then
+    log ERROR "Missing required arguments."
+    log INFO "Usage: $0 --dir DIRECTORY --type TYPE"
+    exit 1
+fi
+
+if [[ ! -d "$DIR" ]]; then
+    log ERROR "Directory does not exist: $DIR"
+    exit 1
+fi
+
+case "$TYPE" in
+    releve_compte|avis_operes|releve_especes|releve_titres)
+        ;;
+    *)
+        log ERROR "Unsupported document type: $TYPE"
+        exit 1
+        ;;
+esac
+
+if ! command -v pdftotext >/dev/null 2>&1; then
+    log ERROR "Required command not found: pdftotext"
+    exit 1
+fi
+
+# --------------------------------------------------
+# Date conversion
+# --------------------------------------------------
+
+month_to_number() {
+    case "${1^^}" in
+        JANVIER)   echo "01" ;;
+        FEVRIER)   echo "02" ;;
+        MARS)      echo "03" ;;
+        AVRIL)     echo "04" ;;
+        MAI)       echo "05" ;;
+        JUIN)      echo "06" ;;
+        JUILLET)   echo "07" ;;
+        AOUT|AOÛT) echo "08" ;;
+        SEPTEMBRE) echo "09" ;;
+        OCTOBRE)   echo "10" ;;
+        NOVEMBRE)  echo "11" ;;
+        DECEMBRE|DÉCEMBRE) echo "12" ;;
+        *) return 1 ;;
+    esac
+}
+
+# --------------------------------------------------
+# File processing
+# --------------------------------------------------
+
+log INFO "Starting document processing."
+log INFO "Directory: $DIR"
+log INFO "Document type: $TYPE"
+
+PROCESSED=0
+RENAMED=0
+FAILED=0
+
+while IFS= read -r -d '' file; do
+
+    PROCESSED=$((PROCESSED + 1))
+
+    FILENAME="${file##*/}"
+    FILEPATH="${DIR}/${FILENAME}"
+
+    log INFO "Processing file: ${FILENAME}"
+
+    # Extract PDF content
+    if ! PDF_TEXT=$(pdftotext "$FILEPATH" -); then
+        log ERROR "Unable to extract text from: ${FILENAME}"
+        FAILED=$((FAILED + 1))
+        continue
+    fi
+
+    NEW_FILENAME=""
+
+    # --------------------------------------------------
+    # Bank account statement
+    # --------------------------------------------------
+
+    if [[ "$TYPE" == "releve_compte" ]]; then
+
+        EXTRACTED_DATE=$(grep -ioPm1 \
+            'du \d{2}/\d{2}/\d{4} au \d{2}/\d{2}/\d{4}' \
+            <<< "$PDF_TEXT")
+
+        if [[ -z "$EXTRACTED_DATE" ]]; then
+            log ERROR "Unable to extract statement period from: ${FILENAME}"
+            FAILED=$((FAILED + 1))
+            continue
+        fi
+
+        mapfile -t DATES < <(
+            grep -oP '\d{2}/\d{2}/\d{4}' <<< "$EXTRACTED_DATE"
+        )
+
+        if [[ ${#DATES[@]} -ne 2 ]]; then
+            log ERROR "Invalid statement period in: ${FILENAME}"
+            FAILED=$((FAILED + 1))
+            continue
+        fi
+
+        FROM_DATE=$(awk -F '/' '{print $3 $2 $1}' <<< "${DATES[0]}")
+        TO_DATE=$(awk -F '/' '{print $3 $2 $1}' <<< "${DATES[1]}")
+
+        NEW_FILENAME="${FROM_DATE}_${TO_DATE}.pdf"
+
+    fi
+
+    # --------------------------------------------------
+    # Transaction notice
+    # --------------------------------------------------
+
+    if [[ "$TYPE" == "avis_operes" ]]; then
+
+        DATE_RAW=$(grep -oPm1 \
+            'le \d{2}/\d{2}/\d{4}' <<< "$PDF_TEXT" |
+            cut -d ' ' -f2)
+
+        if [[ ! "$DATE_RAW" =~ ^[0-9]{2}/[0-9]{2}/[0-9]{4}$ ]]; then
+            log ERROR "Unable to extract transaction date from: ${FILENAME}"
+            FAILED=$((FAILED + 1))
+            continue
+        fi
+
+        IFS='/' read -r DAY MONTH YEAR <<< "$DATE_RAW"
+
+        NEW_FILENAME="${YEAR}${MONTH}${DAY}.pdf"
+
+    fi
+
+    # --------------------------------------------------
+    # Cash / Securities statement
+    # --------------------------------------------------
+
+    if [[ "$TYPE" == "releve_especes" || "$TYPE" == "releve_titres" ]]; then
+
+        if [[ "$TYPE" == "releve_especes" ]]; then
+            EXTRACTED_DATE=$(grep -Pm1 \
+                'RELEVE COMPTE ESPECES[[:space:]]*:' \
+                <<< "$PDF_TEXT" |
+                awk -F ':' '{print $2}' |
+                xargs)
+        else
+            EXTRACTED_DATE=$(grep -Pm1 \
+                'RELEVE COMPTE TITRES[[:space:]]*:' \
+                <<< "$PDF_TEXT" |
+                awk -F ':' '{print $2}' |
+                xargs)
+        fi
+
+        if [[ -z "$EXTRACTED_DATE" ]]; then
+            log ERROR "Unable to extract statement date from: ${FILENAME}"
+            FAILED=$((FAILED + 1))
+            continue
+        fi
+
+        read -r MONTH YEAR <<< "$EXTRACTED_DATE"
+
+        MONTH_NUM=$(month_to_number "$MONTH") || {
+            log ERROR "Invalid month '${MONTH}' in: ${FILENAME}"
+            FAILED=$((FAILED + 1))
+            continue
+        }
+
+        if [[ ! "$YEAR" =~ ^[0-9]{4}$ ]]; then
+            log ERROR "Invalid year '${YEAR}' in: ${FILENAME}"
+            FAILED=$((FAILED + 1))
+            continue
+        fi
+
+        NEW_FILENAME="${YEAR}${MONTH_NUM}.pdf"
+
+    fi
+
+    # --------------------------------------------------
+    # Rename file
+    # --------------------------------------------------
+
+    TARGET_PATH="${DIR}/${NEW_FILENAME}"
+
+    if [[ -z "$NEW_FILENAME" ]]; then
+        log ERROR "Unable to determine destination filename for: ${FILENAME}"
+        FAILED=$((FAILED + 1))
+        continue
+    fi
+
+    if [[ "$FILEPATH" == "$TARGET_PATH" ]]; then
+        log INFO "File already has the expected filename: ${FILENAME}"
+        RENAMED=$((RENAMED + 1))
+        continue
+    fi
+
+    if [[ -e "$TARGET_PATH" ]]; then
+        log ERROR "Destination file already exists: ${NEW_FILENAME}"
+        FAILED=$((FAILED + 1))
+        continue
+    fi
+
+    log INFO "Renaming file: '${FILENAME}' -> '${NEW_FILENAME}'"
+
+    if mv -- "$FILEPATH" "$TARGET_PATH"; then
+        log SUCCESS "File successfully renamed: ${NEW_FILENAME}"
+        RENAMED=$((RENAMED + 1))
+    else
+        log ERROR "Failed to rename file: ${FILENAME}"
+        FAILED=$((FAILED + 1))
+    fi
+
+done < <(find "$DIR" -maxdepth 1 -type f -iname '*.pdf' -print0)
+
+# --------------------------------------------------
+# Processing summary
+# --------------------------------------------------
+
+log INFO "----------------------------------------"
+log INFO "Document processing completed."
+log INFO "Files processed : ${PROCESSED}"
+log SUCCESS "Files renamed   : ${RENAMED}"
+
+if [[ "$FAILED" -gt 0 ]]; then
+    log ERROR "Files failed    : ${FAILED}"
+else
+    log INFO "Files failed    : ${FAILED}"
+fi
+
+log INFO "----------------------------------------"
+
+if [[ "$FAILED" -gt 0 ]]; then
+    exit 1
+fi
+
+exit 0
