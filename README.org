@@ -76,7 +76,6 @@ You can also generate just the text with:
   tesseract input.jpg stdout
 #+end_src
 
-
 ** Audio Configuration
 The Arch sound system is organized into different layers:
 1. Drivers and interface – Hardware support and control, providing device drivers for audio hardware.
@@ -242,7 +241,7 @@ The files mentioned below can be deleted without any side effects, they are only
 - Configuration files of =Xmodmap= and =Xbindkeys= have been archived into =.config= directory respectively.
 - The script =mail-notif= notifies the user every time a new email is received. However, this can become annoying when a user receives a large number of emails. Therefore, the script has been archived into the =.local/bin/archive/= folder and replaced with a script that executes every X minutes."
 
-** FIXME [2/5]
+** FIXME [2/6]
 *** DONE Write a readme for Dotrice
 CLOSED: [2024-03-01 Fri 21:11]
 :LOGBOOK:
@@ -285,3 +284,7 @@ CLOSED: [2024-03-10 Sun 10:38]
 :END:
 
 *** TODO Finish vts-watermark function
+*** TODO Reference all scripts under .local/bin dir
+:LOGBOOK:
+- State "TODO"       from              [2026-11-11 mer. 13:49]
+:END:
